@@ -8,6 +8,7 @@ api/courses - get Enum<Courses>, получить все курсы
 api/users	
 	/{id:user}	
 		/courses  - get Enum<CourseProgress>, запущенные курсы	
+			  - post CourseStartOptions, начать новый курс
 			/{id:course} - get CourseProgress, получение прогесса	
 				/lessons
 					/{id:lesson} - get LessonProgress
