@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.DataInterfaces;
-using QuickCourses.Api.Repositories;
 using QuickCourses.Model.Interaction;
 using QuickCourses.Model.Primitives;
 
@@ -22,8 +22,20 @@ namespace QuickCourses.Api.Controllers
 
         [HttpPost]
         [Route("")]
-        public IActionResult PostUser([FromBody]User user)
+        public async Task<IActionResult> PostUser([FromBody]User user)
         {
+            if (user?.Name == null)
+            {
+                return BadRequest($"Invalid user info");
+            }
+
+            var isUserExist = await userRepository.GetUser(user.Id) == null;
+            if (isUserExist)
+            {
+                return BadRequest($"User with id = {user.Id} already exist");
+            }
+
+
             throw new NotImplementedException();
         }
 
@@ -67,6 +79,11 @@ namespace QuickCourses.Api.Controllers
         public IActionResult PostAnswer(int idUser, int idCourse, int idLesson, int idStep, [FromBody]Answer answer)
         {
             throw new NotImplementedException();
+        }
+
+        private bool IsUserValid(User user)
+        {
+            return user?.Name != null;
         }
     }
 }
