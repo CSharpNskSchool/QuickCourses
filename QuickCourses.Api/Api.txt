@@ -7,4 +7,6 @@ api/users
 		/{id:user}	
 			/courses  - get Enum<CourseProgress>, запущенные курсы	
 				/{id:course} - get CourseProgress, получение прогесса	
-					     - post Answer, отправка ответа
+					/lessons/{id:lesson} - get LessonProgress
+							/step/{id:step} - get StepProgress
+								        - post Answer, отправка ответа
