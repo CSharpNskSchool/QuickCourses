@@ -1,0 +1,10 @@
+api/courses	
+      /{id:course}  - get Course, получение курса						      	
+			    /dectrition	- get Dectription, получние описания курса	
+			    /lesson/{id:lesson}   - get Lesson	
+						  /step/{id:step} - get LessonStep	
+api/users	
+		/{id:user}	
+			/courses  - get Enum<CourseProgress>, запущенные курсы	
+				/{id:course} - get CourseProgress, получение прогесса	
+							       - post Answer, отправка ответа
