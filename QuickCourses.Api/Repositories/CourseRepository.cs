@@ -7,12 +7,12 @@ namespace QuickCourses.Api.Repositories
 {
     public class CourseRepository : ICourseRepository
     {
-        public Task<IEnumerable<Course>> GetAllCourses()
+        public Task<IEnumerable<Course>> GetAll()
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Course> GetCourse(int id)
+        public Task<Course> Get(int id)
         {
             throw new System.NotImplementedException();
         }

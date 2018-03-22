@@ -28,7 +28,7 @@ namespace QuickCourses.Api
             services.AddMvc();
 
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IRunnedCourseRepository, RunnedCourseRepository>();
+            services.AddScoped<ICourseProgressRepository, CourseProgressRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
         }
         

@@ -6,7 +6,7 @@ namespace QuickCourses.Api.DataInterfaces
 {
     public interface ICourseRepository
     {
-        Task<IEnumerable<Course>> GetAllCourses();
-        Task<Course> GetCourse(int id);
+        Task<IEnumerable<Course>> GetAll();
+        Task<Course> Get(int id);
     }
 }

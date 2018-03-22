@@ -5,7 +5,8 @@ namespace QuickCourses.Api.DataInterfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetUser(int id);
+        Task<User> Get(int id);
+        Task<bool> Contains(int id);
         Task Insert(User user);
     }
 }

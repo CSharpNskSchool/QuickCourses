@@ -19,14 +19,14 @@ namespace QuickCourses.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCourses()
         {
-            var result = await courseRepository.GetAllCourses();
+            var result = await courseRepository.GetAll();
             return Ok(result);
         }
 
         [HttpGet("/{id:int}")]
         public async Task<IActionResult> GetCourse(int id)
         {
-            var result = await courseRepository.GetCourse(id);
+            var result = await courseRepository.Get(id);
             if (result == null)
             {
                 return BadRequest($"Invalid course id = {id}");
@@ -38,7 +38,7 @@ namespace QuickCourses.Api.Controllers
         [HttpGet("/{id:int}/lessons")]
         public async Task<IActionResult> GetAllLessons(int id)
         {
-            var course = await courseRepository.GetCourse(id);
+            var course = await courseRepository.Get(id);
             if (course == null)
             {
                 return BadRequest($"Invalid course id = {id}");
@@ -91,7 +91,7 @@ namespace QuickCourses.Api.Controllers
 
         private async Task<Lesson> GetLesson(int courseId, int lessonId)
         {
-            var course = await courseRepository.GetCourse(courseId);
+            var course = await courseRepository.Get(courseId);
             if (course == null)
             {
                 return null;
