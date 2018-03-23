@@ -3,7 +3,12 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="CourseExtention" />
+    <Compile Remove="CourseExtention\**" />
+    <Content Remove="CourseExtention\**" />
+    <EmbeddedResource Remove="CourseExtention\**" />
+    <None Remove="CourseExtention\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

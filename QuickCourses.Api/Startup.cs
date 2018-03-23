@@ -34,6 +34,8 @@ namespace QuickCourses.Api
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseMvc();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -42,8 +44,6 @@ namespace QuickCourses.Api
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            app.UseMvc();
         }
     }
 }

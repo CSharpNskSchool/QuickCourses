@@ -11,7 +11,25 @@ namespace QuickCourses.Api.Extentions
             int questionId,
             QuestionState questionState)
         {
-            courseProgress.LessonProgresses[lessonId].LessonStepProgress[stepId].QuestionStates[questionId] = questionState;
+            var lessonProgress = courseProgress.LessonProgresses[lessonId];
+            var stepProgress = lessonProgress.LessonStepProgress[stepId];
+
+            stepProgress.QuestionStates[questionId] = questionState;
+
+            if (stepProgress.QuestionStates.TrueForAll(x => x.Passed))
+            {
+                stepProgress.Passed = true;
+            }
+
+            if (lessonProgress.LessonStepProgress.TrueForAll(x => x.Passed))
+            {
+                lessonProgress.Passed = true;
+            }
+
+            if (courseProgress.LessonProgresses.TrueForAll(x => x.Passed))
+            {
+                courseProgress.Passed = true;
+            }
         }
     }
 }

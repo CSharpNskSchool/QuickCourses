@@ -8,17 +8,22 @@ namespace QuickCourses.Api.Extentions
     {
         public static CourseProgress CreateProgress(this Course course, int userId)
         {
-            var result = new CourseProgress();
+            var result = new CourseProgress {LessonProgresses = new List<LessonProgress>()};
             result.CourceId = course.Id;
             result.UserId = userId;
 
             foreach (var lesson in course.Lessons)
             {
-                var lessongProgress = new LessonProgress {LessonId = lesson.Id};
+                var lessongProgress = new LessonProgress
+                {
+                    LessonId = lesson.Id,
+                    LessonStepProgress = new List<LessonStepProgress>()
+                };
                 
                 foreach (var step in lesson.Steps)
                 {
-                    var stepProgress = new LessonStepProgress {StepId = step.Id};
+                    var stepProgress =
+                        new LessonStepProgress {StepId = step.Id, QuestionStates = new List<QuestionState>()};
 
                     for(int i = 0; i < step.Questions.Count; i++)
                     {

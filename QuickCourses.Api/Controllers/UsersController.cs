@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.DataInterfaces;
@@ -50,6 +51,19 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("startOptions")]
+        public CourseStartOptions GetStartOptions()
+        {
+            return new CourseStartOptions();
+        }
+
+        [HttpGet("answer")]
+        public Answer GetAnswer()
+        {
+            return new Answer {SelectedAnswers = new List<int> {0}};
+        }
+
+
         [HttpPost("{idUser:int}/courses")]
         public async Task<IActionResult> StartCourse(int idUser, [FromBody]CourseStartOptions startOptions)
         {
@@ -70,12 +84,18 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest($"Invalid user id = {startOptions.UserId}");
             }
 
+            if (await courseProgressRepository.Contains(startOptions.UserId, startOptions.CourseId))
+            {
+                return BadRequest($"User id = {startOptions.UserId} has course id = {startOptions.CourseId}");
+            }
+
             var courseProgress = course.CreateProgress(startOptions.UserId);
+            await courseProgressRepository.Insert(courseProgress);
             var uri = Request.GetUri();
             return Created($"{uri}/{courseProgress.CourceId}", courseProgress);
         }
 
-        [HttpGet("{userId:int}/course/{courseId:int}")]
+        [HttpGet("{userId:int}/courses/{courseId:int}")]
         public async Task<IActionResult> GetCourseProgressById(int userId, int courseId)
         {
             var result = await courseProgressRepository.Get(userId, courseId);
@@ -87,7 +107,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{userId:int}/course/{courseId:int}/lessons/{lessonId:int}")]
+        [HttpGet("{userId:int}/courses/{courseId:int}/lessons/{lessonId:int}")]
         public async Task<IActionResult> GetLessonProgressById(int userId, int courseId, int lessonId)
         {
             var result = await GetLessonProgress(userId, courseId, lessonId);
@@ -99,7 +119,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{userId:int}/course/{courseId:int}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        [HttpGet("{userId:int}/courses/{courseId:int}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> GetAllSteps(int userId, int courseId, int lessonId, int stepId)
         {
             var result = await GetStepProgress(userId, courseId, lessonId, stepId);
@@ -112,7 +132,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{userId:int}/course/{courseId:int}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        [HttpPost("{userId:int}/courses/{courseId:int}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> PostAnswer(int userId, int courseId, int lessonId, int stepId, [FromBody]Answer answer)
         {
             var courseProgress = await courseProgressRepository.Get(userId, courseId);
