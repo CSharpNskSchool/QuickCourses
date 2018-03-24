@@ -9,9 +9,12 @@ namespace QuickCourses.Api.Extentions
     {
         public static QuestionState GetQuestionState(this Question question, Answer answer)
         {
-            var result = new QuestionState();
-            result.SelectedAnswers = new List<int>(answer.SelectedAnswers);
-            result.CorrectlySelectedAnswers = new List<int>();
+            var result = new QuestionState
+            {
+                SelectedAnswers = new List<int>(answer.SelectedAnswers),
+                CorrectlySelectedAnswers = new List<int>()
+            };
+
             foreach (var selectedAnswer in result.SelectedAnswers)
             {
                 if (question.CorrectAnswers.Contains(selectedAnswer))

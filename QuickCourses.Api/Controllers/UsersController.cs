@@ -30,14 +30,13 @@ namespace QuickCourses.Api.Controllers
         {
             if (user?.Name == null)
             {
-                return BadRequest($"Invalid user info");
+                return BadRequest("Invalid user info");
             }
 
             if (await userRepository.Contains(user.Id))
             {
                 return BadRequest($"User with id = {user.Id} already exist");
             }
-
 
             await userRepository.Insert(user);
             var uri = Request.GetUri();
@@ -62,7 +61,6 @@ namespace QuickCourses.Api.Controllers
         {
             return new Answer {SelectedAnswers = new List<int> {0}};
         }
-
 
         [HttpPost("{idUser:int}/courses")]
         public async Task<IActionResult> StartCourse(int idUser, [FromBody]CourseStartOptions startOptions)

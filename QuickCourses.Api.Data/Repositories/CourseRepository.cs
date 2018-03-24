@@ -37,12 +37,13 @@ namespace QuickCourses.Api.Repositories
                                             Name = "Only step",
                                             Overview = "Only step of only lesson of only course"
                                         },
-                                        Article = "You mast love this API"
+                                        Article = "You must love this API"
                                     },
                                     Questions = new List<Question>
                                     {
                                         new Question
                                         {
+                                            Text = "Do you love this API?",
                                             AnswerVariants = new List<AnswerVariant>
                                             {
                                                 new AnswerVariant {Id = 0, Text = "Yes"}

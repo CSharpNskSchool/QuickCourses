@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.DataInterfaces;
 using QuickCourses.Model.Primitives;
@@ -22,37 +21,6 @@ namespace QuickCourses.Api.Controllers
         {
             var result = await courseRepository.GetAll();
             return Ok(result);
-        }
-
-        [HttpGet("test")]
-        public Course GetTest()
-        {
-            return new Course
-            {
-                Lessons = new List<Lesson>
-                {
-                    new Lesson
-                    {
-                        Steps = new List<LessonStep>
-                        {
-                            new LessonStep
-                            {
-                                Questions = new List<Question>
-                                {
-                                    new Question
-                                    {
-                                        AnswerVariants = new List<AnswerVariant>
-                                        {
-                                            new AnswerVariant {Id = 0, Text = "Yes"}
-                                        },
-                                        CorrectAnswers = new List<int> {0}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
         }
 
         [HttpGet("{id:int}")]

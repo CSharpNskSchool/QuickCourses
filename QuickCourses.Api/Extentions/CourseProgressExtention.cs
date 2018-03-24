@@ -4,7 +4,7 @@ namespace QuickCourses.Api.Extentions
 {
     public static class CourseProgressExtention
     {
-        public static void Update(
+        public static CourseProgress Update(
             this CourseProgress courseProgress,
             int lessonId,
             int stepId,
@@ -30,6 +30,8 @@ namespace QuickCourses.Api.Extentions
             {
                 courseProgress.Passed = true;
             }
+
+            return courseProgress;
         }
     }
 }

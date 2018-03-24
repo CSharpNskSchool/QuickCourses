@@ -8,65 +8,68 @@ namespace QuickCourses.Api.Extentions
     {
         public static CourseProgress CreateProgress(this Course course, int userId)
         {
-            var result = new CourseProgress {LessonProgresses = new List<LessonProgress>()};
-            result.CourceId = course.Id;
-            result.UserId = userId;
+            var result = new CourseProgress
+            {
+                LessonProgresses = new List<LessonProgress>(),
+                CourceId = course.Id,
+                UserId = userId
+            };
 
             foreach (var lesson in course.Lessons)
             {
-                var lessongProgress = new LessonProgress
-                {
-                    LessonId = lesson.Id,
-                    LessonStepProgress = new List<LessonStepProgress>()
-                };
-                
-                foreach (var step in lesson.Steps)
-                {
-                    var stepProgress =
-                        new LessonStepProgress {StepId = step.Id, QuestionStates = new List<QuestionState>()};
-
-                    for(int i = 0; i < step.Questions.Count; i++)
-                    {
-                        var questionState = new QuestionState
-                        {
-                            CorrectlySelectedAnswers = new List<int>(),
-                            SelectedAnswers = new List<int>()
-                        };
-                        
-                        stepProgress.QuestionStates.Add(questionState);
-                    }
-
-                    lessongProgress.LessonStepProgress.Add(stepProgress);
-                }
-                
-                result.LessonProgresses.Add(lessongProgress);
+                AddLessonProgress(result, lesson);
             }
 
             return result;
         }
 
+        private static void AddLessonProgress(CourseProgress courseProgress, Lesson lesson)
+        {
+            var lessonProgress = new LessonProgress {
+                LessonId = lesson.Id,
+                LessonStepProgress = new List<LessonStepProgress>()
+            };
+
+            foreach (var step in lesson.Steps)
+            {
+                AddStepProgress(lessonProgress, step);
+            }
+
+            courseProgress.LessonProgresses.Add(lessonProgress);
+        }
+
+        private static void AddStepProgress(LessonProgress lessonProgress, LessonStep step)
+        {
+            var stepProgress = new LessonStepProgress { StepId = step.Id, QuestionStates = new List<QuestionState>() };
+
+            for (var i = 0; i < step.Questions.Count; i++)
+            {
+                var questionState = new QuestionState {
+                    CorrectlySelectedAnswers = new List<int>(),
+                    SelectedAnswers = new List<int>()
+                };
+
+                stepProgress.QuestionStates.Add(questionState);
+            }
+
+            lessonProgress.LessonStepProgress.Add(stepProgress);
+        }
+
         public static Question GetQuestion(this Course course, int lessonId, int stepId, int questionId)
         {
-            if (course.Lessons.Count < lessonId)
+            if (!course.Lessons.TryGetValue(lessonId, out var lesson))
             {
                 return null;
             }
 
-            var lesson = course.Lessons[lessonId];
-
-            if (lesson.Steps.Count < stepId)
+            if (!lesson.Steps.TryGetValue(stepId, out var step))
             {
                 return null;
             }
 
-            var step = lesson.Steps[stepId];
+            step.Questions.TryGetValue(questionId, out var result);
 
-            if (step.Questions.Count < questionId)
-            {
-                return null;
-            }
-
-            return step.Questions[questionId];
+            return result;
         }
     }
 }
