@@ -1,5 +1,5 @@
-﻿using QuickCourses.Model.Primitives;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api.DataInterfaces
 {

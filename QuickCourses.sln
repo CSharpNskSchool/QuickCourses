@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api", "QuickCourses.Api\QuickCourses.Api.csproj", "{268CF404-97B9-4B90-82F7-C9F091EAADF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Model", "QuickCourses.Model\QuickCourses.Model.csproj", "{47C39EC8-0915-4306-A935-C5B7DB7A5F1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Models", "QuickCourses.Model\QuickCourses.Models.csproj", "{47C39EC8-0915-4306-A935-C5B7DB7A5F1F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Data", "QuickCourses.Api.Data\QuickCourses.Api.Data.csproj", "{7F00E76C-0C27-4C15-8171-473B20B3170D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Tests", "QuickCourses.Api.Tests\QuickCourses.Api.Tests.csproj", "{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{7F00E76C-0C27-4C15-8171-473B20B3170D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F00E76C-0C27-4C15-8171-473B20B3170D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F00E76C-0C27-4C15-8171-473B20B3170D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

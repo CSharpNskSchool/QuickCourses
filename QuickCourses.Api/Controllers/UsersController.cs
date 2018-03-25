@@ -4,9 +4,9 @@ using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.DataInterfaces;
 using QuickCourses.Api.Extentions;
-using QuickCourses.Model.Interaction;
-using QuickCourses.Model.Primitives;
 using QuickCourses.Model.Progress;
+using QuickCourses.Models.Interaction;
+using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api.Controllers
 {

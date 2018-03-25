@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using QuickCourses.Model.Primitives;
 using QuickCourses.Model.Progress;
 
 namespace QuickCourses.Api.DataInterfaces

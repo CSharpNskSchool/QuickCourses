@@ -1,4 +1,4 @@
-﻿namespace QuickCourses.Model.Primitives
+﻿namespace QuickCourses.Models.Primitives
 {
     public class Description
     {

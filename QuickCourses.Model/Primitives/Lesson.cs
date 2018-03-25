@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuickCourses.Model.Primitives
+namespace QuickCourses.Models.Primitives
 {
     public class Lesson
     {

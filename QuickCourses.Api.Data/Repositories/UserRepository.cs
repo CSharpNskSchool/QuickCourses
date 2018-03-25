@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using QuickCourses.Api.DataInterfaces;
-using QuickCourses.Model.Primitives;
+using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api.Repositories
 {

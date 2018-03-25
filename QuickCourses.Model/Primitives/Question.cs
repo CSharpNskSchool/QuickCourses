@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using QuickCourses.Model.Interaction;
 
-namespace QuickCourses.Model.Primitives
+namespace QuickCourses.Models.Primitives
 {
     public class Question
     {
