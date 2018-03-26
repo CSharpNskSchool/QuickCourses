@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.DataInterfaces;
 using QuickCourses.Api.Extentions;
 using QuickCourses.Model.Progress;
+using QuickCourses.Models;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
 
@@ -30,12 +31,22 @@ namespace QuickCourses.Api.Controllers
         {
             if (user?.Name == null)
             {
-                return BadRequest("Invalid user info");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = "Invalid user info"
+                };
+                return BadRequest(error);
             }
 
             if (await userRepository.Contains(user.Id))
             {
-                return BadRequest($"User with id = {user.Id} already exist");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"User with id = {user.Id} already exist"
+                };
+                return BadRequest(error);
             }
 
             await userRepository.Insert(user);
@@ -67,24 +78,44 @@ namespace QuickCourses.Api.Controllers
         {
             if (startOptions == null)
             {
-                return BadRequest("CourseStartOptions is null");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = "CourseStartOptions is null"
+                };
+                return BadRequest(error);
             }
             
             var course = await courseRepository.Get(startOptions.CourseId);
 
             if (course == null)
             {
-                return BadRequest($"Invalid course id = {startOptions.CourseId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid course id = {startOptions.CourseId}"
+                };
+                return BadRequest(error);
             }
 
             if (!await userRepository.Contains(startOptions.UserId))
             {
-                return BadRequest($"Invalid user id = {startOptions.UserId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid user id = {startOptions.UserId}"
+                };
+                return BadRequest(error);
             }
 
             if (await courseProgressRepository.Contains(startOptions.UserId, startOptions.CourseId))
             {
-                return BadRequest($"User id = {startOptions.UserId} has course id = {startOptions.CourseId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"User id = {startOptions.UserId} has course id = {startOptions.CourseId}"
+                };
+                return BadRequest(error);
             }
 
             var courseProgress = course.CreateProgress(startOptions.UserId);
@@ -99,7 +130,12 @@ namespace QuickCourses.Api.Controllers
             var result = await courseProgressRepository.Get(userId, courseId);
             if (result == null)
             {
-                return BadRequest($"Invalid combination of usersId = {userId} and courseId = {courseId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid combination of usersId = {userId} and courseId = {courseId}"
+                };
+                return BadRequest(error);
             }
 
             return Ok(result);
@@ -111,7 +147,12 @@ namespace QuickCourses.Api.Controllers
             var result = await GetLessonProgress(userId, courseId, lessonId);
             if (result == null)
             {
-                return BadRequest($"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}"
+                };
+                return BadRequest(error);
             }
 
             return Ok(result);
@@ -123,8 +164,13 @@ namespace QuickCourses.Api.Controllers
             var result = await GetStepProgress(userId, courseId, lessonId, stepId);
             if (result == null)
             {
-                return BadRequest(
-                    $"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}, stepId = {stepId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message =
+                        $"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}, stepId = {stepId}"
+                };
+                return BadRequest(error);
             }
 
             return Ok(result);
@@ -136,7 +182,12 @@ namespace QuickCourses.Api.Controllers
             var courseProgress = await courseProgressRepository.Get(userId, courseId);
             if (courseProgress == null)
             {
-                return BadRequest($"Invalid combination of userId = {userId} and courseId = {courseId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid combination of userId = {userId} and courseId = {courseId}"
+                };
+                return BadRequest(error);
             }
 
             var course = await courseRepository.Get(courseId);
@@ -145,7 +196,12 @@ namespace QuickCourses.Api.Controllers
 
             if (question == null)
             {
-                return BadRequest($"Question {answer.QuestionId} doesn't exist");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Question {answer.QuestionId} doesn't exist"
+                };
+                return BadRequest(error);
             }
 
             var result = question.GetQuestionState(answer);

@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.DataInterfaces;
+using QuickCourses.Api.Extentions;
+using QuickCourses.Models;
 using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api.Controllers
@@ -29,7 +31,12 @@ namespace QuickCourses.Api.Controllers
             var result = await courseRepository.Get(id);
             if (result == null)
             {
-                return BadRequest($"Invalid course id = {id}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid course id = {id}"
+                };
+                return BadRequest(error);
             }
 
             return Ok(result);
@@ -41,7 +48,12 @@ namespace QuickCourses.Api.Controllers
             var course = await courseRepository.Get(id);
             if (course == null)
             {
-                return BadRequest($"Invalid course id = {id}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid course id = {id}"
+                };
+                return BadRequest(error);
             }
 
             return Ok(course.Lessons);
@@ -54,7 +66,12 @@ namespace QuickCourses.Api.Controllers
 
             if(result == null)
             { 
-                return BadRequest($"Invalid combination course id = {courseId}, level id = {lessonId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid combination course id = {courseId}, level id = {lessonId}"
+                };
+                return BadRequest(error);
             }
 
             return Ok(result);
@@ -66,7 +83,12 @@ namespace QuickCourses.Api.Controllers
             var level = await GetLesson(courseId, lessonId);
             if (level == null)
             {
-                return BadRequest($"Invalid combination course id = {courseId}, level id = {lessonId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid combination course id = {courseId}, level id = {lessonId}"
+                };
+                return BadRequest(error);
             }
 
             return Ok(level.Steps);
@@ -78,15 +100,25 @@ namespace QuickCourses.Api.Controllers
             var level = await GetLesson(courseId, lessonId);
             if (level == null)
             {
-                return BadRequest($"Invalid combination course id = {courseId}, level id = {lessonId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid combination course id = {courseId}, level id = {lessonId}"
+                };
+                return BadRequest(error);
             }
 
-            if (level.Steps.Count < stepId)
+            if (!level.Steps.TryGetValue(stepId, out var result))
             {
-                return BadRequest($"Invalid step id = {stepId}");
+                var error = new Error
+                {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message = $"Invalid step id = {stepId}"
+                };
+                return BadRequest(error);
             }
 
-            return Ok(level.Steps[stepId]);
+            return Ok(result);
         }
 
         private async Task<Lesson> GetLesson(int courseId, int lessonId)
@@ -97,12 +129,8 @@ namespace QuickCourses.Api.Controllers
                 return null;
             }
 
-            if (course.Lessons.Count < lessonId)
-            {
-                return null;
-            }
-
-            return course.Lessons[lessonId];
+            course.Lessons.TryGetValue(lessonId, out var result);
+            return result;
         }
     }
 }

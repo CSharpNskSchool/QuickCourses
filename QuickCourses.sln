@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Models", "Quic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Data", "QuickCourses.Api.Data\QuickCourses.Api.Data.csproj", "{7F00E76C-0C27-4C15-8171-473B20B3170D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Tests", "QuickCourses.Api.Tests\QuickCourses.Api.Tests.csproj", "{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Api.Tests", "QuickCourses.Api.Tests\QuickCourses.Api.Tests.csproj", "{33EC7E10-7DF2-44C4-8C57-83AF2A315233}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{7F00E76C-0C27-4C15-8171-473B20B3170D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F00E76C-0C27-4C15-8171-473B20B3170D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F00E76C-0C27-4C15-8171-473B20B3170D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8237DD6-5B85-4B09-8873-3DC4DCB4FE1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33EC7E10-7DF2-44C4-8C57-83AF2A315233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33EC7E10-7DF2-44C4-8C57-83AF2A315233}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33EC7E10-7DF2-44C4-8C57-83AF2A315233}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33EC7E10-7DF2-44C4-8C57-83AF2A315233}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
