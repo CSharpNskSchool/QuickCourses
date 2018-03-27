@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using QuickCourses.Api.DataInterfaces;
-using QuickCourses.Api.Repositories;
+using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Api.Data.Repositories;
 
 namespace QuickCourses.Api
 {

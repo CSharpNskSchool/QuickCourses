@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using QuickCourses.Api.DataInterfaces;
+using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Models.Primitives;
 
-namespace QuickCourses.Api.Repositories
+namespace QuickCourses.Api.Data.Repositories
 {
     public class CourseRepository : ICourseRepository
     {

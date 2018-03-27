@@ -1,4 +1,4 @@
-﻿namespace QuickCourses.Models
+﻿namespace QuickCourses.Models.Errors
 {
     public class Error
     {

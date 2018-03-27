@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using QuickCourses.Models.Primitives;
 
-namespace QuickCourses.Api.DataInterfaces
+namespace QuickCourses.Api.Data.DataInterfaces
 {
     public interface ICourseRepository
     {

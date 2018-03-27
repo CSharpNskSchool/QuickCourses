@@ -1,14 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using QuickCourses.Api.DataInterfaces;
+using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Extentions;
 using QuickCourses.Models;
+using QuickCourses.Models.Errors;
 using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api.Controllers
 {
     [Produces("application/json")]
-    [Route("api/courses")]
+    [Route("api/v0/courses")]
     public class CoursesController : Controller
     {
         private readonly ICourseRepository courseRepository;
@@ -29,6 +30,7 @@ namespace QuickCourses.Api.Controllers
         public async Task<IActionResult> GetCourse(int id)
         {
             var result = await courseRepository.Get(id);
+
             if (result == null)
             {
                 var error = new Error
@@ -46,6 +48,7 @@ namespace QuickCourses.Api.Controllers
         public async Task<IActionResult> GetAllLessons(int id)
         {
             var course = await courseRepository.Get(id);
+
             if (course == null)
             {
                 var error = new Error
@@ -81,6 +84,7 @@ namespace QuickCourses.Api.Controllers
         public async Task<IActionResult> GetAllSteps(int courseId, int lessonId)
         {
             var level = await GetLesson(courseId, lessonId);
+
             if (level == null)
             {
                 var error = new Error
@@ -98,6 +102,7 @@ namespace QuickCourses.Api.Controllers
         public async Task<IActionResult> GetStepById(int courseId, int lessonId, int stepId)
         {
             var level = await GetLesson(courseId, lessonId);
+
             if (level == null)
             {
                 var error = new Error
@@ -124,6 +129,7 @@ namespace QuickCourses.Api.Controllers
         private async Task<Lesson> GetLesson(int courseId, int lessonId)
         {
             var course = await courseRepository.Get(courseId);
+
             if (course == null)
             {
                 return null;

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using QuickCourses.Model.Progress;
+using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.DataInterfaces
+namespace QuickCourses.Api.Data.DataInterfaces
 {
     public interface ICourseProgressRepository
     {

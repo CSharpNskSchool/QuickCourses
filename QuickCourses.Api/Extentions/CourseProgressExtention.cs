@@ -1,4 +1,4 @@
-﻿using QuickCourses.Model.Progress;
+﻿using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Api.Extentions
 {

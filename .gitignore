@@ -5,5 +5,6 @@ QuickCourses.Api.Data/obj
 QuickCourses.Api.Data/bin
 QuickCourses.Model/obj
 QuickCourses.Model/bin
-QuickCourses.Api.Tests
+QuickCourses.Api.Tests/bin
+QuickCourses.Api.Tests/obj
 .vs

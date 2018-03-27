@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using QuickCourses.Api.DataInterfaces;
+using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Extentions;
-using QuickCourses.Model.Progress;
-using QuickCourses.Models;
+using QuickCourses.Models.Errors;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
+using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Api.Controllers
 {
     [Produces("application/json")]
-    [Route("api/users")]
+    [Route("api/v0/users")]
     public class UsersController : Controller
     {
         private readonly ICourseRepository courseRepository;
@@ -60,19 +59,7 @@ namespace QuickCourses.Api.Controllers
             var result = await courseProgressRepository.GetAll(idUser);
             return Ok(result);
         }
-
-        [HttpGet("startOptions")]
-        public CourseStartOptions GetStartOptions()
-        {
-            return new CourseStartOptions();
-        }
-
-        [HttpGet("answer")]
-        public Answer GetAnswer()
-        {
-            return new Answer {SelectedAnswers = new List<int> {0}};
-        }
-
+        
         [HttpPost("{idUser:int}/courses")]
         public async Task<IActionResult> StartCourse(int idUser, [FromBody]CourseStartOptions startOptions)
         {
@@ -159,20 +146,30 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{userId:int}/courses/{courseId:int}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> GetAllSteps(int userId, int courseId, int lessonId, int stepId)
+        public async Task<IActionResult> GetLessonStep(int userId, int courseId, int lessonId, int stepId)
         {
-            var result = await GetStepProgress(userId, courseId, lessonId, stepId);
-            if (result == null)
+            var lesson = await GetLessonProgress(userId, courseId, lessonId);
+            if (lesson == null)
             {
-                var error = new Error
-                {
+                var error = new Error {
                     Code = Error.ErrorCode.BadArgument,
-                    Message =
-                        $"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}, stepId = {stepId}"
+                    Message = $"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}"
                 };
+
                 return BadRequest(error);
             }
 
+            if (!lesson.LessonStepProgress.TryGetValue(stepId, out var result))
+            {
+                var error = new Error {
+                    Code = Error.ErrorCode.BadArgument,
+                    Message =
+                        $"Invalid combination of stepId = {stepId}"
+                };
+
+                return BadRequest(error);
+            }
+            
             return Ok(result);
         }
 
@@ -225,22 +222,6 @@ namespace QuickCourses.Api.Controllers
             }
 
             return course.LessonProgresses[lessonId];
-        }
-
-        private async Task<LessonStepProgress> GetStepProgress(int userId, int courseId, int lessonId, int stepId)
-        {
-            var lesson = await GetLessonProgress(userId, courseId, lessonId);
-            if (lesson == null)
-            {
-                return null;
-            }
-
-            if (lesson.LessonStepProgress.Count < stepId)
-            {
-                return null;
-            }
-
-            return lesson.LessonStepProgress[stepId];
         }
     }
 }

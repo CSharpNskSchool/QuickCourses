@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuickCourses.Model.Progress
+namespace QuickCourses.Models.Progress
 {
     public class CourseProgress
     {

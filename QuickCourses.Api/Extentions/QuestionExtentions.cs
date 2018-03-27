@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using QuickCourses.Model.Progress;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
+using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Api.Extentions
 {
