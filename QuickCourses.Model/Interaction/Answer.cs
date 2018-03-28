@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuickCourses.Model.Interaction
+namespace QuickCourses.Models.Interaction
 {
     public class Answer
     {

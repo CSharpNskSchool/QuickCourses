@@ -1,11 +1,11 @@
-api/courses - get Enum<Courses>, получить все курсы
+﻿api/v0/courses - get Enum<Courses>, получить все курсы
       /{id:course}  - get Course, получение курса						      	
 			    /dectrition	- get Dectription, получние описания курса	
 			    /lessons - get Enum<Lesson>
 			    	/{id:lesson}   - get Lesson	
 					/steps        - get Enum<LessonStep>
 				  		/{id:step} - get LessonStep	
-api/users  - post User, создание нового юзера
+api/v0/users  - post User, создание нового юзера
 	/{id:user}
 		/courses  - get Enum<CourseProgress>, запущенные курсы	
 			  - post CourseStartOptions, начать новый курс

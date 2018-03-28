@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Api.Data.Repositories;
 
 namespace QuickCourses.Api
 {
@@ -24,14 +26,24 @@ namespace QuickCourses.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICourseProgressRepository, CourseProgressRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseMvc();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            app.UseMvc();
         }
     }
 }
