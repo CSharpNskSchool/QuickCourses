@@ -1,9 +1,18 @@
 ﻿using System.Collections.Generic;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace QuickCourses.Models.Progress
 {
     public class QuestionState
     {
+        [BsonIgnore]
+        public ObjectId CourseId { get; set; }
+        [BsonIgnore]
+        public int LessonId { get; set; }
+        [BsonIgnore]
+        public int StepId { get; set; }
+        public int QuestionId { get; set; }
         public List<int> CorrectlySelectedAnswers { get; set; }
         public List<int> SelectedAnswers { get; set; }
         public bool Passed { get; set; }

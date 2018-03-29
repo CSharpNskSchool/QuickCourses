@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using Moq;
 using NUnit.Framework;
 using QuickCourses.Api.Controllers;
@@ -20,7 +21,7 @@ namespace QuickCourses.Api.Tests
         public void Init()
         {
             course = new Course {
-                Id = 0,
+                Id = ObjectId.GenerateNewId(),
                 Description = new Description { Name = "Test Course", Overview = "Course to test Api" },
                 Lessons = new List<Lesson>
                 {
@@ -67,7 +68,7 @@ namespace QuickCourses.Api.Tests
                 .Returns(Task.FromResult((IEnumerable<Course>) new[] {course}));
 
             mockRepo
-                .Setup(repo => repo.Get(0))
+                .Setup(repo => repo.Get(course.Id))
                 .Returns(Task.FromResult(course));
 
             controller = new CoursesController(mockRepo.Object);
@@ -84,7 +85,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetCourseTest()
         {
-            var response = controller.GetCourse(0).Result;
+            var response = controller.GetCourse(course.Id).Result;
             
             Utilits.CheckResponseValue<OkObjectResult, Course>(response, course);
         }
@@ -92,7 +93,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetCourseWithInvalidIdTest()
         {
-            var response = controller.GetCourse(1).Result;
+            var response = controller.GetCourse(ObjectId.GenerateNewId()).Result;
 
             var expectedResult = new Error {Code = Error.ErrorCode.BadArgument, Message = "Invalid course id = 1"};
 
@@ -102,7 +103,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetAllLessonsTest()
         {
-            var response = controller.GetAllLessons(0).Result;
+            var response = controller.GetAllLessons(course.Id).Result;
 
             var expectedResult = course.Lessons;
 
@@ -112,7 +113,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetLessonByIdTest()
         {
-            var response = controller.GetLessonById(0, 0).Result;
+            var response = controller.GetLessonById(course.Id, 0).Result;
 
             var expecteResult = course.Lessons[0];
 
@@ -122,7 +123,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetAllStepsTest()
         {
-            var response = controller.GetAllSteps(0, 0).Result;
+            var response = controller.GetAllSteps(course.Id, 0).Result;
 
             var expectedResult = course.Lessons[0].Steps;
 
@@ -132,7 +133,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetStepByIdTest()
         {
-            var response = controller.GetStepById(0, 0, 0).Result;
+            var response = controller.GetStepById(course.Id, 0, 0).Result;
 
             var expectedResult = course.Lessons[0].Steps[0];
             

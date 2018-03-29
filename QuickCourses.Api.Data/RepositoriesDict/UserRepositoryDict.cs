@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Models.Primitives;
 
-namespace QuickCourses.Api.Data.Repositories
+namespace QuickCourses.Api.Data.RepositoriesDict
 {
-    public class UserRepository : IUserRepository
+    public class UserRepositoryDict : IUserRepository
     {
         private static ConcurrentDictionary<int, User> users;
 
-        static UserRepository()
+        static UserRepositoryDict()
         {
             users = new ConcurrentDictionary<int, User>();
         }
