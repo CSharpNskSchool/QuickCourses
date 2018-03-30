@@ -8,6 +8,7 @@ using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using QuickCourses.Models.Errors;
 using QuickCourses.Models.Progress;
 
@@ -25,7 +26,7 @@ namespace QuickCourses.Api.Tests
         {
             course = new Course
             {
-                Id = 0,
+                Id = ObjectId.GenerateNewId(),
                 Description = new Description {Name = "Test Course", Overview = "Course to test Api"},
                 Lessons = new List<Lesson>
                 {
@@ -162,12 +163,13 @@ namespace QuickCourses.Api.Tests
         public void GetCourseProgress_InvalidUrl()
         {
             var controller = CreateGetTestUserController();
+            var invalidId = ObjectId.GenerateNewId();
 
-            var response = controller.GetCourseProgressById(0, 1).Result;
+            var response = controller.GetCourseProgressById(0, invalidId).Result;
 
             Utilits.CheckResponseValue<BadRequestObjectResult, Error>(
                 response,
-                new Error{Code = Error.ErrorCode.BadArgument, Message = "Invalid combination of usersId = 0 and courseId = 1"});
+                new Error{Code = Error.ErrorCode.BadArgument, Message = $"Invalid combination of usersId = 0 and courseId = {invalidId}"});
         }
 
         private UsersController CreateStartCourseTestUserController()
@@ -179,7 +181,7 @@ namespace QuickCourses.Api.Tests
 
             var mockCoursePrgressRepo = new Mock<ICourseProgressRepository>();
             mockCoursePrgressRepo
-                .Setup(courseProgressRepo => courseProgressRepo.Contains(It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(courseProgressRepo => courseProgressRepo.Contains(It.IsAny<int>(), It.IsAny<ObjectId>()))
                 .Returns(Task.FromResult(false));
 
             mockCoursePrgressRepo
@@ -192,7 +194,7 @@ namespace QuickCourses.Api.Tests
 
             var mockCourseRepo = new Mock<ICourseRepository>();
             mockCourseRepo
-                .Setup(courseRepo => courseRepo.Get(0))
+                .Setup(courseRepo => courseRepo.Get(course.Id))
                 .Returns(Task.FromResult(course));
 
             var result = new UsersController(
