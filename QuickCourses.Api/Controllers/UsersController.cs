@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -60,7 +63,7 @@ namespace QuickCourses.Api.Controllers
             var result = await courseProgressRepository.GetAll(idUser);
             return Ok(result);
         }
-        
+
         [HttpPost("{idUser:int}/courses")]
         public async Task<IActionResult> StartCourse(int idUser, [FromBody]CourseStartOptions startOptions)
         {
@@ -112,7 +115,7 @@ namespace QuickCourses.Api.Controllers
             return Created($"{uri}/{courseProgress.CourceId}", courseProgress);
         }
 
-        [HttpGet("{userId:int}/courses/{courseId:ObjectId}")]
+        [HttpGet("{userId:int}/courses/{courseId}")]
         public async Task<IActionResult> GetCourseProgressById(int userId, ObjectId courseId)
         {
             var result = await courseProgressRepository.Get(userId, courseId);
@@ -129,7 +132,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{userId:int}/courses/{courseId:ObjectId}/lessons/{lessonId:int}")]
+        [HttpGet("{userId:int}/courses/{courseId}/lessons/{lessonId:int}")]
         public async Task<IActionResult> GetLessonProgressById(int userId, ObjectId courseId, int lessonId)
         {
             var result = await GetLessonProgress(userId, courseId, lessonId);
@@ -146,7 +149,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{userId:int}/courses/{courseId:ObjectId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        [HttpGet("{userId:int}/courses/{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> GetLessonStep(int userId, ObjectId courseId, int lessonId, int stepId)
         {
             var lesson = await GetLessonProgress(userId, courseId, lessonId);
@@ -174,9 +177,10 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{userId:int}/courses/{courseId:ObjectId}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> PostAnswer(int userId, ObjectId courseId, int lessonId, int stepId, [FromBody]Answer answer)
+        [HttpPost("{userId:int}/courses/{courseIdString}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        public async Task<IActionResult> PostAnswer(int userId, string courseIdString, int lessonId, int stepId, [FromBody]Answer answer)
         {
+            var courseId = ObjectId.Parse(courseIdString);
             var courseProgress = await courseProgressRepository.Get(userId, courseId);
             if (courseProgress == null)
             {

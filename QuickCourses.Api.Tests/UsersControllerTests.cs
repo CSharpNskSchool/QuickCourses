@@ -160,6 +160,23 @@ namespace QuickCourses.Api.Tests
         }
 
         [Test]
+        public void PostAnswerTest()
+        {
+            var controller = CreatePostAnswerTestUsersController();
+
+            var answer = new Answer {QuestionId = 0, SelectedAnswers = new List<int> {0}};
+
+            var response = controller.PostAnswer(user.Id, course.Id.ToString(), 0, 0, answer).Result;
+
+            var question = course.Lessons[0].Steps[0].Questions[0];
+            var expectedValue = question.GetQuestionState(answer);
+
+            Utilits.CheckResponseValue<OkObjectResult, QuestionState>(
+                response,
+                expectedValue);
+        }
+
+        [Test]
         public void GetCourseProgress_InvalidUrl()
         {
             var controller = CreateGetTestUserController();
@@ -233,6 +250,24 @@ namespace QuickCourses.Api.Tests
                 ControllerContext = { HttpContext = Utilits.CreateContext("http", "host", "path") }
             };
 
+            return result;
+        }
+
+        private UsersController CreatePostAnswerTestUsersController()
+        {
+            var mockCoureseProgressRepo = new Mock<ICourseProgressRepository>();
+            mockCoureseProgressRepo.Setup(repo => repo.Get(user.Id, course.Id))
+                .Returns(Task.FromResult(courseProgress));
+
+            var mockCourseRepo = new Mock<ICourseRepository>();
+            mockCourseRepo
+                .Setup(courseRepo => courseRepo.Get(course.Id))
+                .Returns(Task.FromResult(course));
+            
+            var result = new UsersController(mockCoureseProgressRepo.Object, null, mockCourseRepo.Object) {
+                ControllerContext = { HttpContext = Utilits.CreateContext("http", "host", "path") }
+            };
+           
             return result;
         }
     }

@@ -13,41 +13,168 @@ namespace QuickCourses.Api.Data.Repositories
 
         static CourseRepository()
         {
+            var id = ObjectId.GenerateNewId();
+
             courses = new ConcurrentDictionary<ObjectId, Course>
             {
-                [ObjectId.GenerateNewId()] = new Course
-                {
-                    Id = ObjectId.GenerateNewId(),
-                    Description = new Description {Name = "Test Course", Overview = "Course to test Api"},
+                [id] = new Course {
+                    Id = id,
+                    Description = new Description {
+                        Name = "Вводный курс!",
+                        Overview = "Курс, который познакомит вас с QucickCourses."
+                    },
                     Lessons = new List<Lesson>
                     {
                         new Lesson
                         {
+                            CourseId = id,
                             Id = 0,
-                            Description =
-                                new Description {Name = "Only lesson", Overview = "Only lesson of test course"},
+                            Description = new Description {Name = "QuickCourses", Overview = "Устройство курсов"},
                             Steps = new List<LessonStep>
                             {
                                 new LessonStep
                                 {
+                                    CourseId = id,
+                                    LessonId = 0,
                                     Id = 0,
                                     EducationalMaterial = new EducationalMaterial
                                     {
                                         Description = new Description
                                         {
-                                            Name = "Only step",
-                                            Overview = "Only step of only lesson of only course"
+                                            Name = "Курсы",
+                                            Overview = "Что вообще происходит?"
                                         },
-                                        Article = "You must love this API"
+                                        Article =
+                                            "QuickCourses предоставляет возможность проходить короткие курсы. Стоя в очереди или в дороге теперь можно получать знания, а не терять время"
                                     },
                                     Questions = new List<Question>
                                     {
                                         new Question
                                         {
-                                            Text = "Do you love this API?",
+                                            CourseId = id,
+                                            LessonId = 0,
+                                            LessondStepId = 0,
+                                            Text = "Как вам идея?",
                                             AnswerVariants = new List<AnswerVariant>
                                             {
-                                                new AnswerVariant {Id = 0, Text = "Yes"}
+                                                new AnswerVariant {Id = 0, Text = "Мечта всей моей жизни"}
+                                            },
+                                            CorrectAnswers = new List<int> {0}
+                                        }
+                                    }
+                                },
+                                new LessonStep
+                                {
+                                    CourseId = id,
+                                    LessonId = 0,
+                                    Id = 1,
+                                    EducationalMaterial = new EducationalMaterial
+                                    {
+                                        Description = new Description
+                                        {
+                                            Name = "Уроки",
+                                            Overview = "Уроки? Это как в школе, да?"
+                                        },
+                                        Article =
+                                            "Каждый курс состоит из уроков, которые объединяют материал по определенной теме?"
+                                    },
+                                    Questions = new List<Question>
+                                    {
+                                        new Question
+                                        {
+                                            CourseId = id,
+                                            LessonId = 0,
+                                            LessondStepId = 1,
+                                            Id = 0,
+                                            Text = "Понятно?",
+                                            AnswerVariants = new List<AnswerVariant>
+                                            {
+                                                new AnswerVariant {Id = 0, Text = "Да, сэр!"}
+                                            },
+                                            CorrectAnswers = new List<int> {0}
+                                        },
+                                        new Question
+                                        {
+                                            CourseId = id,
+                                            LessonId = 0,
+                                            LessondStepId = 1,
+                                            Id = 1,
+                                            Text = "Уверен?!",
+                                            AnswerVariants = new List<AnswerVariant>
+                                            {
+                                                new AnswerVariant {Id = 0, Text = "Так точно, сэр!"},
+                                                new AnswerVariant {Id = 1, Text = "Не совсем!"}
+                                            },
+                                            CorrectAnswers = new List<int> {0}
+                                        }
+                                    }
+                                },
+                                new LessonStep
+                                {
+                                    CourseId = id,
+                                    LessonId = 0,
+                                    Id = 2,
+                                    EducationalMaterial = new EducationalMaterial
+                                    {
+                                        Description = new Description
+                                        {
+                                            Name = "Шаги",
+                                            Overview = "Топ-топ-топ"
+                                        },
+                                        Article =
+                                            "Уроки в свою очередь делятся на шаги. Каждый шаг это небольшая статья, которая завершается одним или несколькими вопросами для закрепления материала!"
+                                    },
+                                    Questions = new List<Question>
+                                    {
+                                        new Question
+                                        {
+                                            CourseId = id,
+                                            LessonId = 0,
+                                            LessondStepId = 2,
+                                            Text = "Всё понятно?",
+                                            AnswerVariants = new List<AnswerVariant>
+                                            {
+                                                new AnswerVariant {Id = 0, Text = "Абсолютно!"}
+                                            },
+                                            CorrectAnswers = new List<int> {0}
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        new Lesson
+                        {
+                            CourseId = id,
+                            Id = 1,
+                            Description =
+                                new Description {Name = "Свои курсы", Overview = "Добавление курсов"},
+                            Steps = new List<LessonStep>
+                            {
+                                new LessonStep
+                                {
+                                    CourseId = id,
+                                    LessonId = 1,
+                                    Id = 0,
+                                    EducationalMaterial = new EducationalMaterial
+                                    {
+                                        Description = new Description
+                                        {
+                                            Name = "Добавление курсов",
+                                            Overview = "Как добавить свой курс?"
+                                        },
+                                        Article = "Никак ;)"
+                                    },
+                                    Questions = new List<Question>
+                                    {
+                                        new Question
+                                        {
+                                            CourseId = id,
+                                            LessonId = 1,
+                                            LessondStepId = 0,
+                                            Text = "Что вы об этом думаете?",
+                                            AnswerVariants = new List<AnswerVariant>
+                                            {
+                                                new AnswerVariant {Id = 0, Text = "Идеально!"}
                                             },
                                             CorrectAnswers = new List<int> {0}
                                         }
@@ -62,7 +189,11 @@ namespace QuickCourses.Api.Data.Repositories
 
         public Task<IEnumerable<Course>> GetAll()
         {
-            return Task.Run(() => (IEnumerable<Course>) courses.Values);
+            return Task.Run(() =>
+            {
+                var result = courses.Values;
+                return (IEnumerable<Course>)result;
+            });
         }
 
         public Task<Course> Get(ObjectId id)

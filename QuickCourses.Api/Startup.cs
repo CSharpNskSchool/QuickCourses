@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Repositories;
+using QuickCourses.Models.Converter;
 
 namespace QuickCourses.Api
 {
@@ -25,8 +26,13 @@ namespace QuickCourses.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-
+            services
+                .AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new ObjectIdConverter());
+                });
+            
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICourseProgressRepository, CourseProgressRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
