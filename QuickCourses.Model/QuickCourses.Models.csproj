@@ -5,4 +5,7 @@
   <ItemGroup>
     <Folder Include="Errorrs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
+  </ItemGroup>
 </Project>

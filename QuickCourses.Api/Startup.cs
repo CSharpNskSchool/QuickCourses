@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Api.Data.Repositories;
+using QuickCourses.Api.Data.RepositoriesDict;
 
 namespace QuickCourses.Api
 {
@@ -27,9 +27,9 @@ namespace QuickCourses.Api
         {
             services.AddMvc();
 
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ICourseProgressRepository, CourseProgressRepository>();
-            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IUserRepository, UserRepositoryDict>();
+            services.AddScoped<ICourseProgressRepository, CourseProgressRepositoryDict>();
+            services.AddScoped<ICourseRepository, CourseRepositoryDict>();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

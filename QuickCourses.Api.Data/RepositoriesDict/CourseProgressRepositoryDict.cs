@@ -1,21 +1,22 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Data.Repositories
+namespace QuickCourses.Api.Data.RepositoriesDict
 {
-    public class CourseProgressRepository : ICourseProgressRepository
+    public class CourseProgressRepositoryDict : ICourseProgressRepository
     {
-        private static ConcurrentDictionary<int, ConcurrentDictionary<int, CourseProgress>> courseProgresses;
+        private static ConcurrentDictionary<int, ConcurrentDictionary<ObjectId, CourseProgress>> courseProgresses;
 
-        static CourseProgressRepository()
+        static CourseProgressRepositoryDict()
         {
-            courseProgresses = new ConcurrentDictionary<int, ConcurrentDictionary<int, CourseProgress>>();
+            courseProgresses = new ConcurrentDictionary<int, ConcurrentDictionary<ObjectId, CourseProgress>>();
         }
 
-        public Task<CourseProgress> Get(int userId, int courseId)
+        public Task<CourseProgress> Get(int userId, ObjectId courseId)
         {
             return Task.Run(() =>
             {
@@ -29,7 +30,7 @@ namespace QuickCourses.Api.Data.Repositories
             });
         }
 
-        public Task<bool> Contains(int userId, int courseId)
+        public Task<bool> Contains(int userId, ObjectId courseId)
         {
             return Task.Run(() => {
                 if (!courseProgresses.TryGetValue(userId, out var courses))
@@ -71,7 +72,7 @@ namespace QuickCourses.Api.Data.Repositories
             return Task.Run(() => {
                 if (!courseProgresses.TryGetValue(courseProgress.UserId, out var courses))
                 {
-                    courses = new ConcurrentDictionary<int, CourseProgress>();
+                    courses = new ConcurrentDictionary<ObjectId, CourseProgress>();
                     courseProgresses.TryAdd(courseProgress.UserId, courses);
                 }
 

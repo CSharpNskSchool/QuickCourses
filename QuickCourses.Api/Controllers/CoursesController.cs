@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Extentions;
 using QuickCourses.Models;
@@ -26,8 +27,8 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetCourse(int id)
+        [HttpGet("{id:ObjectId}")]
+        public async Task<IActionResult> GetCourse(ObjectId id)
         {
             var result = await courseRepository.Get(id);
 
@@ -44,8 +45,8 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id:int}/lessons")]
-        public async Task<IActionResult> GetAllLessons(int id)
+        [HttpGet("{id:ObjectId}/lessons")]
+        public async Task<IActionResult> GetAllLessons(ObjectId id)
         {
             var course = await courseRepository.Get(id);
 
@@ -62,8 +63,8 @@ namespace QuickCourses.Api.Controllers
             return Ok(course.Lessons);
         }
 
-        [HttpGet("{courseId:int}/lessons/{lessonId:int}")]
-        public async Task<IActionResult> GetLessonById(int courseId, int lessonId)
+        [HttpGet("{courseId:ObjectId}/lessons/{lessonId:int}")]
+        public async Task<IActionResult> GetLessonById(ObjectId courseId, int lessonId)
         {
             var result = await GetLesson(courseId, lessonId);
 
@@ -80,8 +81,8 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{courseId:int}/lessons/{lessonId:int}/steps")]
-        public async Task<IActionResult> GetAllSteps(int courseId, int lessonId)
+        [HttpGet("{courseId:ObjectId}/lessons/{lessonId:int}/steps")]
+        public async Task<IActionResult> GetAllSteps(ObjectId courseId, int lessonId)
         {
             var level = await GetLesson(courseId, lessonId);
 
@@ -98,8 +99,8 @@ namespace QuickCourses.Api.Controllers
             return Ok(level.Steps);
         }
 
-        [HttpGet("{courseId:int}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> GetStepById(int courseId, int lessonId, int stepId)
+        [HttpGet("{courseId:ObjectId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        public async Task<IActionResult> GetStepById(ObjectId courseId, int lessonId, int stepId)
         {
             var level = await GetLesson(courseId, lessonId);
 
@@ -126,7 +127,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        private async Task<Lesson> GetLesson(int courseId, int lessonId)
+        private async Task<Lesson> GetLesson(ObjectId courseId, int lessonId)
         {
             var course = await courseRepository.Get(courseId);
 
