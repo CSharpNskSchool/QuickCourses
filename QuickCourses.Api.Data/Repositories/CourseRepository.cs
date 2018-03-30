@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Models.Primitives;
 
@@ -8,15 +9,15 @@ namespace QuickCourses.Api.Data.Repositories
 {
     public class CourseRepository : ICourseRepository
     {
-        private static ConcurrentDictionary<int, Course> courses;
+        private static ConcurrentDictionary<ObjectId, Course> courses;
 
         static CourseRepository()
         {
-            courses = new ConcurrentDictionary<int, Course>
+            courses = new ConcurrentDictionary<ObjectId, Course>
             {
-                [0] = new Course
+                [ObjectId.GenerateNewId()] = new Course
                 {
-                    Id = 0,
+                    Id = ObjectId.GenerateNewId(),
                     Description = new Description {Name = "Test Course", Overview = "Course to test Api"},
                     Lessons = new List<Lesson>
                     {
@@ -64,7 +65,7 @@ namespace QuickCourses.Api.Data.Repositories
             return Task.Run(() => (IEnumerable<Course>) courses.Values);
         }
 
-        public Task<Course> Get(int id)
+        public Task<Course> Get(ObjectId id)
         {
             return Task.Run(() =>
             {
