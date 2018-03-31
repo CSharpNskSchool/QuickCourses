@@ -8,3 +8,7 @@ QuickCourses.Model/bin
 QuickCourses.Api.Tests/bin
 QuickCourses.Api.Tests/obj
 .vs
+/QuickCourses.Client/bin/Debug/netcoreapp2.0
+/QuickCourses.Client/obj
+/QuickCourses.Client.Tests/bin/Debug/netcoreapp2.0
+/QuickCourses.Client.Tests/obj

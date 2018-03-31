@@ -21,7 +21,7 @@ namespace QuickCourses.Api.Tests
         public void Init()
         {
             course = new Course {
-                Id = ObjectId.GenerateNewId(),
+                Id = ObjectId.GenerateNewId().ToString(),
                 Description = new Description { Name = "Test Course", Overview = "Course to test Api" },
                 Lessons = new List<Lesson>
                 {

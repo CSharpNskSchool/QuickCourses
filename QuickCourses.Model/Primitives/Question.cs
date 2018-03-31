@@ -7,7 +7,7 @@ namespace QuickCourses.Models.Primitives
     public class Question
     {
         [BsonIgnore]
-        public ObjectId CourseId { get; set; }
+        public string CourseId { get; set; }
         [BsonIgnore]
         public int LessonId { get; set; }
         [BsonIgnore]
