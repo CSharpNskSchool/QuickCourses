@@ -11,6 +11,9 @@ namespace QuickCourses.Api.Extentions
         {
             var result = new QuestionState
             {
+                CourseId = question.CourseId,
+                LessonId = question.LessonId,
+                StepId = question.LessondStepId,
                 SelectedAnswers = new List<int>(answer.SelectedAnswers),
                 CorrectlySelectedAnswers = new List<int>()
             };
