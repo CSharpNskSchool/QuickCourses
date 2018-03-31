@@ -116,7 +116,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{userId:int}/courses/{courseId}")]
-        public async Task<IActionResult> GetCourseProgressById(int userId, ObjectId courseId)
+        public async Task<IActionResult> GetCourseProgressById(int userId, string courseId)
         {
             var result = await courseProgressRepository.Get(userId, courseId);
             if (result == null)
@@ -133,7 +133,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{userId:int}/courses/{courseId}/lessons/{lessonId:int}")]
-        public async Task<IActionResult> GetLessonProgressById(int userId, ObjectId courseId, int lessonId)
+        public async Task<IActionResult> GetLessonProgressById(int userId, string courseId, int lessonId)
         {
             var result = await GetLessonProgress(userId, courseId, lessonId);
             if (result == null)
@@ -150,7 +150,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{userId:int}/courses/{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> GetLessonStep(int userId, ObjectId courseId, int lessonId, int stepId)
+        public async Task<IActionResult> GetLessonStep(int userId, string courseId, int lessonId, int stepId)
         {
             var lesson = await GetLessonProgress(userId, courseId, lessonId);
             if (lesson == null)
@@ -177,10 +177,9 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{userId:int}/courses/{courseIdString}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> PostAnswer(int userId, string courseIdString, int lessonId, int stepId, [FromBody]Answer answer)
+        [HttpPost("{userId:int}/courses/{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        public async Task<IActionResult> PostAnswer(int userId, string courseId, int lessonId, int stepId, [FromBody]Answer answer)
         {
-            var courseId = ObjectId.Parse(courseIdString);
             var courseProgress = await courseProgressRepository.Get(userId, courseId);
             if (courseProgress == null)
             {
@@ -213,7 +212,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        private async Task<LessonProgress> GetLessonProgress(int userId, ObjectId courseId, int lessonId)
+        private async Task<LessonProgress> GetLessonProgress(int userId, string courseId, int lessonId)
         {
             var course = await courseProgressRepository.Get(userId, courseId);
             if (course == null)

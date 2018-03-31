@@ -26,7 +26,7 @@ namespace QuickCourses.Api.Tests
         {
             course = new Course
             {
-                Id = ObjectId.GenerateNewId(),
+                Id = ObjectId.GenerateNewId().ToString(),
                 Description = new Description {Name = "Test Course", Overview = "Course to test Api"},
                 Lessons = new List<Lesson>
                 {
@@ -180,7 +180,7 @@ namespace QuickCourses.Api.Tests
         public void GetCourseProgress_InvalidUrl()
         {
             var controller = CreateGetTestUserController();
-            var invalidId = ObjectId.GenerateNewId();
+            var invalidId = ObjectId.GenerateNewId().ToString();
 
             var response = controller.GetCourseProgressById(0, invalidId).Result;
 
@@ -198,7 +198,7 @@ namespace QuickCourses.Api.Tests
 
             var mockCoursePrgressRepo = new Mock<ICourseProgressRepository>();
             mockCoursePrgressRepo
-                .Setup(courseProgressRepo => courseProgressRepo.Contains(It.IsAny<int>(), It.IsAny<ObjectId>()))
+                .Setup(courseProgressRepo => courseProgressRepo.Contains(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             mockCoursePrgressRepo

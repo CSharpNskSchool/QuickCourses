@@ -7,7 +7,7 @@ namespace QuickCourses.Models.Progress
     public class LessonProgress
     {
         [BsonIgnore]
-        public ObjectId CourseId { get; set; }
+        public string CourseId { get; set; }
         public int LessonId { get; set; }
         public List<LessonStepProgress> LessonStepProgress { get; set; }
         public bool Passed { get; set; }
