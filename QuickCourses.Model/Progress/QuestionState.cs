@@ -16,5 +16,6 @@ namespace QuickCourses.Models.Progress
         public List<int> CorrectlySelectedAnswers { get; set; }
         public List<int> SelectedAnswers { get; set; }
         public bool Passed { get; set; }
+        public int CurrentAttemptsCount { get; set; }
     }
 }

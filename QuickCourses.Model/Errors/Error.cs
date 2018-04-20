@@ -4,7 +4,9 @@
     {
         public enum ErrorCode
         {
-            BadArgument
+            BadArgument,
+            NotFound,
+            InvalidOperation
         }
 
         public ErrorCode Code;

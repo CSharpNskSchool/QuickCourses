@@ -100,13 +100,11 @@ namespace QuickCourses.Client.Tests
             };
 
             RegisterUser(user);
-            UserGiveAnswer(user, new Answer()
+            UserGiveAnswer(user, new Answer
             {
                 QuestionId = 0,
                 SelectedAnswers = new List<int> { 0 }
             });
-
-
         }
 
         [Fact]
@@ -162,15 +160,20 @@ namespace QuickCourses.Client.Tests
                   QuestionId = 0,
                   SelectedAnswers = new List<int> { 0 }
               }).Result;
+            
             var progress = client.GetUserCourseAsync(user.Id, firstCourse.Id).Result;
 
             Assert.NotNull(progress.LessonProgresses);
+            
             var firstLessonProgress = progress.LessonProgresses.FirstOrDefault();
             Assert.NotNull(firstLessonProgress);
+            
             var firstStepProgress = firstLessonProgress.LessonStepProgress.FirstOrDefault();
             Assert.NotNull(firstStepProgress);
+            
             var firstQuestionState = firstStepProgress.QuestionStates.FirstOrDefault();
             Assert.NotNull(firstQuestionState);
+            
             Assert.Equal(firstQuestionState, state, new JsonComparer<QuestionState>());
         }
         

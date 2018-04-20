@@ -16,5 +16,6 @@ namespace QuickCourses.Models.Primitives
         public string Text { get; set; }
         public List<AnswerVariant> AnswerVariants { get; set; }
         public List<int> CorrectAnswers { get; set; }
+        public int TotalAttemptsCount { get; set; }
     }
 }

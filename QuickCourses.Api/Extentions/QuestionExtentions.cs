@@ -7,7 +7,7 @@ namespace QuickCourses.Api.Extentions
 {
     public static class QuestionExtentions
     {
-        public static QuestionState GetQuestionState(this Question question, Answer answer)
+        public static QuestionState GetQuestionState(this Question question, Answer answer, QuestionState questionState)
         {
             var result = new QuestionState
             {
@@ -15,7 +15,8 @@ namespace QuickCourses.Api.Extentions
                 LessonId = question.LessonId,
                 StepId = question.LessondStepId,
                 SelectedAnswers = new List<int>(answer.SelectedAnswers),
-                CorrectlySelectedAnswers = new List<int>()
+                CorrectlySelectedAnswers = new List<int>(),
+                CurrentAttemptsCount = questionState.CurrentAttemptsCount + 1
             };
 
             foreach (var selectedAnswer in result.SelectedAnswers)
