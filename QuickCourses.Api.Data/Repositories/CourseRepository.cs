@@ -59,7 +59,8 @@ namespace QuickCourses.Api.Data.Repositories
                                             {
                                                 new AnswerVariant {Id = 0, Text = "Мечта всей моей жизни"}
                                             },
-                                            CorrectAnswers = new List<int> {0}
+                                            CorrectAnswers = new List<int> {0},
+                                            TotalAttemptsCount = 2
                                         }
                                     }
                                 },
@@ -91,7 +92,8 @@ namespace QuickCourses.Api.Data.Repositories
                                             {
                                                 new AnswerVariant {Id = 0, Text = "Да, сэр!"}
                                             },
-                                            CorrectAnswers = new List<int> {0}
+                                            CorrectAnswers = new List<int> {0},
+                                            TotalAttemptsCount = 2
                                         },
                                         new Question
                                         {
@@ -105,7 +107,8 @@ namespace QuickCourses.Api.Data.Repositories
                                                 new AnswerVariant {Id = 0, Text = "Так точно, сэр!"},
                                                 new AnswerVariant {Id = 1, Text = "Не совсем!"}
                                             },
-                                            CorrectAnswers = new List<int> {0}
+                                            CorrectAnswers = new List<int> {0},
+                                            TotalAttemptsCount = 2
                                         }
                                     }
                                 },
@@ -136,7 +139,8 @@ namespace QuickCourses.Api.Data.Repositories
                                             {
                                                 new AnswerVariant {Id = 0, Text = "Абсолютно!"}
                                             },
-                                            CorrectAnswers = new List<int> {0}
+                                            CorrectAnswers = new List<int> {0},
+                                            TotalAttemptsCount = 2
                                         }
                                     }
                                 }
@@ -176,7 +180,8 @@ namespace QuickCourses.Api.Data.Repositories
                                             {
                                                 new AnswerVariant {Id = 0, Text = "Идеально!"}
                                             },
-                                            CorrectAnswers = new List<int> {0}
+                                            CorrectAnswers = new List<int> {0},
+                                            TotalAttemptsCount = 2
                                         }
                                     }
                                 }

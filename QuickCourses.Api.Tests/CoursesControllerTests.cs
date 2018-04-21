@@ -85,20 +85,28 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetCourseTest()
         {
-            var response = controller.GetCourse(course.Id.ToString()).Result;
+            var response = controller.GetCourse(course.Id).Result;
             
             Utilits.CheckResponseValue<OkObjectResult, Course>(response, course);
+        }
+        
+        [Test]
+        public void GetDescriptionTest()
+        {
+            var response = controller.GetDescription(course.Id).Result;
+            
+            Utilits.CheckResponseValue<OkObjectResult, Description>(response, course.Description);
         }
 
         [Test]
         public void GetCourseWithInvalidIdTest()
         {
-            var invalidId = ObjectId.GenerateNewId();
-            var response = controller.GetCourse(invalidId.ToString()).Result;
+            var invalidId = ObjectId.GenerateNewId().ToString();
+            var response = controller.GetCourse(invalidId).Result;
 
-            var expectedResult = new Error {Code = Error.ErrorCode.BadArgument, Message = $"Invalid course id = {invalidId}"};
+            var expectedResult = new Error {Code = Error.ErrorCode.NotFound, Message = $"Invalid course id = {invalidId}"};
 
-            Utilits.CheckResponseValue<BadRequestObjectResult, Error>(response, expectedResult);
+            Utilits.CheckResponseValue<NotFoundObjectResult, Error>(response, expectedResult);
         }
 
         [Test]

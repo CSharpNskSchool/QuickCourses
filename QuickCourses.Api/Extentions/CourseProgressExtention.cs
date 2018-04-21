@@ -13,9 +13,12 @@ namespace QuickCourses.Api.Extentions
         {
             var lessonProgress = courseProgress.LessonProgresses[lessonId];
             var stepProgress = lessonProgress.LessonStepProgress[stepId];
+            var questionStates = stepProgress.QuestionStates;
 
-            stepProgress.QuestionStates[questionId] = questionState;
-
+            courseProgress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
+            
+            questionStates[questionId] = questionState;
+            
             if (stepProgress.QuestionStates.TrueForAll(x => x.Passed))
             {
                 stepProgress.Passed = true;
@@ -32,6 +35,11 @@ namespace QuickCourses.Api.Extentions
             }
 
             return courseProgress;
+        }
+
+        private static int GetDelta(QuestionState curState, QuestionState newState)
+        {
+            return (newState.Passed ? 1 : 0) - (curState.Passed ? 1 : 0);
         }
     }
 }

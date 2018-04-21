@@ -12,12 +12,28 @@ namespace QuickCourses.Api.Extentions
             {
                 LessonProgresses = new List<LessonProgress>(),
                 CourceId = course.Id,
-                UserId = userId
+                UserId = userId,
+                Statistics = new Statistics {TotalQuestionsCount = QuestionsCount(course)}
             };
 
             foreach (var lesson in course.Lessons)
             {
                 AddLessonProgress(result, lesson);
+            }
+
+            return result;
+        }
+
+        private static int QuestionsCount(Course course)
+        {
+            var result = 0;
+            
+            foreach (var lesson in course.Lessons)
+            {
+                foreach (var step in lesson.Steps)
+                {
+                    result += step.Questions.Count;
+                }
             }
 
             return result;

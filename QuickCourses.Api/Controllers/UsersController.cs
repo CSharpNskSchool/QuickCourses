@@ -16,7 +16,7 @@ namespace QuickCourses.Api.Controllers
 {
     [Produces("application/json")]
     [Route("api/v0/users")]
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
         private readonly ICourseRepository courseRepository;
         private readonly ICourseProgressRepository courseProgressRepository;
@@ -34,22 +34,12 @@ namespace QuickCourses.Api.Controllers
         {
             if (user?.Name == null)
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = "Invalid user info"
-                };
-                return BadRequest(error);
+                return BadRequest("Invalid user info");
             }
 
             if (await userRepository.Contains(user.Id))
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"User with id = {user.Id} already exist"
-                };
-                return BadRequest(error);
+                return BadRequest($"User with id = {user.Id} already exist");
             }
 
             await userRepository.Insert(user);
@@ -69,44 +59,24 @@ namespace QuickCourses.Api.Controllers
         {
             if (startOptions == null)
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = "CourseStartOptions is null"
-                };
-                return BadRequest(error);
+                return BadRequest("CourseStartOptions is null");
             }
             
             var course = await courseRepository.Get(startOptions.CourseId);
 
             if (course == null)
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"Invalid course id = {startOptions.CourseId}"
-                };
-                return BadRequest(error);
+                return BadRequest($"Invalid course id = {startOptions.CourseId}");
             }
 
             if (!await userRepository.Contains(startOptions.UserId))
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"Invalid user id = {startOptions.UserId}"
-                };
-                return BadRequest(error);
+                return BadRequest($"Invalid user id = {startOptions.UserId}");
             }
 
             if (await courseProgressRepository.Contains(startOptions.UserId, startOptions.CourseId))
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"User id = {startOptions.UserId} has course id = {startOptions.CourseId}"
-                };
-                return BadRequest(error);
+                return BadRequest($"User id = {startOptions.UserId} has course id = {startOptions.CourseId}");
             }
 
             var courseProgress = course.CreateProgress(startOptions.UserId);
@@ -121,12 +91,7 @@ namespace QuickCourses.Api.Controllers
             var result = await courseProgressRepository.Get(userId, courseId);
             if (result == null)
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"Invalid combination of usersId = {userId} and courseId = {courseId}"
-                };
-                return BadRequest(error);
+                return NotFound($"Invalid combination of usersId = {userId} and courseId = {courseId}");
             }
 
             return Ok(result);
@@ -138,12 +103,7 @@ namespace QuickCourses.Api.Controllers
             var result = await GetLessonProgress(userId, courseId, lessonId);
             if (result == null)
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}"
-                };
-                return BadRequest(error);
+                return NotFound($"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}");
             }
 
             return Ok(result);
@@ -155,23 +115,12 @@ namespace QuickCourses.Api.Controllers
             var lesson = await GetLessonProgress(userId, courseId, lessonId);
             if (lesson == null)
             {
-                var error = new Error {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}"
-                };
-
-                return BadRequest(error);
+                return NotFound($"Invalid combination of usersId = {userId}, courseId = {courseId}, lessonId = {lessonId}");
             }
 
             if (!lesson.LessonStepProgress.TryGetValue(stepId, out var result))
             {
-                var error = new Error {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message =
-                        $"Invalid combination of stepId = {stepId}"
-                };
-
-                return BadRequest(error);
+                return NotFound($"Invalid combination of stepId = {stepId}");
             }
             
             return Ok(result);
@@ -180,15 +129,15 @@ namespace QuickCourses.Api.Controllers
         [HttpPost("{userId:int}/courses/{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> PostAnswer(int userId, string courseId, int lessonId, int stepId, [FromBody]Answer answer)
         {
+            if (answer == null)
+            {
+                return NotFound($"Invalid combination of userId = {userId} and courseId = {courseId}");
+            }
+            
             var courseProgress = await courseProgressRepository.Get(userId, courseId);
             if (courseProgress == null)
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"Invalid combination of userId = {userId} and courseId = {courseId}"
-                };
-                return BadRequest(error);
+                return NotFound($"Invalid combination of userId = {userId} and courseId = {courseId}");
             }
 
             var course = await courseRepository.Get(courseId);
@@ -197,15 +146,21 @@ namespace QuickCourses.Api.Controllers
 
             if (question == null)
             {
-                var error = new Error
-                {
-                    Code = Error.ErrorCode.BadArgument,
-                    Message = $"Question {answer.QuestionId} doesn't exist"
-                };
-                return BadRequest(error);
+                return NotFound($"Question {answer.QuestionId} doesn't exist");
             }
 
-            var result = question.GetQuestionState(answer);
+            var questionState = courseProgress
+                .LessonProgresses[lessonId]
+                .LessonStepProgress[stepId]
+                .QuestionStates[answer.QuestionId];
+            
+            var result = question.GetQuestionState(answer, questionState);
+
+            if (question.TotalAttemptsCount < result.CurrentAttemptsCount)
+            {
+                return InvalidOperation("No available attempts");
+            }
+            
             courseProgress.Update(lessonId, stepId, answer.QuestionId, result);
             await courseProgressRepository.Update(courseProgress);
 

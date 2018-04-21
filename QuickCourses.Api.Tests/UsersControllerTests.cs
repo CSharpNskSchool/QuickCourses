@@ -58,7 +58,8 @@ namespace QuickCourses.Api.Tests
                                         {
                                             new AnswerVariant {Id = 0, Text = "Yes"}
                                         },
-                                        CorrectAnswers = new List<int> {0}
+                                        CorrectAnswers = new List<int> {0},
+                                        TotalAttemptsCount = 2
                                     }
                                 }
                             }
@@ -164,16 +165,26 @@ namespace QuickCourses.Api.Tests
         {
             var controller = CreatePostAnswerTestUsersController();
 
-            var answer = new Answer {QuestionId = 0, SelectedAnswers = new List<int> {0}};
+            const int lessonId = 0;
+            const int stepId = 0;
+            const int questionId = 0;
+            
+            var answer = new Answer {QuestionId = questionId, SelectedAnswers = new List<int> {0}};
+            var response = controller.PostAnswer(user.Id, course.Id, lessonId, stepId, answer).Result;
+            var question = course.Lessons[lessonId].Steps[stepId].Questions[questionId];
 
-            var response = controller.PostAnswer(user.Id, course.Id.ToString(), 0, 0, answer).Result;
+            var questionState = new QuestionState
+            {
+                CorrectlySelectedAnswers = new List<int>(),
+                SelectedAnswers = new List<int>(),
+                LessonId = lessonId,
+                StepId = stepId,
+                QuestionId = questionId
+            };
+            
+            var expectedValue = question.GetQuestionState(answer, questionState);
 
-            var question = course.Lessons[0].Steps[0].Questions[0];
-            var expectedValue = question.GetQuestionState(answer);
-
-            Utilits.CheckResponseValue<OkObjectResult, QuestionState>(
-                response,
-                expectedValue);
+            Utilits.CheckResponseValue<OkObjectResult, QuestionState>(response, expectedValue);
         }
 
         [Test]
@@ -184,9 +195,9 @@ namespace QuickCourses.Api.Tests
 
             var response = controller.GetCourseProgressById(0, invalidId).Result;
 
-            Utilits.CheckResponseValue<BadRequestObjectResult, Error>(
+            Utilits.CheckResponseValue<NotFoundObjectResult, Error>(
                 response,
-                new Error{Code = Error.ErrorCode.BadArgument, Message = $"Invalid combination of usersId = 0 and courseId = {invalidId}"});
+                new Error{Code = Error.ErrorCode.NotFound, Message = $"Invalid combination of usersId = 0 and courseId = {invalidId}"});
         }
 
         private UsersController CreateStartCourseTestUserController()
