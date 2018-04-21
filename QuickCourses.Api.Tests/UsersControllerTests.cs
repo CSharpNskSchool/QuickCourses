@@ -3,12 +3,12 @@ using Moq;
 using NUnit.Framework;
 using QuickCourses.Api.Controllers;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Api.Extentions;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using QuickCourses.Api.Extensions;
 using QuickCourses.Models.Errors;
 using QuickCourses.Models.Progress;
 
@@ -172,17 +172,8 @@ namespace QuickCourses.Api.Tests
             var answer = new Answer {QuestionId = questionId, SelectedAnswers = new List<int> {0}};
             var response = controller.PostAnswer(user.Id, course.Id, lessonId, stepId, answer).Result;
             var question = course.Lessons[lessonId].Steps[stepId].Questions[questionId];
-
-            var questionState = new QuestionState
-            {
-                CorrectlySelectedAnswers = new List<int>(),
-                SelectedAnswers = new List<int>(),
-                LessonId = lessonId,
-                StepId = stepId,
-                QuestionId = questionId
-            };
             
-            var expectedValue = question.GetQuestionState(answer, questionState);
+            var expectedValue = question.GetQuestionState(answer, currentAttemptsCount: 1);
 
             Utilits.CheckResponseValue<OkObjectResult, QuestionState>(response, expectedValue);
         }

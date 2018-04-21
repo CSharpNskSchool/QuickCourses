@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Api.Extentions;
-using QuickCourses.Models.Errors;
+using QuickCourses.Api.Extensions;
 using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api.Controllers
