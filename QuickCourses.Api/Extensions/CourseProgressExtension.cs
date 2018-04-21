@@ -1,8 +1,9 @@
-﻿using QuickCourses.Models.Progress;
+﻿using System;
+using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extentions
+namespace QuickCourses.Api.Extensions
 {
-    public static class CourseProgressExtention
+    public static class CourseProgressExtension
     {
         public static CourseProgress Update(
             this CourseProgress courseProgress,
@@ -39,7 +40,7 @@ namespace QuickCourses.Api.Extentions
 
         private static int GetDelta(QuestionState curState, QuestionState newState)
         {
-            return (newState.Passed ? 1 : 0) - (curState.Passed ? 1 : 0);
+            return Convert.ToInt32(newState.Passed) - Convert.ToInt32(curState.Passed);
         }
     }
 }

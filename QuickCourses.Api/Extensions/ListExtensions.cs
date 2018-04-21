@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace QuickCourses.Api.Extentions
+namespace QuickCourses.Api.Extensions
 {
-    public static class ListExtentions
+    public static class ListExtensions
     {
         public static bool TryGetValue<TValue>(this List<TValue> list, int index, out TValue result)
         {

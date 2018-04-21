@@ -3,11 +3,11 @@ using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extentions
+namespace QuickCourses.Api.Extensions
 {
-    public static class QuestionExtentions
+    public static class QuestionExtensions
     {
-        public static QuestionState GetQuestionState(this Question question, Answer answer, QuestionState questionState)
+        public static QuestionState GetQuestionState(this Question question, Answer answer, int currentAttemptsCount)
         {
             var result = new QuestionState
             {
@@ -16,7 +16,7 @@ namespace QuickCourses.Api.Extentions
                 StepId = question.LessondStepId,
                 SelectedAnswers = new List<int>(answer.SelectedAnswers),
                 CorrectlySelectedAnswers = new List<int>(),
-                CurrentAttemptsCount = questionState.CurrentAttemptsCount + 1
+                CurrentAttemptsCount = currentAttemptsCount
             };
 
             foreach (var selectedAnswer in result.SelectedAnswers)

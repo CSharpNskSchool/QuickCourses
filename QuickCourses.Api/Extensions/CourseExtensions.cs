@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using QuickCourses.Models.Primitives;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extentions
+namespace QuickCourses.Api.Extensions
 {
-    public static class CourseExtentions
+    public static class CourseExtensions
     {
         public static CourseProgress CreateProgress(this Course course, int userId)
         {
@@ -26,22 +27,13 @@ namespace QuickCourses.Api.Extentions
 
         private static int QuestionsCount(Course course)
         {
-            var result = 0;
-            
-            foreach (var lesson in course.Lessons)
-            {
-                foreach (var step in lesson.Steps)
-                {
-                    result += step.Questions.Count;
-                }
-            }
-
-            return result;
+            return course.Lessons.Sum(lesson => lesson.Steps.Sum(step => step.Questions.Count));
         }
 
         private static void AddLessonProgress(CourseProgress courseProgress, Lesson lesson)
         {
-            var lessonProgress = new LessonProgress {
+            var lessonProgress = new LessonProgress
+            {
                 LessonId = lesson.Id,
                 LessonStepProgress = new List<LessonStepProgress>()
             };
@@ -56,11 +48,16 @@ namespace QuickCourses.Api.Extentions
 
         private static void AddStepProgress(LessonProgress lessonProgress, LessonStep step)
         {
-            var stepProgress = new LessonStepProgress { StepId = step.Id, QuestionStates = new List<QuestionState>() };
+            var stepProgress = new LessonStepProgress
+            {
+                StepId = step.Id,
+                QuestionStates = new List<QuestionState>()
+            };
 
             for (var i = 0; i < step.Questions.Count; i++)
             {
-                var questionState = new QuestionState {
+                var questionState = new QuestionState
+                {
                     CorrectlySelectedAnswers = new List<int>(),
                     SelectedAnswers = new List<int>()
                 };

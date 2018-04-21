@@ -1,13 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Api.Extentions;
-using QuickCourses.Models.Errors;
+using QuickCourses.Api.Extensions;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
 using QuickCourses.Models.Progress;
@@ -154,7 +149,7 @@ namespace QuickCourses.Api.Controllers
                 .LessonStepProgress[stepId]
                 .QuestionStates[answer.QuestionId];
             
-            var result = question.GetQuestionState(answer, questionState);
+            var result = question.GetQuestionState(answer, questionState.CurrentAttemptsCount + 1);
 
             if (question.TotalAttemptsCount < result.CurrentAttemptsCount)
             {

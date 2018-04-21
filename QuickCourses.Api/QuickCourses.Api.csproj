@@ -9,7 +9,7 @@
     <None Remove="CourseExtention\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Extentions\CourseExtentions.cs~RF559c64a.TMP" />
+    <None Remove="Extensions\CourseExtentions.cs~RF559c64a.TMP" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
