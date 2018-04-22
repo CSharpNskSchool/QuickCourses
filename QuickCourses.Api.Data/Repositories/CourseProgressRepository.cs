@@ -9,14 +9,14 @@ namespace QuickCourses.Api.Data.Repositories
 {
     public class CourseProgressRepository : ICourseProgressRepository
     {
-        private static ConcurrentDictionary<int, ConcurrentDictionary<string, CourseProgress>> courseProgresses;
+        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, CourseProgress>> courseProgresses;
 
         static CourseProgressRepository()
         {
-            courseProgresses = new ConcurrentDictionary<int, ConcurrentDictionary<string, CourseProgress>>();
+            courseProgresses = new ConcurrentDictionary<string, ConcurrentDictionary<string, CourseProgress>>();
         }
 
-        public Task<CourseProgress> Get(int userId, string courseId)
+        public Task<CourseProgress> Get(string userId, string courseId)
         {
             return Task.Run(() =>
             {
@@ -30,7 +30,7 @@ namespace QuickCourses.Api.Data.Repositories
             });
         }
 
-        public Task<bool> Contains(int userId, string courseId)
+        public Task<bool> Contains(string userId, string courseId)
         {
             return Task.Run(() => {
                 if (!courseProgresses.TryGetValue(userId, out var courses))
@@ -42,7 +42,7 @@ namespace QuickCourses.Api.Data.Repositories
             });
         }
 
-        public Task<IEnumerable<CourseProgress>> GetAll(int userId)
+        public Task<IEnumerable<CourseProgress>> GetAll(string userId)
         {
             return Task.Run(() => {
                 if (!courseProgresses.TryGetValue(userId, out var courses))

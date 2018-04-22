@@ -7,7 +7,7 @@ namespace QuickCourses.Api.Extensions
 {
     public static class CourseExtensions
     {
-        public static CourseProgress CreateProgress(this Course course, int userId)
+        public static CourseProgress CreateProgress(this Course course, string userId)
         {
             var result = new CourseProgress
             {

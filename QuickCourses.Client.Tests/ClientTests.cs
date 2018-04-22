@@ -90,45 +90,45 @@ namespace QuickCourses.Client.Tests
             Assert.Equal(firstLessonStep, lessonStepFromId, new JsonComparer<LessonStep>());
         }
 
-        [Fact]
-        public void User_RegisterAndGiveMakeAnswer_Easy()
-        {
-            var user = new User
-            {
-                Id = 777,
-                Name = "Vasya"
-            };
+        //[Fact]
+        //public void User_RegisterAndGiveMakeAnswer_Easy()
+        //{
+        //    var user = new User
+        //    {
+        //        Id = 777,
+        //        Name = "Vasya"
+        //    };
 
-            RegisterUser(user);
-            UserGiveAnswer(user, new Answer
-            {
-                QuestionId = 0,
-                SelectedAnswers = new List<int> { 0 }
-            });
-        }
+        //    RegisterUser(user);
+        //    UserGiveAnswer(user, new Answer
+        //    {
+        //        QuestionId = 0,
+        //        SelectedAnswers = new List<int> { 0 }
+        //    });
+        //}
 
-        [Fact]
-        public void User_RegisterAndGiveMakeAnswer_Hard()
-        {
-            var user = new User
-            {
-                Id = 999,
-                Name = "Petya"
-            };
+        //[Fact]
+        //public void User_RegisterAndGiveMakeAnswer_Hard()
+        //{
+        //    var user = new User
+        //    {
+        //        Id = 999,
+        //        Name = "Petya"
+        //    };
 
-            RegisterUser(user);
-            UserGiveAnswer(user, new Answer()
-            {
-                QuestionId = 0,
-                SelectedAnswers = new List<int> { 0 }
-            });
-            UserGiveAnswer(user, new Answer()
-            {
-                QuestionId = 1,
-                SelectedAnswers = new List<int> { 0, 1 }
-            });
+        //    RegisterUser(user);
+        //    UserGiveAnswer(user, new Answer()
+        //    {
+        //        QuestionId = 0,
+        //        SelectedAnswers = new List<int> { 0 }
+        //    });
+        //    UserGiveAnswer(user, new Answer()
+        //    {
+        //        QuestionId = 1,
+        //        SelectedAnswers = new List<int> { 0, 1 }
+        //    });
 
-        }
+        //}
 
         [Fact]
         public void Course_ThrowsWhen_BadArgrumnts()
@@ -142,40 +142,41 @@ namespace QuickCourses.Client.Tests
             Assert.Throws<ArgumentNullException>(() => new QuickCoursesClient(ApiVersion.V0, default(string)));
 
         }
-        private void RegisterUser(User user)
-        {
-            client.RegisterUserAsync(user).Wait();
-            client.StartUserCourseAsync(user.Id, firstCourse.Id).Wait();
-        }
 
-        private void UserGiveAnswer(User user, Answer answer)
-        {
-            var state = client.SendUserAnswerAsync(
-              userId: user.Id,
-              courseId: firstCourse.Id,
-              lessonId: 0,
-              stepId: 0,
-              answer: new Answer
-              {
-                  QuestionId = 0,
-                  SelectedAnswers = new List<int> { 0 }
-              }).Result;
-            
-            var progress = client.GetUserCourseAsync(user.Id, firstCourse.Id).Result;
+        //private void RegisterUser(User user)
+        //{
+        //    client.RegisterUserAsync(user).Wait();
+        //    client.StartUserCourseAsync(user.Id, firstCourse.Id).Wait();
+        //}
 
-            Assert.NotNull(progress.LessonProgresses);
+        //private void UserGiveAnswer(User user, Answer answer)
+        //{
+        //    var state = client.SendUserAnswerAsync(
+        //      userId: user.Id,
+        //      courseId: firstCourse.Id,
+        //      lessonId: 0,
+        //      stepId: 0,
+        //      answer: new Answer
+        //      {
+        //          QuestionId = 0,
+        //          SelectedAnswers = new List<int> { 0 }
+        //      }).Result;
             
-            var firstLessonProgress = progress.LessonProgresses.FirstOrDefault();
-            Assert.NotNull(firstLessonProgress);
+        //    var progress = client.GetUserCourseAsync(user.Id, firstCourse.Id).Result;
+
+        //    Assert.NotNull(progress.LessonProgresses);
             
-            var firstStepProgress = firstLessonProgress.LessonStepProgress.FirstOrDefault();
-            Assert.NotNull(firstStepProgress);
+        //    var firstLessonProgress = progress.LessonProgresses.FirstOrDefault();
+        //    Assert.NotNull(firstLessonProgress);
             
-            var firstQuestionState = firstStepProgress.QuestionStates.FirstOrDefault();
-            Assert.NotNull(firstQuestionState);
+        //    var firstStepProgress = firstLessonProgress.LessonStepProgress.FirstOrDefault();
+        //    Assert.NotNull(firstStepProgress);
             
-            Assert.Equal(firstQuestionState, state, new JsonComparer<QuestionState>());
-        }
+        //    var firstQuestionState = firstStepProgress.QuestionStates.FirstOrDefault();
+        //    Assert.NotNull(firstQuestionState);
+            
+        //    Assert.Equal(firstQuestionState, state, new JsonComparer<QuestionState>());
+        //}
         
         public void Dispose()
         {

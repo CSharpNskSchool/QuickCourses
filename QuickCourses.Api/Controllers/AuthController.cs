@@ -77,7 +77,8 @@ namespace QuickCourses.Api.Controllers
             return new JwtSecurityToken(configuration["JasonWebToken:Issuer"],
                                         configuration["JasonWebToken:Issuer"],
                                         claims: claims,
-                                        expires: DateTime.Now.AddMinutes(int.Parse(configuration["JasonWebToken:LifeTimeMinutes"])),
+                                        expires: DateTime.Now.AddMinutes(
+                                            int.Parse(configuration["JasonWebToken:LifeTimeMinutes"])),
                                         signingCredentials: credentials);
         }
     }

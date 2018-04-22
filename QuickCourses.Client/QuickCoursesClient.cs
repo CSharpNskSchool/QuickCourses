@@ -76,13 +76,9 @@ namespace QuickCourses.Client
                                             $"courses/{courseId}/lessons/{lessonId}/steps/{stepId}");
         }
 
-        public Task StartUserCourseAsync(int userId, string courseId)
+        public Task StartUserCourseAsync(string userId, string courseId)
         {
-            var options = new CourseStartOptions
-            {
-                CourseId = courseId,
-                UserId = userId
-            };
+            var options = new CourseStartOptions {CourseId = courseId};
 
             return InvokeApiMethod(HttpMethod.Post, $"users/{userId}/courses", options);
         }
@@ -116,10 +112,10 @@ namespace QuickCourses.Client
             return InvokeApiMethod<IEnumerable<CourseProgress>>(HttpMethod.Get, $"users/{userId}/courses");
         }
 
-        public Task RegisterUserAsync(User user)
-        {
-            return InvokeApiMethod(HttpMethod.Post, "users", user);
-        }
+        //public Task RegisterUserAsync(User user)
+        //{
+        //    return InvokeApiMethod(HttpMethod.Post, "users", user);
+        //}
 
         private async Task InvokeApiMethod(HttpMethod httpMethod, string prefix, object content = null)
         {
