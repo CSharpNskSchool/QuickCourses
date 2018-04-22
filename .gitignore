@@ -13,3 +13,8 @@ QuickCourses.Client/obj
 QuickCourses.Client.Tests/bin
 QuickCourses.Client.Tests/obj
 .idea/
+/QuickCoursers.Runner/bin/Release/netstandard2.0
+/QuickCoursers.Runner/obj/Debug/netstandard2.0
+/QuickCoursers.Runner/obj/Release/netstandard2.0
+/QuickCoursers.Runner/obj
+/QuickCourses.Bot

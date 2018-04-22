@@ -32,5 +32,24 @@ namespace QuickCourses.Api.Data.Repositories
         {
             return Task.Run(() => users.TryAdd(user.Id, user));
         }
+
+        public Task<Models.Authentication.User> Get(Models.Authentication.Account account)
+        {
+            return Task.Run(() => 
+            {
+                if (account.Login == "mihail" && account.Password == "sexbandit")
+                {
+                    return new Models.Authentication.User
+                    {
+                        Account = account,
+                        Id = "Krisha",
+                        Name = "Misha",
+                        Role = "User"
+                    };
+                }
+
+                return null;
+            });
+        }
     }
 }
