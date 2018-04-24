@@ -10,8 +10,8 @@ using QuickCourses.Models.Progress;
 namespace QuickCourses.Api.Controllers
 {
     [Authorize]
-    [Produces("application/json")]
     [Route("api/v0/progress")]
+    [Produces("application/json")]
     public class ProgressController : ControllerBase
     {
         private readonly ICourseRepository courseRepository;

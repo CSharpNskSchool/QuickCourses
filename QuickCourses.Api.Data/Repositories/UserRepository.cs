@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Models.Authentication;
 
@@ -6,23 +7,41 @@ namespace QuickCourses.Api.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public Task<User> Get(Account account)
-        {
-            return Task.Run(() => 
-            {
-                if (account.Login == "mihail" && account.Password == "sexbandit")
-                {
-                    return new User
-                    {
-                        Account = account,
-                        Id = "Krisha",
-                        Name = "Misha",
-                        Role = "User"
-                    };
-                }
+        private static readonly ConcurrentDictionary<string, User> Users;
 
-                return null;
+        static UserRepository()
+        {
+            var user = new User {
+                Login = "mihail",
+                Password = "sexbandit",
+                Id = "Krisha",
+                Name = "Misha",
+                Role = "User"
+            };
+
+            Users = new ConcurrentDictionary<string, User>
+            {
+                [user.Login] = user 
+            };
+        }
+
+        public Task<User> Get(string login)
+        {
+            return Task.Run(() =>
+            {
+                Users.TryGetValue(login, out var result);
+                return result;
             });
+        }
+
+        public Task<bool> Contains(string login)
+        {
+            return Task.Run(() => Users.ContainsKey(login));
+        }
+
+        public Task Insert(User user)
+        {
+            return Task.Run(() => Users.TryAdd(user.Login, user));
         }
     }
 }

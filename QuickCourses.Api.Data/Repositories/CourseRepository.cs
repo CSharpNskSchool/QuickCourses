@@ -9,13 +9,13 @@ namespace QuickCourses.Api.Data.Repositories
 {
     public class CourseRepository : ICourseRepository
     {
-        private static ConcurrentDictionary<string, Course> courses;
+        private static readonly ConcurrentDictionary<string, Course> Courses;
 
         static CourseRepository()
         {
             var id = ObjectId.GenerateNewId().ToString();
 
-            courses = new ConcurrentDictionary<string, Course>
+            Courses = new ConcurrentDictionary<string, Course>
             {
                 [id] = new Course {
                     Id = id,
@@ -196,7 +196,7 @@ namespace QuickCourses.Api.Data.Repositories
         {
             return Task.Run(() =>
             {
-                var result = courses.Values;
+                var result = Courses.Values;
                 return (IEnumerable<Course>)result;
             });
         }
@@ -205,7 +205,7 @@ namespace QuickCourses.Api.Data.Repositories
         {
             return Task.Run(() =>
             {
-                courses.TryGetValue(id, out var result);
+                Courses.TryGetValue(id, out var result);
                 return result;
             });
         }

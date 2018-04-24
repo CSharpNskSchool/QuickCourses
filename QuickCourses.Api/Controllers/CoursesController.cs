@@ -8,8 +8,8 @@ using QuickCourses.Models.Primitives;
 namespace QuickCourses.Api.Controllers
 {
     [Authorize]
-    [Produces("application/json")]
     [Route("api/v0/courses")]
+    [Produces("application/json")]
     public class CoursesController : ControllerBase
     {
         private readonly ICourseRepository courseRepository;

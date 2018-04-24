@@ -5,6 +5,8 @@ namespace QuickCourses.Api.Data.DataInterfaces
 {
     public interface IUserRepository
     {
-        Task<User> Get(Account account);
+        Task<User> Get(string login);
+        Task<bool> Contains(string login);
+        Task Insert(User user);
     }
 }
