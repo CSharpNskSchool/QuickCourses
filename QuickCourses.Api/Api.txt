@@ -7,7 +7,7 @@ api/v1/courses - get Enum<Courses>, получить все курсы
 			    	/{id:lesson}   - get Lesson	
 					/steps        - get Enum<LessonStep>
 				  		/{id:step} - get LessonStep	
-api/v1/users  - post User, создание нового юзера
+api/v1/registration - post User, создание нового юзера
 
 api/v1/progress - get Enum<CourseProgress>, запущенные курсы	
 		- post CourseStartOptions, начать новый курс
