@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace QuickCourses.Api.Controllers
 {
     [AllowAnonymous]
-    [Route("api/v0/auth")]
+    [Route("api/v1/auth")]
     [Produces("application/json")]
     public class AuthController : ControllerBase
     {

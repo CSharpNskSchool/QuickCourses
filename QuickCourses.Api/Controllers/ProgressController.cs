@@ -10,7 +10,7 @@ using QuickCourses.Models.Progress;
 namespace QuickCourses.Api.Controllers
 {
     [Authorize]
-    [Route("api/v0/progress")]
+    [Route("api/v1/progress")]
     [Produces("application/json")]
     public class ProgressController : ControllerBase
     {
@@ -31,7 +31,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("courses")]
+        [HttpPost]
         public async Task<IActionResult> StartCourse([FromBody]CourseStartOptions startOptions)
         {
             if (startOptions == null)

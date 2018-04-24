@@ -42,7 +42,7 @@ namespace QuickCourses.Api.Tests
             var response = client.SendAsync(new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(server.BaseAddress + "api/v0/auth"),
+                RequestUri = new Uri(server.BaseAddress + "api/v1/auth"),
                 Content = new StringContent(serializedAccount, Encoding.UTF8, "application/json")
 
             }).Result;
@@ -66,7 +66,7 @@ namespace QuickCourses.Api.Tests
             var response = client.SendAsync(new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(server.BaseAddress + "api/v0/auth"),
+                RequestUri = new Uri(server.BaseAddress + "api/v1/auth"),
                 Content = new StringContent(serializedAccount, Encoding.UTF8, "application/json")
 
             }).Result;
@@ -85,7 +85,7 @@ namespace QuickCourses.Api.Tests
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(server.BaseAddress + "api/v0/courses")
+                RequestUri = new Uri(server.BaseAddress + "api/v1/courses")
             };
 
             request.Headers.Add("Authorization", "Bearer " + ticket.Source);
@@ -104,7 +104,7 @@ namespace QuickCourses.Api.Tests
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(server.BaseAddress + "api/v0/courses")
+                RequestUri = new Uri(server.BaseAddress + "api/v1/courses")
             };
 
             request.Headers.Add("Authorization", "Bearer " + ticket.Source);
@@ -129,7 +129,7 @@ namespace QuickCourses.Api.Tests
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(server.BaseAddress + "api/v0/courses")
+                RequestUri = new Uri(server.BaseAddress + "api/v1/courses")
             };
 
             request.Headers.Add("Authorization", "Bearer " + ticket.Source);
@@ -144,7 +144,7 @@ namespace QuickCourses.Api.Tests
             var response = client.SendAsync(new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(server.BaseAddress + "api/v0/courses")
+                RequestUri = new Uri(server.BaseAddress + "api/v1/courses")
 
             }).Result;
 
