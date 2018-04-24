@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace QuickCourses.Api.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/v0/auth")]
     [AllowAnonymous]
+    [Route("api/v0/auth")]
+    [Produces("application/json")]
     public class AuthController : ControllerBase
     {
         private readonly IUserRepository userRepository;
@@ -29,18 +29,18 @@ namespace QuickCourses.Api.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Authentication([FromBody]Account account)
+        public async Task<IActionResult> Authentication([FromBody]AuthData authData)
         {
-            if (account == null)
+            if (authData == null)
             {
-                return BadRequest("Bad account.");
+                return BadRequest("Bad authData.");
             }
 
-            var user = await userRepository.Get(account);
+            var user = await userRepository.Get(authData.Login);
 
             if (user == null)
             {
-                return NotFound("Account not registered.");
+                return NotFound("AuthData not registered.");
             }
 
             var securityKey = GetSymmetricSecurityKey();
@@ -77,7 +77,8 @@ namespace QuickCourses.Api.Controllers
             return new JwtSecurityToken(configuration["JasonWebToken:Issuer"],
                                         configuration["JasonWebToken:Issuer"],
                                         claims: claims,
-                                        expires: DateTime.Now.AddMinutes(int.Parse(configuration["JasonWebToken:LifeTimeMinutes"])),
+                                        expires: DateTime.Now.AddMinutes(
+                                            int.Parse(configuration["JasonWebToken:LifeTimeMinutes"])),
                                         signingCredentials: credentials);
         }
     }

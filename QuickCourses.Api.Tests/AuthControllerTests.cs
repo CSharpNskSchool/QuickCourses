@@ -31,7 +31,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void Auth_CantEnterWithBadAccount()
         {
-            var account = new Account
+            var account = new AuthData
             {
                 Login = "Vasa",
                 Password = "12345"
@@ -55,7 +55,7 @@ namespace QuickCourses.Api.Tests
         [Order(0)]
         public void Auth_CanEnterWithExitsAccount()
         {
-            var account = new Account
+            var account = new AuthData
             {
                 Login = "mihail",
                 Password = "sexbandit"

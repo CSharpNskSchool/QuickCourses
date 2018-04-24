@@ -18,8 +18,8 @@ namespace QuickCourses.Client
         Task<Lesson> GetLessonAsync(string courseId, int lessonId);
         Task<IEnumerable<LessonStep>> GetLessonStepsAsync(string courseId, int lessonId);
         Task<LessonStep> GetLessonStepAsync(string courseId, int lessonId, int stepId);
-        Task RegisterUserAsync(User user);
-        Task StartUserCourseAsync(int userId, string courseId);
+        //Task RegisterUserAsync(User user);
+        Task StartUserCourseAsync(string userId, string courseId);
         Task<LessonProgress> GetUserLessonAsync(int userId, string courseId, int lessonId);
         Task<LessonStepProgress> GetUserLessonStepAsync(int userId, string courseId, int lessonId, int stepId);
         Task<CourseProgress> GetUserCourseAsync(int userId, string courseId);
