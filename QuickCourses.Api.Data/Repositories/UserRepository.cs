@@ -52,6 +52,8 @@ namespace QuickCourses.Api.Data.Repositories
 
         public Task Insert(User user)
         {
+            user.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
+
             return Task.Run(() => Users.TryAdd(user.Login, user));
         }
     }

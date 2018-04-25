@@ -8,7 +8,6 @@ using System.Text;
 using System.Net;
 using System;
 using System.Threading;
-using Microsoft.Extensions.Configuration;
 
 namespace QuickCourses.Api.Tests
 {
@@ -120,7 +119,7 @@ namespace QuickCourses.Api.Tests
         {
             Assert.NotNull(ticket);
 
-            var leftTime = (int)Math.Floor(ticket.Over.Subtract(DateTime.Now).TotalMilliseconds);
+            var leftTime = (int)Math.Floor(ticket.ValidUntil.Subtract(DateTime.Now).TotalMilliseconds);
 
             if (leftTime > 0)
             {

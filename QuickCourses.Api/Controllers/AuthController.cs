@@ -48,7 +48,11 @@ namespace QuickCourses.Api.Controllers
                 return NotFound("Bad password or login.");
             }
 
-            var result = GetTicket(user);
+            var ticketTime = user.Role == "Client" ? 
+                            int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForClient"]) :
+                            int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForUser"]);
+
+            var result = GetTicket(user, ticketTime);
 
             return Ok(result);
         }
@@ -69,22 +73,21 @@ namespace QuickCourses.Api.Controllers
                 return NotFound("User with this login not registered.");
             }
             
-
-            var result = GetTicket(user);
+            var result = GetTicket(user, int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForClient"]));
 
             return Ok(result);
         }
 
-        private Ticket GetTicket(User user)
+        private Ticket GetTicket(User user, int minutes)
         {
             var securityKey = GetSymmetricSecurityKey();
-            var jwtToken = GetJwtSecurityToken(user, securityKey);
+            var jwtToken = GetJwtSecurityToken(user, securityKey, minutes);
             var tokenSource = securityTokenHandler.WriteToken(jwtToken);
 
             return new Ticket
             {
                 Source = tokenSource,
-                Over = jwtToken.ValidTo
+                ValidUntil = jwtToken.ValidTo
             };
         }
 
@@ -96,7 +99,7 @@ namespace QuickCourses.Api.Controllers
             return new SymmetricSecurityKey(binnaryKey);
         }
 
-        private JwtSecurityToken GetJwtSecurityToken(User user, SymmetricSecurityKey securityKey)
+        private JwtSecurityToken GetJwtSecurityToken(User user, SymmetricSecurityKey securityKey, int minutes)
         {
             var claims = new[]
             {
@@ -110,8 +113,7 @@ namespace QuickCourses.Api.Controllers
             return new JwtSecurityToken(configuration["JasonWebToken:Issuer"],
                                         configuration["JasonWebToken:Issuer"],
                                         claims: claims,
-                                        expires: DateTime.Now.AddMinutes(
-                                            int.Parse(configuration["JasonWebToken:LifeTimeMinutes"])),
+                                        expires: DateTime.Now.AddMinutes(minutes),
                                         signingCredentials: credentials);
         }
     }
