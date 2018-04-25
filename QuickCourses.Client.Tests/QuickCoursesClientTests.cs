@@ -178,10 +178,14 @@ namespace QuickCourses.Client.Tests
             var firstLessonProgress = progress.LessonProgresses.FirstOrDefault(x => x.LessonId == questionState.LessonId);
             Assert.NotNull(firstLessonProgress);
 
-            var firstStepProgress = firstLessonProgress.LessonStepProgress.FirstOrDefault(x => x.StepId == questionState.StepId);
+            var firstStepProgress = firstLessonProgress
+                                        .LessonStepProgress
+                                        .FirstOrDefault(x => x.StepId == questionState.StepId);
             Assert.NotNull(firstStepProgress);
 
-            var firstQuestionState = firstStepProgress.QuestionStates.FirstOrDefault(x =>x.QuestionId == questionState.QuestionId);
+            var firstQuestionState = firstStepProgress
+                                        .QuestionStates
+                                        .FirstOrDefault(x =>x.QuestionId == questionState.QuestionId);
             Assert.NotNull(firstQuestionState);
 
             Assert.Equal(firstQuestionState, questionState, new JsonComparer<QuestionState>());

@@ -125,12 +125,19 @@ namespace QuickCourses.Client
             return InvokeApiMethod<IEnumerable<CourseProgress>>(HttpMethod.Post, $"progress", ticket);
         }
 
-        private Task InvokeApiMethod(HttpMethod httpMethod, string path, Ticket ticket = null, object content = null, Dictionary<string, string> headers = null)
+        private Task InvokeApiMethod(HttpMethod httpMethod,
+                                     string path,
+                                     Ticket ticket = null,
+                                     object content = null,
+                                     Dictionary<string, string> headers = null)
         {
             return MakeRequest(httpMethod, path, ticket, content, headers);
         }
 
-        private async Task<T> InvokeApiMethod<T>(HttpMethod httpMethod, string path, Ticket ticket = null, object content = null, Dictionary<string, string> headers = null)
+        private async Task<T> InvokeApiMethod<T>(HttpMethod httpMethod, 
+                                                 string path, Ticket ticket = null,
+                                                 object content = null,
+                                                 Dictionary<string, string> headers = null)
         {
             var response = await MakeRequest(httpMethod, path, ticket, content, headers);
             
@@ -139,7 +146,11 @@ namespace QuickCourses.Client
             return JsonConvert.DeserializeObject<T>(serializedObject);
         }
 
-        private async Task<HttpResponseMessage> MakeRequest(HttpMethod httpMethod, string path, Ticket ticket = null, object content = null, Dictionary<string, string> headers = null)
+        private async Task<HttpResponseMessage> MakeRequest(HttpMethod httpMethod,
+                                                            string path,
+                                                            Ticket ticket = null,
+                                                            object content = null,
+                                                            Dictionary<string, string> headers = null)
         {
             var request = new HttpRequestMessage(httpMethod, $"{apiUrl}/api/{version}/{path}");
 
