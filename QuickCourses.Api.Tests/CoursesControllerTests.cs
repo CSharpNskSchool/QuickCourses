@@ -20,58 +20,8 @@ namespace QuickCourses.Api.Tests
         [SetUp]
         public void Init()
         {
-            course = new Course {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Description = new Description { Name = "Test Course", Overview = "Course to test Api" },
-                Lessons = new List<Lesson>
-                {
-                    new Lesson
-                    {
-                        Id = 0,
-                        Description =
-                            new Description {Name = "Only lesson", Overview = "Only lesson of test course"},
-                        Steps = new List<LessonStep>
-                        {
-                            new LessonStep
-                            {
-                                Id = 0,
-                                EducationalMaterial = new EducationalMaterial
-                                {
-                                    Description = new Description
-                                    {
-                                        Name = "Only step",
-                                        Overview = "Only step of only lesson of only course"
-                                    },
-                                    Article = "You must love this API"
-                                },
-                                Questions = new List<Question>
-                                {
-                                    new Question
-                                    {
-                                        Text = "Do you love this API?",
-                                        AnswerVariants = new List<AnswerVariant>
-                                        {
-                                            new AnswerVariant {Id = 0, Text = "Yes"}
-                                        },
-                                        CorrectAnswers = new List<int> {0}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            var mockRepo = new Mock<ICourseRepository>();
-            mockRepo
-                .Setup(repo => repo.GetAll())
-                .Returns(Task.FromResult((IEnumerable<Course>) new[] {course}));
-
-            mockRepo
-                .Setup(repo => repo.Get(course.Id))
-                .Returns(Task.FromResult(course));
-
-            controller = new CoursesController(mockRepo.Object);
+            course = Utilits.CreateCourse();
+            controller = CreateCourseController();
         }
 
         [Test]
@@ -147,6 +97,21 @@ namespace QuickCourses.Api.Tests
             var expectedResult = course.Lessons[0].Steps[0];
             
             Utilits.CheckResponseValue<OkObjectResult, LessonStep>(response, expectedResult);
+        }
+
+        private CoursesController CreateCourseController()
+        {
+            var mockRepo = new Mock<ICourseRepository>();
+            mockRepo
+                .Setup(repo => repo.GetAll())
+                .Returns(Task.FromResult((IEnumerable<Course>)new[] { course }));
+
+            mockRepo
+                .Setup(repo => repo.Get(course.Id))
+                .Returns(Task.FromResult(course));
+
+            var result = new CoursesController(mockRepo.Object);
+            return result;
         }
     }
 }

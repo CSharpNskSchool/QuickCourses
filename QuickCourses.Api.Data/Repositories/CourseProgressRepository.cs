@@ -9,18 +9,18 @@ namespace QuickCourses.Api.Data.Repositories
 {
     public class CourseProgressRepository : ICourseProgressRepository
     {
-        private static ConcurrentDictionary<int, ConcurrentDictionary<string, CourseProgress>> courseProgresses;
+        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, CourseProgress>> CourseProgresses;
 
         static CourseProgressRepository()
         {
-            courseProgresses = new ConcurrentDictionary<int, ConcurrentDictionary<string, CourseProgress>>();
+            CourseProgresses = new ConcurrentDictionary<string, ConcurrentDictionary<string, CourseProgress>>();
         }
 
-        public Task<CourseProgress> Get(int userId, string courseId)
+        public Task<CourseProgress> Get(string userId, string courseId)
         {
             return Task.Run(() =>
             {
-                if (!courseProgresses.TryGetValue(userId, out var userCourses))
+                if (!CourseProgresses.TryGetValue(userId, out var userCourses))
                 {
                     return null;
                 }
@@ -30,10 +30,10 @@ namespace QuickCourses.Api.Data.Repositories
             });
         }
 
-        public Task<bool> Contains(int userId, string courseId)
+        public Task<bool> Contains(string userId, string courseId)
         {
             return Task.Run(() => {
-                if (!courseProgresses.TryGetValue(userId, out var courses))
+                if (!CourseProgresses.TryGetValue(userId, out var courses))
                 {
                     return false;
                 }
@@ -42,10 +42,10 @@ namespace QuickCourses.Api.Data.Repositories
             });
         }
 
-        public Task<IEnumerable<CourseProgress>> GetAll(int userId)
+        public Task<IEnumerable<CourseProgress>> GetAll(string userId)
         {
             return Task.Run(() => {
-                if (!courseProgresses.TryGetValue(userId, out var courses))
+                if (!CourseProgresses.TryGetValue(userId, out var courses))
                 {
                     return new List<CourseProgress>();
                 }
@@ -58,7 +58,7 @@ namespace QuickCourses.Api.Data.Repositories
         {
             return Task.Run(() =>
             {
-                if(!courseProgresses.TryGetValue(courseProgress.UserId, out var courses))
+                if(!CourseProgresses.TryGetValue(courseProgress.UserId, out var courses))
                 {
                     return;
                 }
@@ -70,10 +70,10 @@ namespace QuickCourses.Api.Data.Repositories
         public Task Insert(CourseProgress courseProgress)
         {
             return Task.Run(() => {
-                if (!courseProgresses.TryGetValue(courseProgress.UserId, out var courses))
+                if (!CourseProgresses.TryGetValue(courseProgress.UserId, out var courses))
                 {
                     courses = new ConcurrentDictionary<string, CourseProgress>();
-                    courseProgresses.TryAdd(courseProgress.UserId, courses);
+                    CourseProgresses.TryAdd(courseProgress.UserId, courses);
                 }
 
                 courses.TryAdd(courseProgress.CourceId, courseProgress);

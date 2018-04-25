@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Repositories;
+using QuickCourses.Api.Extensions;
 
 namespace QuickCourses.Api
 {
@@ -15,27 +16,29 @@ namespace QuickCourses.Api
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
         public IConfigurationRoot Configuration { get; }
 
-
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddSingleton(x=>Configuration)
+                .AddJasonWebTokenAuth(Configuration)
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<ICourseProgressRepository, CourseProgressRepository>()
+                .AddScoped<ICourseRepository, CourseRepository>()
                 .AddMvc();
-            
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ICourseProgressRepository, CourseProgressRepository>();
-            services.AddScoped<ICourseRepository, CourseRepository>();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseMvc();
+            app
+              .UseAuthentication()
+              .UseMvc();
 
             if (env.IsDevelopment())
             {

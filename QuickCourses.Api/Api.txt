@@ -1,17 +1,19 @@
-﻿api/v0/courses - get Enum<Courses>, получить все курсы
+﻿api/v1/auth - post AuthData, аутентификация
+
+api/v1/courses - get Enum<Courses>, получить все курсы
       /{id:course}  - get Course, получение курса						      	
 			    /dectrition	- get Dectription, получние описания курса	
 			    /lessons - get Enum<Lesson>
 			    	/{id:lesson}   - get Lesson	
 					/steps        - get Enum<LessonStep>
 				  		/{id:step} - get LessonStep	
-api/v0/users  - post User, создание нового юзера
-	/{id:user}
-		/courses  - get Enum<CourseProgress>, запущенные курсы	
-			  - post CourseStartOptions, начать новый курс
-			/{id:course} - get CourseProgress, получение прогесса	
-				/lessons
-					/{id:lesson} - get LessonProgress
-						/step
-							/{id:step} - get StepProgress
-							   	   - post Answer, отправка ответа
+api/v1/registration - post User, создание нового юзера
+
+api/v1/progress - get Enum<CourseProgress>, запущенные курсы	
+		- post CourseStartOptions, начать новый курс
+	/{id:course} - get CourseProgress, получение прогесса	
+		/lessons
+			/{id:lesson} - get LessonProgress
+				/step
+					/{id:step} - get StepProgress
+					   	   - post Answer, отправка ответа

@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using QuickCourses.Models.Primitives;
+using QuickCourses.Models.Authentication;
 
 namespace QuickCourses.Api.Data.DataInterfaces
 {
     public interface IUserRepository
     {
-        Task<User> Get(int id);
-        Task<bool> Contains(int id);
+        Task<User> Get(string login);
+        Task<bool> Contains(string login);
         Task Insert(User user);
     }
 }

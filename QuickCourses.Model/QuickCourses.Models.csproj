@@ -3,7 +3,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Errorrs" />
+    <Compile Remove="Errorrs\**" />
+    <EmbeddedResource Remove="Errorrs\**" />
+    <None Remove="Errorrs\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MongoDB.Driver" Version="2.5.0" />

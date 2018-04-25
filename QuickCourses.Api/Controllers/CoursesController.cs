@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Extensions;
@@ -6,8 +7,9 @@ using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api.Controllers
 {
+    [Authorize]
+    [Route("api/v1/courses")]
     [Produces("application/json")]
-    [Route("api/v0/courses")]
     public class CoursesController : ControllerBase
     {
         private readonly ICourseRepository courseRepository;
