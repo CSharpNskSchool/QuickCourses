@@ -10,6 +10,7 @@ using QuickCourses.Models.Errors;
 using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
+using QuickCourses.Models.Authentication;
 
 [assembly: InternalsVisibleTo("QuickCourses.Client.Tests")]
 namespace QuickCourses.Client
@@ -19,10 +20,10 @@ namespace QuickCourses.Client
         private readonly HttpClient client;
         private readonly string apiUrl;
         private readonly string version;
-
+        
         public QuickCoursesClient(ApiVersion apiVersion, string apiUrl)
         {
-            this.version = apiVersion?.ToString() ?? throw new ArgumentNullException(nameof(apiVersion));
+            this.version = Enum.GetName(typeof(ApiVersion), apiVersion);
             this.apiUrl = apiUrl ?? throw new ArgumentNullException(nameof(apiUrl));
             this.client = new HttpClient();
         }
@@ -30,7 +31,7 @@ namespace QuickCourses.Client
         internal QuickCoursesClient(ApiVersion apiVersion, HttpClient client)
         {
             this.apiUrl = string.Empty;
-            this.version = apiVersion?.ToString() ?? throw new ArgumentNullException(nameof(apiVersion));
+            this.version = Enum.GetName(typeof(ApiVersion), apiVersion);
             this.client = client;
         }
 
@@ -39,101 +40,129 @@ namespace QuickCourses.Client
             client.Dispose();
         }
 
-        public Task<IEnumerable<Course>> GetCoursesAsync()
+        public Task<Ticket> GetTicketAsync(Ticket ticket, string login)
         {
-            return InvokeApiMethod<IEnumerable<Course>>(HttpMethod.Get, "courses");
+            return InvokeApiMethod<Ticket>(HttpMethod.Get, "auth", ticket, headers: new Dictionary<string, string> { ["Login"] =  login });
         }
 
-        public Task<Description> GetCourseDescriptionAsync(string courseId)
+        public Task<Ticket> GetTicketAsync(AuthData authData)
         {
-            return InvokeApiMethod<Description>(HttpMethod.Get, $"courses/{courseId}/description");
+            return InvokeApiMethod<Ticket>(HttpMethod.Post, "auth", content: authData);
         }
 
-        public Task<Course> GetCourseAsync(string courseId)
+        public Task<IEnumerable<Course>> GetCoursesAsync(Ticket ticket)
         {
-            return InvokeApiMethod<Course>(HttpMethod.Get, $"courses/{courseId}");
+            return InvokeApiMethod<IEnumerable<Course>>(HttpMethod.Get, "courses", ticket);
         }
 
-        public Task<IEnumerable<Lesson>> GetLessonsAsync(string courseId)
+        public Task<Course> GetCourseAsync(Ticket ticket, string courseId)
         {
-            return InvokeApiMethod<IEnumerable<Lesson>>(HttpMethod.Get, $"courses/{courseId}/lessons");
+            return InvokeApiMethod<Course>(HttpMethod.Get, $"courses/{courseId}", ticket);
         }
 
-        public Task<Lesson> GetLessonAsync(string courseId, int lessonId)
+        public Task<Description> GetCourseDescriptionAsync(Ticket ticket, string courseId)
         {
-            return InvokeApiMethod<Lesson>(HttpMethod.Get, $"courses/{courseId}/lessons/{lessonId}");
+            return InvokeApiMethod<Description>(HttpMethod.Get, $"courses/{courseId}/dectrition", ticket);
         }
 
-        public Task<IEnumerable<LessonStep>> GetLessonStepsAsync(string courseId, int lessonId) 
+        public Task<IEnumerable<Lesson>> GetLessonsAsync(Ticket ticket, string courseId)
         {
-            return InvokeApiMethod<IEnumerable<LessonStep>>(HttpMethod.Post,
-                                                         $"courses/{courseId}/lessons/{lessonId}/steps");
+            return InvokeApiMethod<IEnumerable<Lesson>>(HttpMethod.Get, $"courses/{courseId}/lessons", ticket);
         }
 
-        public Task<LessonStep> GetLessonStepAsync(string courseId, int lessonId, int stepId)
+        public Task<Lesson> GetLessonAsync(Ticket ticket, string courseId, int lessonId)
         {
-            return InvokeApiMethod<LessonStep>(HttpMethod.Get,
-                                            $"courses/{courseId}/lessons/{lessonId}/steps/{stepId}");
+            return InvokeApiMethod<Lesson>(HttpMethod.Get, $"courses/{courseId}/lessons/{lessonId}", ticket);
         }
 
-        public Task StartUserCourseAsync(string userId, string courseId)
+        public Task<IEnumerable<LessonStep>> GetLessonStepsAsync(Ticket ticket, string courseId, int lessonId)
         {
-            var options = new CourseStartOptions {CourseId = courseId};
-
-            return InvokeApiMethod(HttpMethod.Post, $"users/{userId}/courses", options);
+            return InvokeApiMethod<IEnumerable<LessonStep>>(HttpMethod.Get, $"courses/{courseId}/lessons/{lessonId}/steps", ticket);
         }
 
-        public Task<LessonProgress> GetUserLessonAsync(int userId, string courseId, int lessonId)
+        public Task<LessonStep> GetLessonStepAsync(Ticket ticket, string courseId, int lessonId, int stepId)
         {
-            return InvokeApiMethod<LessonProgress>(HttpMethod.Post,
-                                                $"users/{userId}/courses/{courseId}/lessons/{lessonId}");
+            return InvokeApiMethod<LessonStep>(HttpMethod.Get, $"courses/{courseId}/lessons/{lessonId}/steps/{stepId}", ticket);
         }
 
-        public Task<LessonStepProgress> GetUserLessonStepAsync(int userId, string courseId, int lessonId, int stepId)
+        public Task RegisterAsync(User user)
         {
-            return InvokeApiMethod<LessonStepProgress>(HttpMethod.Get,
-                                          $"users/{userId}/courses/{courseId}/lessons/{lessonId}/steps/{stepId}");
+            return InvokeApiMethod(HttpMethod.Post, "registration", content: user);
         }
 
-        public Task<CourseProgress> GetUserCourseAsync(int userId, string courseId)
+        public Task StartCourseAsync(Ticket ticket, string courseId)
         {
-            return InvokeApiMethod<CourseProgress>(HttpMethod.Get, $"users/{userId}/courses/{courseId}");
+            var startOptions = new CourseStartOptions
+            {
+                CourseId = courseId
+            };
+
+            return InvokeApiMethod<LessonStep>(HttpMethod.Post, "progress", ticket, content: startOptions);
         }
 
-        public Task<QuestionState> SendUserAnswerAsync(int userId, string courseId, int lessonId, int stepId, Answer answer)
+        public Task<LessonProgress> GetLessonProgressAsync(Ticket ticket, string courseId, int lessonId)
         {
-            return InvokeApiMethod<QuestionState>(HttpMethod.Post,
-                                               $"users/{userId}/courses/{courseId}/lessons/{lessonId}/steps/{stepId}",
-                                               answer);
+            return InvokeApiMethod<LessonProgress>(HttpMethod.Get, $"progress/{courseId}/lessons/{lessonId}", ticket);
         }
 
-        public Task<IEnumerable<CourseProgress>> GetUserCoursesAsync(int userId)
+        public Task<LessonStepProgress> GetLessonStepProgressAsync(Ticket ticket, string courseId, int lessonId, int stepId)
         {
-            return InvokeApiMethod<IEnumerable<CourseProgress>>(HttpMethod.Get, $"users/{userId}/courses");
+            return InvokeApiMethod<LessonStepProgress>(HttpMethod.Get, $"progress/{courseId}/lessons/{lessonId}/steps/{stepId}", ticket);
         }
 
-        //public Task RegisterUserAsync(User user)
-        //{
-        //    return InvokeApiMethod(HttpMethod.Post, "users", user);
-        //}
-
-        private async Task InvokeApiMethod(HttpMethod httpMethod, string prefix, object content = null)
+        public Task<CourseProgress> GetCourseProgressAsync(Ticket ticket, string courseId)
         {
-            await GetResponse(httpMethod, prefix, content);
+            return InvokeApiMethod<CourseProgress>(HttpMethod.Get, $"progress/{courseId}", ticket);
         }
 
-        private async Task<T> InvokeApiMethod<T>(HttpMethod httpMethod, string prefix, object content = null)
+        public Task<QuestionState> SendAnswerAsync(Ticket ticket, string courseId, int lessonId, int stepId, Answer answer)
         {
-            var response = await GetResponse(httpMethod, prefix, content);
+            return InvokeApiMethod<QuestionState>(HttpMethod.Post, $"progress/{courseId}/lessons/{lessonId}/steps/{stepId}", ticket, content: answer);
+        }
+
+        public Task<IEnumerable<CourseProgress>> GetProgressAsync(Ticket ticket)
+        {
+            return InvokeApiMethod<IEnumerable<CourseProgress>>(HttpMethod.Post, $"progress", ticket);
+        }
+
+        private Task InvokeApiMethod(HttpMethod httpMethod,
+                                     string path,
+                                     Ticket ticket = null,
+                                     object content = null,
+                                     Dictionary<string, string> headers = null)
+        {
+            return MakeRequest(httpMethod, path, ticket, content, headers);
+        }
+
+        private async Task<T> InvokeApiMethod<T>(HttpMethod httpMethod, 
+                                                 string path, Ticket ticket = null,
+                                                 object content = null,
+                                                 Dictionary<string, string> headers = null)
+        {
+            var response = await MakeRequest(httpMethod, path, ticket, content, headers);
             
             var serializedObject = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(serializedObject);
         }
 
-        private async Task<HttpResponseMessage> GetResponse(HttpMethod httpMethod, string prefix, object content)
+        private async Task<HttpResponseMessage> MakeRequest(HttpMethod httpMethod,
+                                                            string path,
+                                                            Ticket ticket = null,
+                                                            object content = null,
+                                                            Dictionary<string, string> headers = null)
         {
-            var request = new HttpRequestMessage(httpMethod, $"{apiUrl}/api/{version}/{prefix}");
+            var request = new HttpRequestMessage(httpMethod, $"{apiUrl}/api/{version}/{path}");
+
+            if (ticket != null)
+            {
+                if (!ticket.IsValid())
+                {
+                    throw new InvalidOperationException("Ticket is old");
+                }
+
+                request.Headers.Add("Authorization", "Bearer " + ticket.Source);
+            }
 
             if (content != null)
             {
@@ -141,21 +170,22 @@ namespace QuickCourses.Client
                 request.Content = new StringContent(serializedContent, Encoding.UTF8, "application/json");
             }
 
-            var response = await client.SendAsync(request);
+            if (headers != null)
+            {
+                foreach(var header in headers)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+            }
 
-            if (HasError(response.StatusCode))
+            var response = await client.SendAsync(request);
+            
+            if (!response.IsSuccessStatusCode)
             {
                 HandleError(response);
             }
 
             return response;
-        }
-     
-        private bool HasError(HttpStatusCode httpStatusCode)
-        {
-            return httpStatusCode != HttpStatusCode.OK &&
-                   httpStatusCode != HttpStatusCode.Accepted && 
-                   httpStatusCode != HttpStatusCode.Created;
         }
 
         private void HandleError(HttpResponseMessage response)
@@ -172,6 +202,10 @@ namespace QuickCourses.Client
             {
                 case Error.ErrorCode.BadArgument:
                     throw new ArgumentException(error.Message);
+                case Error.ErrorCode.InvalidOperation:
+                    throw new InvalidOperationException(error.Message);
+                case Error.ErrorCode.NotFound:
+                    throw new KeyNotFoundException(error.Message);
                 default:
                     throw new Exception(error.Message);
             }

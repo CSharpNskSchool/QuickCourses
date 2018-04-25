@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace QuickCourses.Api.Controllers
 {
-    [AllowAnonymous]
     [Route("api/v1/auth")]
     [Produces("application/json")]
     public class AuthController : ControllerBase
@@ -29,6 +28,7 @@ namespace QuickCourses.Api.Controllers
         }
         
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Authentication([FromBody]AuthData authData)
         {
             if (authData == null)
@@ -43,16 +43,52 @@ namespace QuickCourses.Api.Controllers
                 return NotFound("AuthData not registered.");
             }
 
-            var securityKey = GetSymmetricSecurityKey();
-            var jwtToken = GetJwtSecurityToken(user, securityKey);
-            var tokenSource = securityTokenHandler.WriteToken(jwtToken);
-            var result = new Ticket
+            if (user.Password != authData.Password)
             {
-                Source = tokenSource,
-                Over = jwtToken.ValidTo
-            };
+                return NotFound("Bad password or login.");
+            }
+
+            var ticketTime = user.Role == "Client" ? 
+                            int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForClient"]) :
+                            int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForUser"]);
+
+            var result = GetTicket(user, ticketTime);
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> Authentication([FromHeader(Name = "Login")] string login)
+        {
+            if (login == null)
+            {
+                return BadRequest("No login.");
+            }
+
+            var user = await userRepository.Get(login);
+
+            if (user == null)
+            {
+                return NotFound("User with this login not registered.");
+            }
+            
+            var result = GetTicket(user, int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForClient"]));
+
+            return Ok(result);
+        }
+
+        private Ticket GetTicket(User user, int minutes)
+        {
+            var securityKey = GetSymmetricSecurityKey();
+            var jwtToken = GetJwtSecurityToken(user, securityKey, minutes);
+            var tokenSource = securityTokenHandler.WriteToken(jwtToken);
+
+            return new Ticket
+            {
+                Source = tokenSource,
+                ValidUntil = jwtToken.ValidTo
+            };
         }
 
         private SymmetricSecurityKey GetSymmetricSecurityKey()
@@ -63,7 +99,7 @@ namespace QuickCourses.Api.Controllers
             return new SymmetricSecurityKey(binnaryKey);
         }
 
-        private JwtSecurityToken GetJwtSecurityToken(User user, SymmetricSecurityKey securityKey)
+        private JwtSecurityToken GetJwtSecurityToken(User user, SymmetricSecurityKey securityKey, int minutes)
         {
             var claims = new[]
             {
@@ -77,8 +113,7 @@ namespace QuickCourses.Api.Controllers
             return new JwtSecurityToken(configuration["JasonWebToken:Issuer"],
                                         configuration["JasonWebToken:Issuer"],
                                         claims: claims,
-                                        expires: DateTime.Now.AddMinutes(
-                                            int.Parse(configuration["JasonWebToken:LifeTimeMinutes"])),
+                                        expires: DateTime.Now.AddMinutes(minutes),
                                         signingCredentials: credentials);
         }
     }

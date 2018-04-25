@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,9 @@ namespace QuickCourses.Api.Controllers
             {
                 return InvalidOperation($"User with login {login} already exists");
             }
-            
+
+            user.Role = "User";
+
             await userRepository.Insert(user);
 
             return StatusCode(StatusCodes.Status201Created);

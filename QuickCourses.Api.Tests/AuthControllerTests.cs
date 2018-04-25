@@ -8,7 +8,6 @@ using System.Text;
 using System.Net;
 using System;
 using System.Threading;
-using Microsoft.Extensions.Configuration;
 
 namespace QuickCourses.Api.Tests
 {
@@ -120,7 +119,7 @@ namespace QuickCourses.Api.Tests
         {
             Assert.NotNull(ticket);
 
-            var leftTime = (int)Math.Floor(ticket.Over.Subtract(DateTime.Now).TotalMilliseconds);
+            var leftTime = (int)Math.Floor(ticket.ValidUntil.Subtract(DateTime.Now).TotalMilliseconds);
 
             if (leftTime > 0)
             {
@@ -150,7 +149,42 @@ namespace QuickCourses.Api.Tests
 
             Assert.AreEqual(response.StatusCode, HttpStatusCode.Unauthorized);
         }
+        [Test]
+        public void Auth_ClientCanGetUserDataByLogin() 
+        {
+            var account = new AuthData
+            {
+                Login = "bot",
+                Password = "12345"
+            };
 
+            var serializedAccount = JsonConvert.SerializeObject(account);
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(server.BaseAddress + "api/v1/auth"),
+                Content = new StringContent(serializedAccount, Encoding.UTF8, "application/json")
+            };
+
+            var response = client.SendAsync(request).Result;
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            var ticket = JsonConvert.DeserializeObject<Ticket>(response.Content.ReadAsStringAsync().Result);
+
+            request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.BaseAddress + "api/v1/auth"),
+            };
+
+            request.Headers.Add("Authorization", "Bearer " + ticket.Source);
+            request.Headers.Add("Login", "mihail");
+            response = client.SendAsync(request).Result;
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        }
         [TearDown]
         public void Dispose()
         {
