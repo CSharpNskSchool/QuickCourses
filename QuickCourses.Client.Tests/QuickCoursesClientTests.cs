@@ -136,9 +136,9 @@ namespace QuickCourses.Client.Tests
 
             var questionState1 = client.SendAnswerAsync(userTicket,
                                                 firstCourse.Id,
-                                                0,
-                                                0,
-                                                new Answer
+                                                lessonId: 0,
+                                                stepId: 0,
+                                                answer: new Answer
                                                 {
                                                     QuestionId = 0,
                                                     SelectedAnswers = new List<int> { 0 }
@@ -148,9 +148,9 @@ namespace QuickCourses.Client.Tests
 
             var questionState2 = client.SendAnswerAsync(userTicket,
                                                 firstCourse.Id,
-                                                1,
-                                                0,
-                                                new Answer
+                                                lessonId: 1,
+                                                stepId: 0,
+                                                answer: new Answer
                                                 {
                                                     QuestionId = 0,
                                                     SelectedAnswers = new List<int> { 0 }
