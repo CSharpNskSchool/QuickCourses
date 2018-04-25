@@ -11,7 +11,8 @@ namespace QuickCourses.Api.Data.Repositories
 
         static UserRepository()
         {
-            var user = new User {
+            var user = new User
+            {
                 Login = "mihail",
                 Password = "sexbandit",
                 Id = "Krisha",
@@ -19,9 +20,19 @@ namespace QuickCourses.Api.Data.Repositories
                 Role = "User"
             };
 
+            var userClient = new User
+            {
+                Login = "bot",
+                Password = "12345",
+                Id = "bot",
+                Role = "Client",
+                Name = "bot"
+            };
+
             Users = new ConcurrentDictionary<string, User>
             {
-                [user.Login] = user 
+                [user.Login] = user,
+                [userClient.Login] = userClient
             };
         }
 

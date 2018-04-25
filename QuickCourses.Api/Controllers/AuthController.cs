@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace QuickCourses.Api.Controllers
 {
-    [AllowAnonymous]
     [Route("api/v1/auth")]
     [Produces("application/json")]
     public class AuthController : ControllerBase
@@ -29,6 +28,7 @@ namespace QuickCourses.Api.Controllers
         }
         
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Authentication([FromBody]AuthData authData)
         {
             if (authData == null)
@@ -43,16 +43,49 @@ namespace QuickCourses.Api.Controllers
                 return NotFound("AuthData not registered.");
             }
 
+            if (user.Password != authData.Password)
+            {
+                return NotFound("Bad password or login.");
+            }
+
+            var result = GetTicket(user);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> Authentication([FromHeader(Name = "Login")] string login)
+        {
+            if (login == null)
+            {
+                return BadRequest("No login.");
+            }
+
+            var user = await userRepository.Get(login);
+
+            if (user == null)
+            {
+                return NotFound("User with this login not registered.");
+            }
+            
+
+            var result = GetTicket(user);
+
+            return Ok(result);
+        }
+
+        private Ticket GetTicket(User user)
+        {
             var securityKey = GetSymmetricSecurityKey();
             var jwtToken = GetJwtSecurityToken(user, securityKey);
             var tokenSource = securityTokenHandler.WriteToken(jwtToken);
-            var result = new Ticket
+
+            return new Ticket
             {
                 Source = tokenSource,
                 Over = jwtToken.ValidTo
             };
-
-            return Ok(result);
         }
 
         private SymmetricSecurityKey GetSymmetricSecurityKey()
