@@ -23,7 +23,7 @@ namespace QuickCourses.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody]User user)
         { 
-            var login = user.Login;
+            var login = user?.Login;
 
             if (string.IsNullOrEmpty(login))
             {
