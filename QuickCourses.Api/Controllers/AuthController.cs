@@ -103,9 +103,9 @@ namespace QuickCourses.Api.Controllers
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Name, user.Name ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, user.Id ?? ""),
+                new Claim(ClaimTypes.Role, user.Role ?? "")
             };
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
