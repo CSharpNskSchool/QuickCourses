@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Client.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Extensions", "QuickCourses.Extensions\QuickCourses.Extensions.csproj", "{2458380B-8552-4BD3-B391-4E50AD890BEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Api.Data.Tests", "QuickCourses.Api.Data.Tests\QuickCourses.Api.Data.Tests.csproj", "{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{2458380B-8552-4BD3-B391-4E50AD890BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2458380B-8552-4BD3-B391-4E50AD890BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2458380B-8552-4BD3-B391-4E50AD890BEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
