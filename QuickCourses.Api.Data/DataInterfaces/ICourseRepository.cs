@@ -8,5 +8,7 @@ namespace QuickCourses.Api.Data.DataInterfaces
     {
         Task<IEnumerable<Course>> GetAll();
         Task<Course> Get(string id);
+        Task Insert(Course course);
+        Task Delete(string id);
     }
 }

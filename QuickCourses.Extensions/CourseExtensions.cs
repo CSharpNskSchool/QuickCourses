@@ -3,7 +3,7 @@ using System.Linq;
 using QuickCourses.Models.Primitives;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extensions
+namespace QuickCourses.Extensions
 {
     public static class CourseExtensions
     {
@@ -83,6 +83,29 @@ namespace QuickCourses.Api.Extensions
             step.Questions.TryGetValue(questionId, out var result);
 
             return result;
+        }
+
+        public static Course SetUpLinks(this Course course)
+        {
+            foreach (var lesson in course.Lessons)
+            {
+                lesson.CourseId = course.Id;
+
+                foreach (var step in lesson.Steps)
+                {
+                    step.CourseId = course.Id;
+                    step.LessonId = lesson.Id;
+
+                    foreach (var question in step.Questions)
+                    {
+                        question.CourseId = course.Id;
+                        question.LessonId = lesson.Id;
+                        question.StepId = step.Id;
+                    }
+                }
+            }
+
+            return course;
         }
     }
 }

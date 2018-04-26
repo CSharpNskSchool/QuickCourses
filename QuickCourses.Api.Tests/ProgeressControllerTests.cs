@@ -7,7 +7,7 @@ using Moq;
 using NUnit.Framework;
 using QuickCourses.Api.Controllers;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Api.Extensions;
+using QuickCourses.Extensions;
 using QuickCourses.Models.Errors;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;

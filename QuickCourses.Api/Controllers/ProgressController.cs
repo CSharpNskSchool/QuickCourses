@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Extensions;
+using QuickCourses.Extensions;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Progress;
 

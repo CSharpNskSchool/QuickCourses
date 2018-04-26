@@ -1,7 +1,7 @@
 ﻿using System;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extensions
+namespace QuickCourses.Extensions
 {
     public static class CourseProgressExtension
     {
@@ -33,6 +33,31 @@ namespace QuickCourses.Api.Extensions
             if (courseProgress.LessonProgresses.TrueForAll(x => x.Passed))
             {
                 courseProgress.Passed = true;
+            }
+
+            return courseProgress;
+        }
+
+        //Этот метод точно такой же как и SetUpLinks для Course только с другими названиями переменных
+        //можно что-то продумать, наверное
+        public static CourseProgress SetUpLinks(this CourseProgress courseProgress)
+        {
+            foreach (var lessonProgress in courseProgress.LessonProgresses)
+            {
+                lessonProgress.CourseId = courseProgress.CourceId;
+
+                foreach (var stepProgress in lessonProgress.LessonStepProgress)
+                {
+                    stepProgress.CourseId = courseProgress.CourceId;
+                    stepProgress.LessonId = lessonProgress.LessonId;
+
+                    foreach (var questionState in stepProgress.QuestionStates)
+                    {
+                        questionState.CourseId = courseProgress.CourceId;
+                        questionState.LessonId = lessonProgress.LessonId;
+                        questionState.StepId = stepProgress.StepId;
+                    }
+                }
             }
 
             return courseProgress;

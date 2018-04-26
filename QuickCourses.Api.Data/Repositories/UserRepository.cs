@@ -1,60 +1,43 @@
-﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Models.Authentication;
 
 namespace QuickCourses.Api.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private static readonly ConcurrentDictionary<string, User> Users;
+        private readonly Context<User> context;
 
-        static UserRepository()
+        public UserRepository(Settings settings)
         {
-            var user = new User
-            {
-                Login = "mihail",
-                Password = "sexbandit",
-                Id = "Krisha",
-                Name = "Misha",
-                Role = "User"
-            };
-
-            var userClient = new User
-            {
-                Login = "bot",
-                Password = "12345",
-                Id = "bot",
-                Role = "Client",
-                Name = "bot"
-            };
-
-            Users = new ConcurrentDictionary<string, User>
-            {
-                [user.Login] = user,
-                [userClient.Login] = userClient
-            };
+            context = new Context<User>(settings, collectionName: "Users");
         }
 
-        public Task<User> Get(string login)
+        public async Task<User> Get(string login)
         {
-            return Task.Run(() =>
-            {
-                Users.TryGetValue(login, out var result);
-                return result;
-            });
+            var result = await context.Collection.Find(x => x.Login == login).FirstOrDefaultAsync();
+            return result;
         }
 
-        public Task<bool> Contains(string login)
+        public async Task<bool> Contains(string login)
         {
-            return Task.Run(() => Users.ContainsKey(login));
+            var user = await Get(login);
+            return user != null;
         }
 
-        public Task Insert(User user)
+        public async Task Insert(User user)
         {
-            user.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
+            user.Id = ObjectId.GenerateNewId().ToString();
+            await context.Collection.InsertOneAsync(user);
+        }
 
-            return Task.Run(() => Users.TryAdd(user.Login, user));
+        public async Task Delete(string login)
+        {
+            await context.Collection.DeleteOneAsync(x => x.Login == login);
         }
     }
 }

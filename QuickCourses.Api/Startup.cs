@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Repositories;
 using QuickCourses.Api.Extensions;
 
@@ -19,14 +20,21 @@ namespace QuickCourses.Api
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+
+            Settings = new Settings {
+                ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value,
+                Database = Configuration.GetSection("MongoConnection:Database").Value
+            };
         }
 
         public IConfigurationRoot Configuration { get; }
+        public Settings Settings { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddSingleton(x=>Configuration)
+                .AddSingleton(x => Configuration)
+                .AddSingleton(x => Settings)
                 .AddJasonWebTokenAuth(Configuration)
                 .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<ICourseProgressRepository, CourseProgressRepository>()

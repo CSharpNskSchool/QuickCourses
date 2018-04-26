@@ -8,5 +8,6 @@ namespace QuickCourses.Api.Data.DataInterfaces
         Task<User> Get(string login);
         Task<bool> Contains(string login);
         Task Insert(User user);
+        Task Delete(string login);
     }
 }

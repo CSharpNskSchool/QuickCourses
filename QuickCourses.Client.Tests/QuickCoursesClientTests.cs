@@ -132,7 +132,7 @@ namespace QuickCourses.Client.Tests
 
             var userTicket = client.GetTicketAsync(ticket, user.Login).Result;
 
-            client.StartCourseAsync(userTicket, firstCourse.Id);
+            client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
 
             var questionState1 = client.SendAnswerAsync(userTicket,
                                                 firstCourse.Id,

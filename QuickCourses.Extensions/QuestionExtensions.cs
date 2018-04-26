@@ -3,7 +3,7 @@ using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extensions
+namespace QuickCourses.Extensions
 {
     public static class QuestionExtensions
     {
@@ -13,7 +13,7 @@ namespace QuickCourses.Api.Extensions
             {
                 CourseId = question.CourseId,
                 LessonId = question.LessonId,
-                StepId = question.LessondStepId,
+                StepId = question.StepId,
                 SelectedAnswers = new List<int>(answer.SelectedAnswers),
                 CorrectlySelectedAnswers = new List<int>(),
                 CurrentAttemptsCount = currentAttemptsCount
