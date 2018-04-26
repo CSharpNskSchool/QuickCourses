@@ -103,13 +103,13 @@ namespace QuickCourses.Client.Tests
 
             var userTicket = client.GetTicketAsync(ticket, user.Login).Result;
 
-            client.StartCourseAsync(userTicket, firstCourse.Id);
+            client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
 
             var result = client.SendAnswerAsync(userTicket,
                                                 firstCourse.Id,
-                                                0,
-                                                0,
-                                                new Answer
+                                                lessonId: 0,
+                                                stepId: 0,
+                                                answer: new Answer
                                                 {
                                                     QuestionId = 0,
                                                     SelectedAnswers = new List<int> { 0 }
@@ -119,7 +119,7 @@ namespace QuickCourses.Client.Tests
         }
 
         [Fact]
-        public void User_RegisterAndGiveMakeAnswer_Hard()
+        public void User_RegisterAndGiveAnswer_Hard()
         {
             var user = new User
             {
