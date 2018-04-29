@@ -1,31 +1,41 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using MongoDB.Driver;
 using NUnit.Framework;
 using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Repositories;
 using QuickCourses.Models.Authentication;
+using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.Api.Data.Tests
 {
     [TestFixture]
+    [NonParallelizable]
     public class UserRepositoryTests
     {
-        private UserRepository userRepository;
-        private User user;
-        private Context<User> context;
-        private string collectionName;
+        private class Value : IValueWithId
+        {
+            private static int count;
+            
+            public Value()
+            {
+                Id = (++count).ToString();
+            }
+            
+            public string Id { get; set; }
+        }
+        
+        private Repository<Value> userRepository;
+        private Context<Value> context;
+        
+        
 
         [SetUp]
         public void Init()
         {
-            var settings = new Settings
-            {
-                ConnectionString = "mongodb://localhost:27017/",
-                Database = "Test" 
-            };
-
-            collectionName = "Users";
+            var settings = new Settings(
+                connectionString: "mongodb://localhost:27017/",
+                database: "Test",
+                collectionName: "Value"
+            );
 
             userRepository = new UserRepository(settings);
             user = new User
@@ -46,41 +56,31 @@ namespace QuickCourses.Api.Data.Tests
 
         private class UserComparer : IComparer
         {
-            public int Compare(User x, User y)
+            public int Compare(object x, object y)
             {
                 if (ReferenceEquals(x, y))
                 {
                     return 0;
                 }
+                
+                if (!(x is User lft) || !(y is User rht))
+                {
+                   return 1;
+                }
 
-                if (x.Login == y.Login && x.Password == y.Password && x.Name == y.Name)
+                if (lft.Login == rht.Login && lft.Password == rht.Password && lft.Name == rht.Name)
                 {
                     return 0;
                 }
 
                 return 1;
             }
-
-            public int Compare(object x, object y)
-            {
-                if (!(x is User lft) || !(y is User rht))
-                {
-                   return 1;
-                }
-
-                return Compare(lft, rht);
-            }
         }
 
         [Test]
         public void InsertTest()
         {
-            userRepository.Insert(user).Wait();
-
-            var result = context.Collection.Find(x => x.Login == user.Login).ToList();
-            var expectedResult = new[] {user};
-
-            CollectionAssert.AreEqual(expectedResult, result, new UserComparer());
+            Assert.DoesNotThrow(() => userRepository.Insert(user).Wait());
         }
 
         [Test]
@@ -88,15 +88,29 @@ namespace QuickCourses.Api.Data.Tests
         {
             context.Collection.InsertOne(user);
 
-            userRepository.Delete(user.Login).Wait();
-
-            var result = context.Collection.Find(x => x.Login == user.Login).ToList();
-            var expectedResult = new User[0];
-
-            CollectionAssert.AreEqual(expectedResult, result, new UserComparer());
+            var result = userRepository.Delete(user.Login).Result;
+            
+            Assert.IsTrue(result);    
         }
 
         [Test]
-        public void 
+        public void SelectTest()
+        {
+            context.Collection.InsertOne(user);
+
+            var result = userRepository.Get(user.Login).Result;
+            
+            Assert.That(result, Is.EqualTo(user).Using(new UserComparer()));
+        }
+
+        [Test]
+        public void ContainsTest()
+        {
+            context.Collection.InsertOne(user);
+
+            var result = userRepository.Contains(user.Login).Result;
+            
+            Assert.IsTrue(result);
+        }
     }
 }

@@ -2,8 +2,15 @@
 {
     public class Settings
     {
-        public string ConnectionString { get; set; }
-        public string Database { get; set; }
-        public string CollectionName { get; set; }
+        public Settings(string collectionName, string connectionString, string database)
+        {
+            CollectionName = collectionName;
+            ConnectionString = connectionString;
+            Database = database;
+        }
+        
+        public string ConnectionString { get; }
+        public string Database { get; }
+        public string CollectionName { get; }
     }
 }

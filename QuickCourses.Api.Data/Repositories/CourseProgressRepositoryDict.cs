@@ -3,84 +3,47 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Models.Interfaces;
 using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Api.Data.Repositories
 {
-    public class CourseProgressRepositoryDict : ICourseProgressRepository
+    public class RepositoryDict<TValue> : IRepository<TValue>
+        where TValue : IValueWithId
     {
-        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, CourseProgress>> CourseProgresses;
+        private static readonly ConcurrentDictionary<string, TValue> Values;
 
-        static CourseProgressRepositoryDict()
+        static RepositoryDict()
         {
-            CourseProgresses = new ConcurrentDictionary<string, ConcurrentDictionary<string, CourseProgress>>();
+            Values = new ConcurrentDictionary<string, TValue>();
         }
 
-        public Task<CourseProgress> Get(string userId, string courseId)
+        public Task<IEnumerable<TValue>> GetAll()
         {
-            return Task.Run(() =>
-            {
-                if (!CourseProgresses.TryGetValue(userId, out var userCourses))
-                {
-                    return null;
-                }
-
-                userCourses.TryGetValue(courseId, out var result);
-                return result;
-            });
+            throw new System.NotImplementedException();
         }
 
-        public Task<bool> Contains(string userId, string courseId)
+        public Task<TValue> Get(string id)
         {
-            return Task.Run(() => {
-                if (!CourseProgresses.TryGetValue(userId, out var courses))
-                {
-                    return false;
-                }
-
-                return courses.ContainsKey(courseId);
-            });
+            throw new System.NotImplementedException();
         }
 
-        public Task<IEnumerable<CourseProgress>> GetAll(string userId)
+        public Task<bool> Contains(string id)
         {
-            return Task.Run(() => {
-                if (!CourseProgresses.TryGetValue(userId, out var courses))
-                {
-                    return new List<CourseProgress>();
-                }
-
-                return (IEnumerable<CourseProgress>)courses.Values;
-            });
+            throw new System.NotImplementedException();
         }
 
-        public Task Update(CourseProgress courseProgress)
+        public Task Replace(string id, TValue newValue)
         {
-            return Task.Run(() =>
-            {
-                if(!CourseProgresses.TryGetValue(courseProgress.UserId, out var courses))
-                {
-                    return;
-                }
-
-                courses.AddOrUpdate(courseProgress.CourceId, courseProgress, (courseId, progress) => courseProgress);
-            });
+            throw new System.NotImplementedException();
         }
 
-        public Task Insert(CourseProgress courseProgress)
+        public Task Insert(TValue value)
         {
-            return Task.Run(() => {
-                if (!CourseProgresses.TryGetValue(courseProgress.UserId, out var courses))
-                {
-                    courses = new ConcurrentDictionary<string, CourseProgress>();
-                    CourseProgresses.TryAdd(courseProgress.UserId, courses);
-                }
-
-                courses.TryAdd(courseProgress.CourceId, courseProgress);
-            });
+            throw new System.NotImplementedException();
         }
 
-        public Task Delete(string userId, string courseId)
+        public Task<bool> Delete(string id)
         {
             throw new System.NotImplementedException();
         }

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.Models.Primitives
 {
-    public class Course
+    public class Course : IValueWithId
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

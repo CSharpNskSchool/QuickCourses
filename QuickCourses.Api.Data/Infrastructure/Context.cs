@@ -7,11 +7,11 @@ namespace QuickCourses.Api.Data.Infrastructure
         private readonly IMongoDatabase database;
         private readonly string collectionName;
 
-        public Context(Settings settings, string collectionName)
+        public Context(Settings settings)
         {
-            this.collectionName = collectionName;
             var client = new MongoClient(settings.ConnectionString);
             database = client.GetDatabase(settings.Database);
+            collectionName = settings.CollectionName;
         }
 
         public IMongoCollection<TValue> Collection => database.GetCollection<TValue>(collectionName);
