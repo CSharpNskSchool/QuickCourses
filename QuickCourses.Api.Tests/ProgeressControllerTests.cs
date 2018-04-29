@@ -111,22 +111,22 @@ namespace QuickCourses.Api.Tests
 
         private ProgressController CreateProgressController()
         {
-            var mockCourseProgressRepo = new Mock<ICourseProgressRepository>();
+            var mockCourseProgressRepo = new Mock<IProgressRepository>();
             mockCourseProgressRepo
-                .Setup(courseProgressRepo => courseProgressRepo.Contains(It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(courseProgressRepo => courseProgressRepo.Contains(It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             mockCourseProgressRepo
                 .Setup(courseProgressRepo => courseProgressRepo.Insert(It.IsAny<CourseProgress>()))
                 .Returns(Task.CompletedTask);
 
-            mockCourseProgressRepo.Setup(repo => repo.Get(userId, course.Id))
+            mockCourseProgressRepo.Setup(repo => repo.Get($"{userId}{course.Id}"))
                 .Returns(Task.FromResult(courseProgress));
 
-            mockCourseProgressRepo.Setup(repo => repo.GetAll(userId))
+            mockCourseProgressRepo.Setup(repo => repo.GetAllByUser(userId))
                 .Returns(Task.FromResult((IEnumerable<CourseProgress>)new[] { courseProgress }));
 
-            var mockCourseRepo = new Mock<ICourseRepository>();
+            var mockCourseRepo = new Mock<IRepository<Course>>();
 
             mockCourseRepo
                 .Setup(courseRepo => courseRepo.Get(course.Id))

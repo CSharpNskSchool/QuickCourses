@@ -21,7 +21,7 @@ namespace QuickCourses.Api.Tests
                 Login = "123"
             };
 
-            var repo = new Mock<IUserRepository>();
+            var repo = new Mock<IRepository<User>>();
             repo.Setup(x => x.Contains(It.IsAny<string>())).Returns(() => Task.FromResult(false));
             repo.Setup(x => x.Insert(It.IsAny<User>())).Returns(() => Task.CompletedTask);
             var usersController = new UsersController(repo.Object);
@@ -61,7 +61,7 @@ namespace QuickCourses.Api.Tests
                 Login = "123"
             };
 
-            var repo = new Mock<IUserRepository>();
+            var repo = new Mock<IRepository<User>>();
             repo
                 .Setup(x => x.Contains(user.Login))
                 .Returns(() => Task.FromResult(true));

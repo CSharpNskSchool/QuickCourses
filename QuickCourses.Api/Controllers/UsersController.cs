@@ -14,9 +14,9 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository userRepository;
+        private readonly IRepository<User> userRepository;
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IRepository<User> userRepository)
         {
             this.userRepository = userRepository;
         }

@@ -16,11 +16,11 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository userRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IConfigurationRoot configuration;
         private readonly JwtSecurityTokenHandler securityTokenHandler;
 
-        public AuthController(IUserRepository userRepository, IConfigurationRoot configuration)
+        public AuthController(IRepository<User> userRepository, IConfigurationRoot configuration)
         {
             this.securityTokenHandler = new JwtSecurityTokenHandler();
             this.configuration = configuration;

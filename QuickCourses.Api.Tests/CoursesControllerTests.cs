@@ -101,7 +101,7 @@ namespace QuickCourses.Api.Tests
 
         private CoursesController CreateCourseController()
         {
-            var mockRepo = new Mock<ICourseRepository>();
+            var mockRepo = new Mock<IRepository<Course>>();
             mockRepo
                 .Setup(repo => repo.GetAll())
                 .Returns(Task.FromResult((IEnumerable<Course>)new[] { course }));

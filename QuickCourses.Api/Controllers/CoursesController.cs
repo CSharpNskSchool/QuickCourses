@@ -12,9 +12,9 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class CoursesController : ControllerBase
     {
-        private readonly ICourseRepository courseRepository;
+        private readonly IRepository<Course>  courseRepository;
 
-        public CoursesController(ICourseRepository courseRepository)
+        public CoursesController(IRepository<Course> courseRepository)
         {
             this.courseRepository = courseRepository;
         }
