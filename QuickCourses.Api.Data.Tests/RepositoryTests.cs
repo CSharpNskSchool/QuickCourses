@@ -3,6 +3,7 @@ using NUnit.Framework;
 using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Repositories;
 using QuickCourses.Models.Interfaces;
+using KellermanSoftware.CompareNetObjects;
 
 namespace QuickCourses.Api.Data.Tests
 {
@@ -18,14 +19,9 @@ namespace QuickCourses.Api.Data.Tests
             }
             
             public string Id { get; set; }
-            
-            public override bool Equals(object obj)
-            {
-                return base.Equals(obj) || obj is Value other &&  Id == other.Id;
-            }
         }
         
-        private Repository<Value> repository;
+        private RepositoryBase<Value> repository;
         private Context<Value> context;
         private Settings settings;
         
@@ -38,13 +34,13 @@ namespace QuickCourses.Api.Data.Tests
                 collectionName: "Value"
             );
             
-            repository = new Repository<Value>(settings);
+            repository = new RepositoryBase<Value>(settings);
         
             context = new Context<Value>(settings);
         }
 
         [TearDown]
-        public void Cleare()
+        public void Clear()
         {
             context.Collection.Database.DropCollection(settings.CollectionName);
         }
@@ -53,7 +49,7 @@ namespace QuickCourses.Api.Data.Tests
         public void InsertTest()
         {
             var value = new Value();
-            Assert.DoesNotThrow(() => repository.Insert(value).Wait());
+            Assert.DoesNotThrow(() => repository.InsertAsync(value).Wait());
         }
 
         [Test]
@@ -63,7 +59,7 @@ namespace QuickCourses.Api.Data.Tests
             
             context.Collection.InsertOne(value);
 
-            var result = repository.Delete(value.Id).Result;
+            var result = repository.DeleteAsync(value.Id).Result;
             
             Assert.IsTrue(result);
         }
@@ -75,9 +71,12 @@ namespace QuickCourses.Api.Data.Tests
             
             context.Collection.InsertOne(value);
 
-            var result = repository.Get(value.Id).Result;
-            
-            Assert.AreEqual(value, result);
+            var result = repository.GetAsync(value.Id).Result;
+
+            var compareLogic = new CompareLogic();
+            var compareResult = compareLogic.Compare(value, result);
+
+            Assert.IsTrue(compareResult.AreEqual);
         }
 
         [Test]
@@ -87,7 +86,7 @@ namespace QuickCourses.Api.Data.Tests
             
             context.Collection.InsertOne(value);
 
-            var result = repository.Contains(value.Id).Result;
+            var result = repository.ContainsAsync(value.Id).Result;
             
             Assert.IsTrue(result);
         }

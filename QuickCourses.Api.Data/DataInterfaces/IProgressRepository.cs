@@ -6,6 +6,6 @@ namespace QuickCourses.Api.Data.DataInterfaces
 {
     public interface IProgressRepository : IRepository<CourseProgress>
     {
-        Task<IEnumerable<CourseProgress>> GetAllByUser(string userId);
+        Task<List<CourseProgress>> GetAllByUserAsync(string userId);
     }
 }

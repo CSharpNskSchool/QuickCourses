@@ -12,7 +12,7 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class CoursesController : ControllerBase
     {
-        private readonly IRepository<Course>  courseRepository;
+        private readonly IRepository<Course> courseRepository;
 
         public CoursesController(IRepository<Course> courseRepository)
         {
@@ -22,14 +22,14 @@ namespace QuickCourses.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCourses()
         {
-            var result = await courseRepository.GetAll();
+            var result = await courseRepository.GetAllAsync();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourse(string id)
         {
-            var result = await courseRepository.Get(id);
+            var result = await courseRepository.GetAsync(id);
 
             if (result == null)
             {
@@ -42,7 +42,7 @@ namespace QuickCourses.Api.Controllers
         [HttpGet("{id}/description")]
         public async Task<IActionResult> GetDescription(string id)
         {
-            var course = await courseRepository.Get(id);
+            var course = await courseRepository.GetAsync(id);
 
             if (course == null)
             {
@@ -57,7 +57,7 @@ namespace QuickCourses.Api.Controllers
         [HttpGet("{id:int}/lessons")]
         public async Task<IActionResult> GetAllLessons(string id)
         {
-            var course = await courseRepository.Get(id);
+            var course = await courseRepository.GetAsync(id);
 
             if (course == null)
             {
@@ -113,7 +113,7 @@ namespace QuickCourses.Api.Controllers
 
         private async Task<Lesson> GetLesson(string courseId, int lessonId)
         {
-            var course = await courseRepository.Get(courseId);
+            var course = await courseRepository.GetAsync(courseId);
 
             if (course == null)
             {

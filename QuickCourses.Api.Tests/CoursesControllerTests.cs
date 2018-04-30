@@ -29,7 +29,7 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetAllCourses().Result;
 
-            Utilits.CheckResponseValue<OkObjectResult, IEnumerable<Course>>(response, new[] {course});
+            Utilits.CheckResponseValue<OkObjectResult, List<Course>>(response, new List<Course> {course});
         }
 
         [Test]
@@ -103,11 +103,11 @@ namespace QuickCourses.Api.Tests
         {
             var mockRepo = new Mock<IRepository<Course>>();
             mockRepo
-                .Setup(repo => repo.GetAll())
-                .Returns(Task.FromResult((IEnumerable<Course>)new[] { course }));
+                .Setup(repo => repo.GetAllAsync())
+                .Returns(Task.FromResult(new List<Course> {course}));
 
             mockRepo
-                .Setup(repo => repo.Get(course.Id))
+                .Setup(repo => repo.GetAsync(course.Id))
                 .Returns(Task.FromResult(course));
 
             var result = new CoursesController(mockRepo.Object);

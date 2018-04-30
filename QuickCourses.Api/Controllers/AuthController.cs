@@ -36,7 +36,7 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest("Bad authData.");
             }
 
-            var user = await userRepository.Get(authData.Login);
+            var user = await userRepository.GetAsync(authData.Login);
 
             if (user == null)
             {
@@ -66,7 +66,7 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest("No login.");
             }
 
-            var user = await userRepository.Get(login);
+            var user = await userRepository.GetAsync(login);
 
             if (user == null)
             {

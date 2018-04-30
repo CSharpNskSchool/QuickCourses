@@ -28,7 +28,7 @@ namespace QuickCourses.Api.Controllers
         public async Task<IActionResult> GetAllCoursesProgresses()
         {
             var userId = User.GetId();
-            var result = await courseProgressRepository.GetAllByUser(userId);
+            var result = await courseProgressRepository.GetAllByUserAsync(userId);
             return Ok(result);
         }
 
@@ -40,7 +40,7 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest("CourseStartOptions is null");
             }
 
-            var course = await courseRepository.Get(startOptions.CourseId);
+            var course = await courseRepository.GetAsync(startOptions.CourseId);
 
             if (course == null)
             {
@@ -51,13 +51,13 @@ namespace QuickCourses.Api.Controllers
 
             var progressId = $"{userId}{startOptions.CourseId}";
 
-            if (await courseProgressRepository.Contains(progressId))
+            if (await courseProgressRepository.ContainsAsync(progressId))
             {
                 return BadRequest($"User id = {userId} hasn't course with id = {startOptions.CourseId}");
             }
 
             var courseProgress = course.CreateProgress(userId);
-            await courseProgressRepository.Insert(courseProgress);
+            await courseProgressRepository.InsertAsync(courseProgress);
 
             var uri = Request.GetUri();
             return Created($"{uri}/{courseProgress.CourceId}", courseProgress);
@@ -67,7 +67,7 @@ namespace QuickCourses.Api.Controllers
         public async Task<IActionResult> GetCourseProgressById(string courseId)
         {
             var userId = User.GetId();
-            var result = await courseProgressRepository.Get(courseId);
+            var result = await courseProgressRepository.GetAsync(courseId);
 
             if (result == null)
             {
@@ -101,7 +101,7 @@ namespace QuickCourses.Api.Controllers
                 return NotFound($"Invalid combination of progressId = {progressId} and lessonId = {lessonId}");
             }
 
-            if (!lesson.LessonStepProgress.TryGetValue(stepId, out var result))
+            if (!lesson.StepProgresses.TryGetValue(stepId, out var result))
             {
                 return NotFound($"Invalid combination of stepId = {stepId}");
             }
@@ -110,25 +110,21 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpPost("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> PostAnswer(string courseId, int lessonId, int stepId, [FromBody]Answer answer)
+        public async Task<IActionResult> PostAnswer(string progressId, int lessonId, int stepId, [FromBody]Answer answer)
         {
             if (answer == null)
             {
                 return BadRequest("answer is null");
             }
-
-            var userId = User.GetId();
-
-            var progressId = $"{userId}{courseId}";
             
-            var courseProgress = await courseProgressRepository.Get(courseId);
+            var courseProgress = await courseProgressRepository.GetAsync(progressId);
 
             if (courseProgress == null)
             {
-                return NotFound($"Invalid combination of userId = {userId} and courseId = {courseId}");
+                return NotFound($"Invalid progressId = {progressId}");
             }
 
-            var course = await courseRepository.Get(courseId);
+            var course = await courseRepository.GetAsync(courseProgress.CourceId);
 
             var question = course.GetQuestion(lessonId, stepId, answer.QuestionId);
 
@@ -139,7 +135,7 @@ namespace QuickCourses.Api.Controllers
 
             var questionState = courseProgress
                 .LessonProgresses[lessonId]
-                .LessonStepProgress[stepId]
+                .StepProgresses[stepId]
                 .QuestionStates[answer.QuestionId];
 
             var result = question.GetQuestionState(answer, questionState.CurrentAttemptsCount + 1);
@@ -150,14 +146,14 @@ namespace QuickCourses.Api.Controllers
             }
 
             courseProgress.Update(lessonId, stepId, answer.QuestionId, result);
-            await courseProgressRepository.Replace(courseProgress.Id, courseProgress);
+            await courseProgressRepository.ReplaceAsync(courseProgress.Id, courseProgress);
 
             return Ok(result);
         }
 
         private async Task<LessonProgress> GetLessonProgress(string progressId, int lessonId)
         {
-            var course = await courseProgressRepository.Get(progressId);
+            var course = await courseProgressRepository.GetAsync(progressId);
             if (course == null)
             {
                 return null;

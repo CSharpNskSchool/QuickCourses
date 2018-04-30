@@ -13,7 +13,7 @@ namespace QuickCourses.Extensions
             QuestionState questionState)
         {
             var lessonProgress = courseProgress.LessonProgresses[lessonId];
-            var stepProgress = lessonProgress.LessonStepProgress[stepId];
+            var stepProgress = lessonProgress.StepProgresses[stepId];
             var questionStates = stepProgress.QuestionStates;
 
             courseProgress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
@@ -25,7 +25,7 @@ namespace QuickCourses.Extensions
                 stepProgress.Passed = true;
             }
 
-            if (lessonProgress.LessonStepProgress.TrueForAll(x => x.Passed))
+            if (lessonProgress.StepProgresses.TrueForAll(x => x.Passed))
             {
                 lessonProgress.Passed = true;
             }
@@ -42,11 +42,16 @@ namespace QuickCourses.Extensions
         //можно что-то продумать, наверное
         public static CourseProgress SetUpLinks(this CourseProgress courseProgress)
         {
+            if (courseProgress == null)
+            {
+                throw new ArgumentNullException(nameof(courseProgress));
+            }
+
             foreach (var lessonProgress in courseProgress.LessonProgresses)
             {
                 lessonProgress.CourseId = courseProgress.CourceId;
 
-                foreach (var stepProgress in lessonProgress.LessonStepProgress)
+                foreach (var stepProgress in lessonProgress.StepProgresses)
                 {
                     stepProgress.CourseId = courseProgress.CourceId;
                     stepProgress.LessonId = lessonProgress.LessonId;

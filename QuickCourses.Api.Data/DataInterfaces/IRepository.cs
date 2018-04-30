@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using QuickCourses.Models.Interfaces;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.Api.Data.DataInterfaces
 {
     public interface IRepository<TValue>
         where TValue : IValueWithId
     {
-        Task<IEnumerable<TValue>> GetAll();
-        Task<TValue> Get(string id);
-        Task<bool> Contains(string id);
-        Task Replace(string id, TValue newValue);
-        Task Insert(TValue value);
-        Task<bool> Delete(string id);
+        Task<List<TValue>> GetAllAsync();
+        Task<TValue> GetAsync(string id);
+        Task<bool> ContainsAsync(string id);
+        Task ReplaceAsync(string id, TValue newValue);
+        Task InsertAsync(TValue value);
+        Task<bool> DeleteAsync(string id);
     }
 }

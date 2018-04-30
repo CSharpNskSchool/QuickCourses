@@ -179,7 +179,7 @@ namespace QuickCourses.Client.Tests
             Assert.NotNull(firstLessonProgress);
 
             var firstStepProgress = firstLessonProgress
-                                        .LessonStepProgress
+                                        .StepProgresses
                                         .FirstOrDefault(x => x.StepId == questionState.StepId);
             Assert.NotNull(firstStepProgress);
 

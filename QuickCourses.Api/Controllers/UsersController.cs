@@ -14,9 +14,9 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class UsersController : ControllerBase
     {
-        private readonly IRepository<User> userRepository;
+        private readonly IUserRepository userRepository;
 
-        public UsersController(IRepository<User> userRepository)
+        public UsersController(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
         }
@@ -31,14 +31,14 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest("Invalid user object");
             }
 
-            if (await userRepository.Contains(login))
+            if (await userRepository.ContainsAsync(login))
             {
                 return InvalidOperation($"User with login {login} already exists");
             }
 
             user.Role = "User";
 
-            await userRepository.Insert(user);
+            await userRepository.InsertAsync(user);
 
             return StatusCode(StatusCodes.Status201Created);
         }

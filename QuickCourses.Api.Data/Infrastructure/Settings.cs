@@ -2,11 +2,11 @@
 {
     public class Settings
     {
-        public Settings(string collectionName, string connectionString, string database)
+        public Settings(string connectionString, string database, string collectionName)
         {
-            CollectionName = collectionName;
             ConnectionString = connectionString;
             Database = database;
+            CollectionName = collectionName;
         }
         
         public string ConnectionString { get; }

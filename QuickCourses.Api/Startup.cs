@@ -24,20 +24,14 @@ namespace QuickCourses.Api
 
             Configuration = builder.Build();
 
-            CourseRepositorySettings = new Settings(
-                Configuration.GetSection("MongoConnection:Course:ConnectionString").Value,
-                Configuration.GetSection("MongoConnection:Course:Database").Value,
-                Configuration.GetSection("MongoConnection:Course:CollectionName").Value);
+            CourseRepositorySettings = new Settings(Configuration.GetSection("MongoConnection:Course:Database").Value,
+                Configuration.GetSection("MongoConnection:Course:CollectionName").Value, Configuration.GetSection("MongoConnection:Course:ConnectionString").Value);
             
-            ProgressRepositorySettings = new Settings(
-                Configuration.GetSection("MongoConnection:Progress:ConnectionString").Value,
-                Configuration.GetSection("MongoConnection:Progress:Database").Value,
-                Configuration.GetSection("MongoConnection:Progress:CollectionName").Value);
+            ProgressRepositorySettings = new Settings(Configuration.GetSection("MongoConnection:Progress:Database").Value,
+                Configuration.GetSection("MongoConnection:Progress:CollectionName").Value, Configuration.GetSection("MongoConnection:Progress:ConnectionString").Value);
             
-            UserRepositorySettings = new Settings(
-                Configuration.GetSection("MongoConnection:User:ConnectionString").Value,
-                Configuration.GetSection("MongoConnection:User:Database").Value,
-                Configuration.GetSection("MongoConnection:User:CollectionName").Value);
+            UserRepositorySettings = new Settings(Configuration.GetSection("MongoConnection:User:Database").Value,
+                Configuration.GetSection("MongoConnection:User:CollectionName").Value, Configuration.GetSection("MongoConnection:User:ConnectionString").Value);
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -54,12 +48,12 @@ namespace QuickCourses.Api
 
             //возможно это нужно сделать как-то инче, но я не знаю как
             services
-                .AddScoped<IRepository<Course>, Repository<Course>>(
-                    _ => new Repository<Course>(CourseRepositorySettings))
-                .AddScoped<IRepository<CourseProgress>, Repository<CourseProgress>>(
-                    _ => new Repository<CourseProgress>(ProgressRepositorySettings))
-                .AddScoped<IRepository<User>, Repository<User>>(
-                    _ => new Repository<User>(UserRepositorySettings));
+                .AddScoped<IRepository<Course>, RepositoryBase<Course>>(
+                    _ => new CourseRepository(CourseRepositorySettings))
+                .AddScoped<IRepository<CourseProgress>, RepositoryBase<CourseProgress>>(
+                    _ => new ProgressRepository(ProgressRepositorySettings))
+                .AddScoped<IRepository<User>, RepositoryBase<User>>(
+                    _ => new UserRepository(UserRepositorySettings));
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
