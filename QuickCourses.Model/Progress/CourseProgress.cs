@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using MongoDB.Bson;
+using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.Models.Progress
 {
-    public class CourseProgress
+    public class CourseProgress : IValueWithId
     {
+        public string Id { get; set; }
         public Statistics Statistics { get; set; }
         public string CourceId { get; set; }
         public string UserId { get; set; }

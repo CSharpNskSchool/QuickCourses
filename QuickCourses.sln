@@ -11,9 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Data", "Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Tests", "QuickCourses.Api.Tests\QuickCourses.Api.Tests.csproj", "{33EC7E10-7DF2-44C4-8C57-83AF2A315233}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Client", "QuickCourses.Client\QuickCourses.Client.csproj", "{E2F7C386-BF04-4F3A-8B5D-D8207254737B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Client", "QuickCourses.Client\QuickCourses.Client.csproj", "{E2F7C386-BF04-4F3A-8B5D-D8207254737B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Client.Tests", "QuickCourses.Client.Tests\QuickCourses.Client.Tests.csproj", "{2135891E-98EE-4763-9FE6-95496D19BAD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Client.Tests", "QuickCourses.Client.Tests\QuickCourses.Client.Tests.csproj", "{2135891E-98EE-4763-9FE6-95496D19BAD3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Extensions", "QuickCourses.Extensions\QuickCourses.Extensions.csproj", "{2458380B-8552-4BD3-B391-4E50AD890BEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Api.Data.Tests", "QuickCourses.Api.Data.Tests\QuickCourses.Api.Data.Tests.csproj", "{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{2135891E-98EE-4763-9FE6-95496D19BAD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2135891E-98EE-4763-9FE6-95496D19BAD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2135891E-98EE-4763-9FE6-95496D19BAD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2458380B-8552-4BD3-B391-4E50AD890BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2458380B-8552-4BD3-B391-4E50AD890BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2458380B-8552-4BD3-B391-4E50AD890BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2458380B-8552-4BD3-B391-4E50AD890BEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

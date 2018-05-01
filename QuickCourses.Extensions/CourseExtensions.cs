@@ -1,14 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using QuickCourses.Models.Primitives;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extensions
+namespace QuickCourses.Extensions
 {
     public static class CourseExtensions
     {
         public static CourseProgress CreateProgress(this Course course, string userId)
         {
+            if (course == null)
+            {
+                throw new ArgumentNullException(nameof(course));
+            }
+
             var result = new CourseProgress
             {
                 LessonProgresses = new List<LessonProgress>(),
@@ -25,8 +31,63 @@ namespace QuickCourses.Api.Extensions
             return result;
         }
 
+        public static Question GetQuestion(this Course course, int lessonId, int stepId, int questionId)
+        {
+            if (course == null)
+            {
+                throw new ArgumentNullException(nameof(course));
+            }
+
+            if (!course.Lessons.TryGetValue(lessonId, out var lesson))
+            {
+                return null;
+            }
+
+            if (!lesson.Steps.TryGetValue(stepId, out var step))
+            {
+                return null;
+            }
+
+            step.Questions.TryGetValue(questionId, out var result);
+
+            return result;
+        }
+
+        public static Course SetUpLinks(this Course course)
+        {
+            if (course == null)
+            {
+                throw new ArgumentNullException(nameof(course));
+            }
+
+            foreach (var lesson in course.Lessons)
+            {
+                lesson.CourseId = course.Id;
+
+                foreach (var step in lesson.Steps)
+                {
+                    step.CourseId = course.Id;
+                    step.LessonId = lesson.Id;
+
+                    foreach (var question in step.Questions)
+                    {
+                        question.CourseId = course.Id;
+                        question.LessonId = lesson.Id;
+                        question.StepId = step.Id;
+                    }
+                }
+            }
+
+            return course;
+        }
+
         private static int QuestionsCount(Course course)
         {
+            if (course == null)
+            {
+                throw new ArgumentNullException(nameof(course));
+            }
+
             return course.Lessons.Sum(lesson => lesson.Steps.Sum(step => step.Questions.Count));
         }
 
@@ -35,7 +96,7 @@ namespace QuickCourses.Api.Extensions
             var lessonProgress = new LessonProgress
             {
                 LessonId = lesson.Id,
-                LessonStepProgress = new List<LessonStepProgress>()
+                StepProgresses = new List<LessonStepProgress>()
             };
 
             foreach (var step in lesson.Steps)
@@ -65,24 +126,7 @@ namespace QuickCourses.Api.Extensions
                 stepProgress.QuestionStates.Add(questionState);
             }
 
-            lessonProgress.LessonStepProgress.Add(stepProgress);
-        }
-
-        public static Question GetQuestion(this Course course, int lessonId, int stepId, int questionId)
-        {
-            if (!course.Lessons.TryGetValue(lessonId, out var lesson))
-            {
-                return null;
-            }
-
-            if (!lesson.Steps.TryGetValue(stepId, out var step))
-            {
-                return null;
-            }
-
-            step.Questions.TryGetValue(questionId, out var result);
-
-            return result;
+            lessonProgress.StepProgresses.Add(stepProgress);
         }
     }
 }

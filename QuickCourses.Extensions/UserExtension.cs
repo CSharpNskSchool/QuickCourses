@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Claims;
 
-namespace QuickCourses.Api.Extensions
+namespace QuickCourses.Extensions
 {
     public static class UserExtension
     {

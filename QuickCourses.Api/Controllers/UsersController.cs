@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Models.Authentication;
 
@@ -30,14 +31,14 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest("Invalid user object");
             }
 
-            if (await userRepository.Contains(login))
+            if (await userRepository.ContainsAsync(login))
             {
                 return InvalidOperation($"User with login {login} already exists");
             }
 
             user.Role = "User";
 
-            await userRepository.Insert(user);
+            await userRepository.InsertAsync(user);
 
             return StatusCode(StatusCodes.Status201Created);
         }

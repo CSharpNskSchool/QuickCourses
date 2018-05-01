@@ -1,11 +1,12 @@
 ﻿using System;
+using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.Models.Authentication
 {
-    public class User
+    public class User : IValueWithId
     {
-        public string Role { get; set; } 
         public string Id { get; set; }
+        public string Role { get; set; } 
         public string Password { get; set; }
         public string Login { get; set; }
         public string Name { get; set; }

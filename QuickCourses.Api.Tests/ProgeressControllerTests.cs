@@ -7,7 +7,7 @@ using Moq;
 using NUnit.Framework;
 using QuickCourses.Api.Controllers;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Api.Extensions;
+using QuickCourses.Extensions;
 using QuickCourses.Models.Errors;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
@@ -31,6 +31,7 @@ namespace QuickCourses.Api.Tests
             userId = "1";
             user = new ClaimsPrincipal(new ClaimsIdentity(new[] {new Claim(ClaimTypes.NameIdentifier, userId)}));
             courseProgress = course.CreateProgress(userId);
+            courseProgress.Id = $"{userId}{course.Id}";
             controller = CreateProgressController();
         }
 
@@ -47,13 +48,15 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetAllCoursesProgresses().Result;
 
-            Utilits.CheckResponseValue<OkObjectResult, IEnumerable<CourseProgress>>(response, new[] {courseProgress});
+            Utilits.CheckResponseValue<OkObjectResult, List<CourseProgress>>(
+                response,
+                new List<CourseProgress> {courseProgress});
         }
 
         [Test]
         public void GetCourseTest_ValidTest()
         {
-            var response = controller.GetCourseProgressById(course.Id).Result;
+            var response = controller.GetCourseProgressById(courseProgress.Id).Result;
 
             Utilits.CheckResponseValue<OkObjectResult, CourseProgress>(response, courseProgress);
         }
@@ -61,7 +64,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetCourseLesson_ValidTest()
         {
-            var response = controller.GetLessonProgressById(course.Id, 0).Result;
+            var response = controller.GetLessonProgressById(course.Id, lessonId: 0).Result;
 
             var expectedResult = courseProgress.LessonProgresses[0];
 
@@ -71,9 +74,9 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetCourseLessonStep_ValidTest()
         {
-            var response = controller.GetLessonStep(course.Id, 0, 0).Result;
+            var response = controller.GetLessonStep(course.Id, lessonId: 0, stepId: 0).Result;
 
-            var expectedResult = courseProgress.LessonProgresses[0].LessonStepProgress[0];
+            var expectedResult = courseProgress.LessonProgresses[0].StepProgresses[0];
 
             Utilits.CheckResponseValue<OkObjectResult, LessonStepProgress>(response, expectedResult);
         }
@@ -86,12 +89,12 @@ namespace QuickCourses.Api.Tests
             const int questionId = 0;
 
             var answer = new Answer { QuestionId = questionId, SelectedAnswers = new List<int> { 0 } };
-            var response = controller.PostAnswer(course.Id, lessonId, stepId, answer).Result;
-            var question = course.Lessons[lessonId].Steps[stepId].Questions[questionId];
+            var result = controller.PostAnswer(course.Id, lessonId, stepId, answer).Result;
 
+            var question = course.Lessons[lessonId].Steps[stepId].Questions[questionId];
             var expectedValue = question.GetQuestionState(answer, currentAttemptsCount: 1);
 
-            Utilits.CheckResponseValue<OkObjectResult, QuestionState>(response, expectedValue);
+            Utilits.CheckResponseValue<OkObjectResult, QuestionState>(result, expectedValue);
         }
 
         [Test]
@@ -111,25 +114,32 @@ namespace QuickCourses.Api.Tests
 
         private ProgressController CreateProgressController()
         {
-            var mockCourseProgressRepo = new Mock<ICourseProgressRepository>();
+            var mockCourseProgressRepo = new Mock<IProgressRepository>();
             mockCourseProgressRepo
-                .Setup(courseProgressRepo => courseProgressRepo.Contains(It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(courseProgressRepo => courseProgressRepo.ContainsAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             mockCourseProgressRepo
-                .Setup(courseProgressRepo => courseProgressRepo.Insert(It.IsAny<CourseProgress>()))
-                .Returns(Task.CompletedTask);
+                .Setup(courseProgressRepo => courseProgressRepo.ContainsAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(false));
 
-            mockCourseProgressRepo.Setup(repo => repo.Get(userId, course.Id))
+            mockCourseProgressRepo
+                .Setup(courseProgressRepo => courseProgressRepo.InsertAsync(It.IsAny<CourseProgress>()))
+                .Returns(Task.FromResult($"{userId}{course.Id}"));
+
+            mockCourseProgressRepo.Setup(repo => repo.GetAsync(userId, course.Id))
                 .Returns(Task.FromResult(courseProgress));
 
-            mockCourseProgressRepo.Setup(repo => repo.GetAll(userId))
-                .Returns(Task.FromResult((IEnumerable<CourseProgress>)new[] { courseProgress }));
+            mockCourseProgressRepo.Setup(repo => repo.GetAsync(courseProgress.Id))
+                .Returns(Task.FromResult(courseProgress));
 
-            var mockCourseRepo = new Mock<ICourseRepository>();
+            mockCourseProgressRepo.Setup(repo => repo.GetAllByUserAsync(userId))
+                .Returns(Task.FromResult(new List<CourseProgress> {courseProgress}));
+
+            var mockCourseRepo = new Mock<IRepository<Course>>();
 
             mockCourseRepo
-                .Setup(courseRepo => courseRepo.Get(course.Id))
+                .Setup(courseRepo => courseRepo.GetAsync(course.Id))
                 .Returns(Task.FromResult(course));
 
             var result = new ProgressController(

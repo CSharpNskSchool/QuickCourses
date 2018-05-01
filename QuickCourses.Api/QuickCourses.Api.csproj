@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuickCourses.Api.Data\QuickCourses.Api.Data.csproj" />
+    <ProjectReference Include="..\QuickCourses.Extensions\QuickCourses.Extensions.csproj" />
     <ProjectReference Include="..\QuickCourses.Model\QuickCourses.Models.csproj" />
   </ItemGroup>
 </Project>

@@ -1,19 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using QuickCourses.Models.Interaction;
 using QuickCourses.Models.Primitives;
 using QuickCourses.Models.Progress;
 
-namespace QuickCourses.Api.Extensions
+namespace QuickCourses.Extensions
 {
     public static class QuestionExtensions
     {
         public static QuestionState GetQuestionState(this Question question, Answer answer, int currentAttemptsCount)
         {
+            if (question == null)
+            {
+                throw new ArgumentNullException(nameof(question));
+            }
+
             var result = new QuestionState
             {
                 CourseId = question.CourseId,
                 LessonId = question.LessonId,
-                StepId = question.LessondStepId,
+                StepId = question.StepId,
                 SelectedAnswers = new List<int>(answer.SelectedAnswers),
                 CorrectlySelectedAnswers = new List<int>(),
                 CurrentAttemptsCount = currentAttemptsCount

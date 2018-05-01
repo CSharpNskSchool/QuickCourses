@@ -13,7 +13,11 @@ QuickCourses.Client/obj
 QuickCourses.Client.Tests/bin
 QuickCourses.Client.Tests/obj
 .idea
-QuickCoursers.Runner/bin/
-QuickCoursers.Runner/obj/
+QuickCoursers.Runner/bin
+QuickCoursers.Runner/obj
 QuickCoursers.Runner/obj
 QuickCourses.Bot
+QuickCourses.Extensions/bin
+QuickCourses.Extensions/obj
+QuickCourses.Api.Data.Tests/obj
+QuickCourses.Api.Data.Tests/bin

@@ -1,60 +1,30 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Models.Authentication;
 
 namespace QuickCourses.Api.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : RepositoryBase<User>, IUserRepository
     {
-        private static readonly ConcurrentDictionary<string, User> Users;
-
-        static UserRepository()
+        public UserRepository(Settings settings) 
+            : base(settings)
         {
-            var user = new User
-            {
-                Login = "mihail",
-                Password = "sexbandit",
-                Id = "Krisha",
-                Name = "Misha",
-                Role = "User"
-            };
-
-            var userClient = new User
-            {
-                Login = "bot",
-                Password = "12345",
-                Id = "bot",
-                Role = "Client",
-                Name = "bot"
-            };
-
-            Users = new ConcurrentDictionary<string, User>
-            {
-                [user.Login] = user,
-                [userClient.Login] = userClient
-            };
         }
 
-        public Task<User> Get(string login)
+        public async Task<User> GetByLoginAsync(string login)
         {
-            return Task.Run(() =>
+            if (login == null)
             {
-                Users.TryGetValue(login, out var result);
-                return result;
-            });
-        }
+                throw new ArgumentNullException(nameof(login));
+            }
 
-        public Task<bool> Contains(string login)
-        {
-            return Task.Run(() => Users.ContainsKey(login));
-        }
-
-        public Task Insert(User user)
-        {
-            user.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
-
-            return Task.Run(() => Users.TryAdd(user.Login, user));
+            var result = await Context.Collection.Find(user => user.Login == login).FirstOrDefaultAsync();
+            return result;
         }
     }
 }

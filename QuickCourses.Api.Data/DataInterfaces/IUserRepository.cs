@@ -3,10 +3,8 @@ using QuickCourses.Models.Authentication;
 
 namespace QuickCourses.Api.Data.DataInterfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
-        Task<User> Get(string login);
-        Task<bool> Contains(string login);
-        Task Insert(User user);
+        Task<User> GetByLoginAsync(string login);
     }
 }

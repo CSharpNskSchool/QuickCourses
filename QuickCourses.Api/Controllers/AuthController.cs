@@ -16,11 +16,11 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository userRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IConfigurationRoot configuration;
         private readonly JwtSecurityTokenHandler securityTokenHandler;
 
-        public AuthController(IUserRepository userRepository, IConfigurationRoot configuration)
+        public AuthController(IRepository<User> userRepository, IConfigurationRoot configuration)
         {
             this.securityTokenHandler = new JwtSecurityTokenHandler();
             this.configuration = configuration;
@@ -36,7 +36,7 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest("Bad authData.");
             }
 
-            var user = await userRepository.Get(authData.Login);
+            var user = await userRepository.GetAsync(authData.Login);
 
             if (user == null)
             {
@@ -59,14 +59,14 @@ namespace QuickCourses.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Client")]
-        public async Task<IActionResult> Authentication([FromHeader(Name = "Login")] string login)
+        public async Task<IActionResult> Authentication([FromHeader(Name = "Login")]string login)
         {
             if (login == null)
             {
                 return BadRequest("No login.");
             }
 
-            var user = await userRepository.Get(login);
+            var user = await userRepository.GetAsync(login);
 
             if (user == null)
             {

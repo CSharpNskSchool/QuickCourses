@@ -11,7 +11,7 @@ namespace QuickCourses.Models.Primitives
         [BsonIgnore]
         public int LessonId { get; set; }
         [BsonIgnore]
-        public int LessondStepId { get; set; }
+        public int StepId { get; set; }
         public int Id { get; set; }
         public string Text { get; set; }
         public List<AnswerVariant> AnswerVariants { get; set; }
