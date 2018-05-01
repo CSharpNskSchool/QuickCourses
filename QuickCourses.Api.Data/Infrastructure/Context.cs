@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using System;
+using MongoDB.Driver;
 
 namespace QuickCourses.Api.Data.Infrastructure
 {
@@ -9,6 +10,11 @@ namespace QuickCourses.Api.Data.Infrastructure
 
         public Context(Settings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var client = new MongoClient(settings.ConnectionString);
             database = client.GetDatabase(settings.Database);
             collectionName = settings.CollectionName;

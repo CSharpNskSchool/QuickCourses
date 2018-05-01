@@ -17,6 +17,11 @@ namespace QuickCourses.Api.Data.Repositories
 
         public async Task<List<CourseProgress>> GetAllByUserAsync(string userId)
         {
+            if (userId == null)
+            {
+                throw new System.ArgumentNullException(nameof(userId));
+            }
+
             var result = await Context.Collection.Find(progress => progress.Id.StartsWith(userId)).ToListAsync();
             result.ForEach(progress => progress.SetUpLinks());
             return result;
@@ -24,11 +29,31 @@ namespace QuickCourses.Api.Data.Repositories
 
         public Task<CourseProgress> GetAsync(string userId, string courseId)
         {
+            if (userId == null)
+            {
+                throw new System.ArgumentNullException(nameof(userId));
+            }
+
+            if (courseId == null)
+            {
+                throw new System.ArgumentNullException(nameof(courseId));
+            }
+
             return GetAsync($"{userId}{courseId}");
         }
 
         public Task<bool> ContainsAsync(string userId, string courseId)
         {
+            if (userId == null)
+            {
+                throw new System.ArgumentNullException(nameof(userId));
+            }
+
+            if (courseId == null)
+            {
+                throw new System.ArgumentNullException(nameof(courseId));
+            }
+
             return ContainsAsync($"{userId}{courseId}");
         }
 
@@ -41,6 +66,11 @@ namespace QuickCourses.Api.Data.Repositories
 
         public override async Task<CourseProgress> GetAsync(string id)
         {
+            if (id == null)
+            {
+                throw new System.ArgumentNullException(nameof(id));
+            }
+
             var result = await base.GetAsync(id);
             result.SetUpLinks();
             return result;
@@ -48,6 +78,11 @@ namespace QuickCourses.Api.Data.Repositories
 
         public override async Task<string> InsertAsync(CourseProgress value)
         {
+            if (value == null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             var id = $"{value.UserId}{value.CourceId}";
             value.Id = id;
             await Context.Collection.InsertOneAsync(value);

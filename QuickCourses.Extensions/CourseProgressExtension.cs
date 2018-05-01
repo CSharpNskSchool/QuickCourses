@@ -12,6 +12,16 @@ namespace QuickCourses.Extensions
             int questionId,
             QuestionState questionState)
         {
+            if (courseProgress == null)
+            {
+                throw new ArgumentNullException(nameof(courseProgress));
+            }
+
+            if (questionState == null)
+            {
+                throw new ArgumentNullException(nameof(questionState));
+            }
+
             var lessonProgress = courseProgress.LessonProgresses[lessonId];
             var stepProgress = lessonProgress.StepProgresses[stepId];
             var questionStates = stepProgress.QuestionStates;
@@ -19,21 +29,10 @@ namespace QuickCourses.Extensions
             courseProgress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
             
             questionStates[questionId] = questionState;
-            
-            if (stepProgress.QuestionStates.TrueForAll(x => x.Passed))
-            {
-                stepProgress.Passed = true;
-            }
 
-            if (lessonProgress.StepProgresses.TrueForAll(x => x.Passed))
-            {
-                lessonProgress.Passed = true;
-            }
-
-            if (courseProgress.LessonProgresses.TrueForAll(x => x.Passed))
-            {
-                courseProgress.Passed = true;
-            }
+            stepProgress.Passed = stepProgress.QuestionStates.TrueForAll(x => x.Passed);
+            lessonProgress.Passed = lessonProgress.StepProgresses.TrueForAll(x => x.Passed);
+            courseProgress.Passed = courseProgress.LessonProgresses.TrueForAll(x => x.Passed);
 
             return courseProgress;
         }

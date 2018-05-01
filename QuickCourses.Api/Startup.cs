@@ -24,14 +24,20 @@ namespace QuickCourses.Api
 
             Configuration = builder.Build();
 
-            CourseRepositorySettings = new Settings(Configuration.GetSection("MongoConnection:Course:Database").Value,
-                Configuration.GetSection("MongoConnection:Course:CollectionName").Value, Configuration.GetSection("MongoConnection:Course:ConnectionString").Value);
+            CourseRepositorySettings = new Settings(
+                Configuration.GetSection("MongoConnection:Course:Database").Value,
+                Configuration.GetSection("MongoConnection:Course:CollectionName").Value, 
+                Configuration.GetSection("MongoConnection:Course:ConnectionString").Value);
             
-            ProgressRepositorySettings = new Settings(Configuration.GetSection("MongoConnection:Progress:Database").Value,
-                Configuration.GetSection("MongoConnection:Progress:CollectionName").Value, Configuration.GetSection("MongoConnection:Progress:ConnectionString").Value);
+            ProgressRepositorySettings = new Settings(
+                Configuration.GetSection("MongoConnection:Progress:Database").Value,
+                Configuration.GetSection("MongoConnection:Progress:CollectionName").Value,
+                Configuration.GetSection("MongoConnection:Progress:ConnectionString").Value);
             
-            UserRepositorySettings = new Settings(Configuration.GetSection("MongoConnection:User:Database").Value,
-                Configuration.GetSection("MongoConnection:User:CollectionName").Value, Configuration.GetSection("MongoConnection:User:ConnectionString").Value);
+            UserRepositorySettings = new Settings(
+                Configuration.GetSection("MongoConnection:User:Database").Value,
+                Configuration.GetSection("MongoConnection:User:CollectionName").Value,
+                Configuration.GetSection("MongoConnection:User:ConnectionString").Value);
         }
 
         public IConfigurationRoot Configuration { get; }

@@ -18,6 +18,11 @@ namespace QuickCourses.Api.Data.Repositories
 
         public async Task<User> GetByLoginAsync(string login)
         {
+            if (login == null)
+            {
+                throw new ArgumentNullException(nameof(login));
+            }
+
             var result = await Context.Collection.Find(user => user.Login == login).FirstOrDefaultAsync();
             return result;
         }
