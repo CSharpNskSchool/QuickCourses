@@ -49,7 +49,8 @@ namespace QuickCourses.Api.Data.Tests
         public void InsertTest()
         {
             var value = new Value();
-            Assert.DoesNotThrow(() => repository.InsertAsync(value).Wait());
+            var result = repository.InsertAsync(value).Result;
+            Assert.IsTrue(result != null);
         }
 
         [Test]

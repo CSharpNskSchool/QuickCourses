@@ -59,7 +59,7 @@ namespace QuickCourses.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Client")]
-        public async Task<IActionResult> Authentication([FromHeader(Name = "Login")] string login)
+        public async Task<IActionResult> Authentication([FromHeader(Name = "Login")]string login)
         {
             if (login == null)
             {

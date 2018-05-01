@@ -23,7 +23,7 @@ namespace QuickCourses.Api.Tests
 
             var repo = new Mock<IUserRepository>();
             repo.Setup(x => x.ContainsAsync(It.IsAny<string>())).Returns(() => Task.FromResult(false));
-            repo.Setup(x => x.InsertAsync(It.IsAny<User>())).Returns(() => Task.CompletedTask);
+            repo.Setup(x => x.InsertAsync(It.IsAny<User>())).Returns(() => Task.FromResult(string.Empty));
             var usersController = new UsersController(repo.Object);
             
             var response = usersController.PostUser(user).Result;

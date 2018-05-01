@@ -17,7 +17,6 @@ namespace QuickCourses.Extensions
 
             var result = new CourseProgress
             {
-                Id = $"{userId}{course.Id}",
                 LessonProgresses = new List<LessonProgress>(),
                 CourceId = course.Id,
                 UserId = userId,

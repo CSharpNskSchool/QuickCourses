@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
@@ -40,9 +41,11 @@ namespace QuickCourses.Api.Data.Repositories
             await Context.Collection.ReplaceOneAsync(value => value.Id == id, newValue);
         }
 
-        public virtual async Task InsertAsync(TValue value)
+        public virtual async Task<string> InsertAsync(TValue value)
         {
+            var result = ObjectId.GenerateNewId().ToString();
             await Context.Collection.InsertOneAsync(value);
+            return result;
         }
 
         public virtual async Task<bool> DeleteAsync(string id)

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using QuickCourses.Api.Data.DataInterfaces;
@@ -23,6 +22,16 @@ namespace QuickCourses.Api.Data.Repositories
             return result;
         }
 
+        public Task<CourseProgress> GetAsync(string userId, string courseId)
+        {
+            return GetAsync($"{userId}{courseId}");
+        }
+
+        public Task<bool> ContainsAsync(string userId, string courseId)
+        {
+            return ContainsAsync($"{userId}{courseId}");
+        }
+
         public override async Task<List<CourseProgress>> GetAllAsync()
         {
             var result = await base.GetAllAsync();
@@ -35,6 +44,14 @@ namespace QuickCourses.Api.Data.Repositories
             var result = await base.GetAsync(id);
             result.SetUpLinks();
             return result;
+        }
+
+        public override async Task<string> InsertAsync(CourseProgress value)
+        {
+            var id = $"{value.UserId}{value.CourceId}";
+            value.Id = id;
+            await Context.Collection.InsertOneAsync(value);
+            return id;
         }
     }
 }
