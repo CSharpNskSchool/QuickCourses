@@ -63,7 +63,7 @@ namespace QuickCourses.Api.Tests
 
             var repo = new Mock<IUserRepository>();
             repo
-                .Setup(x => x.ContainsAsync(user.Login))
+                .Setup(x => x.ContainsByLoginAsync(user.Login))
                 .Returns(() => Task.FromResult(true));
 
             var usersController = new UsersController(repo.Object);
