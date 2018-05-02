@@ -31,7 +31,7 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest("Invalid user object");
             }
 
-            if (await userRepository.ContainsByLoginAsync(login))
+            if (await userRepository.ContainsAsync(login))
             {
                 return InvalidOperation($"User with login {login} already exists");
             }

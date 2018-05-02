@@ -74,9 +74,10 @@ namespace QuickCourses.Api.Data.Repositories
                 throw new ArgumentNullException(nameof(value));
             }
 
-            var result = ObjectId.GenerateNewId().ToString();
+            var id = ObjectId.GenerateNewId().ToString();
+            value.Id = id;
             await Context.Collection.InsertOneAsync(value);
-            return result;
+            return id;
         }
 
         public virtual async Task<bool> DeleteAsync(string id)

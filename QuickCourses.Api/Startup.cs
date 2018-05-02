@@ -7,9 +7,7 @@ using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Repositories;
 using QuickCourses.Api.Extensions;
-using QuickCourses.Models.Authentication;
 using QuickCourses.Models.Primitives;
-using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Api
 {
