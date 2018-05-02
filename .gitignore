@@ -24,4 +24,5 @@ QuickCourses.Api.Data.Tests/obj
 QuickCourses.Api.Data.Tests/bin
 QuickCourses.CourseUploader/obj
 QuickCourses.CourseUploader/bin
+*.json
 *.sln.DotSettings.user

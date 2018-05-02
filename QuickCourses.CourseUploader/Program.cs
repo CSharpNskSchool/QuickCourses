@@ -13,7 +13,7 @@ namespace QuickCourses.CourseUploader
         {
             var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText("config.json"));
             var repository = new RepositoryBase<Course>(settings);
-            var uploader = new Uploader(repository);
+            var uploader = new Uploader<Course>(repository);
             uploader.Upload(paths);
         }
     }

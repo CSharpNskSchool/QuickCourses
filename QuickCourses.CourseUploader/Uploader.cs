@@ -2,15 +2,16 @@
 using System.IO;
 using Newtonsoft.Json;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Models.Primitives;
+using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.CourseUploader
 {
-    public class Uploader
+    public class Uploader<TValue>
+        where TValue : IValueWithId
     {
-        private readonly IRepository<Course> repository;
+        private readonly IRepository<TValue> repository;
 
-        public Uploader(IRepository<Course> repository)
+        public Uploader(IRepository<TValue> repository)
         {
             this.repository = repository;
         }
@@ -20,8 +21,8 @@ namespace QuickCourses.CourseUploader
             try
             {
                 var serialized = File.ReadAllText(path);
-                var course = JsonConvert.DeserializeObject<Course>(serialized);
-                repository.InsertAsync(course).Wait();
+                var value = JsonConvert.DeserializeObject<TValue>(serialized);
+                repository.InsertAsync(value).Wait();
                 Console.WriteLine($"Uploaded successfully: {path}");
             }
             catch (Exception ex)
