@@ -25,19 +25,19 @@ namespace QuickCourses.Api
             Configuration = builder.Build();
 
             CourseRepositorySettings = new Settings(
-                Configuration.GetSection("MongoConnection:Course:Database").Value,
-                Configuration.GetSection("MongoConnection:Course:CollectionName").Value, 
-                Configuration.GetSection("MongoConnection:Course:ConnectionString").Value);
+                connectionString: Configuration.GetSection("MongoConnection:Course:ConnectionString").Value,
+                database: Configuration.GetSection("MongoConnection:Course:Database").Value, 
+                collectionName: Configuration.GetSection("MongoConnection:Course:CollectionName").Value);
             
             ProgressRepositorySettings = new Settings(
-                Configuration.GetSection("MongoConnection:Progress:Database").Value,
-                Configuration.GetSection("MongoConnection:Progress:CollectionName").Value,
-                Configuration.GetSection("MongoConnection:Progress:ConnectionString").Value);
+                connectionString: Configuration.GetSection("MongoConnection:Progress:ConnectionString").Value,
+                database: Configuration.GetSection("MongoConnection:Progress:Database").Value,
+                collectionName: Configuration.GetSection("MongoConnection:Progress:CollectionName").Value);
             
             UserRepositorySettings = new Settings(
-                Configuration.GetSection("MongoConnection:User:Database").Value,
-                Configuration.GetSection("MongoConnection:User:CollectionName").Value,
-                Configuration.GetSection("MongoConnection:User:ConnectionString").Value);
+                connectionString: Configuration.GetSection("MongoConnection:User:ConnectionString").Value,
+                database: Configuration.GetSection("MongoConnection:User:Database").Value,
+                collectionName: Configuration.GetSection("MongoConnection:User:CollectionName").Value);
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -51,15 +51,11 @@ namespace QuickCourses.Api
                 .AddSingleton(x => Configuration)
                 .AddJasonWebTokenAuth(Configuration)
                 .AddMvc();
-
-            //возможно это нужно сделать как-то инче, но я не знаю как
+            
             services
-                .AddScoped<IRepository<Course>, RepositoryBase<Course>>(
-                    _ => new CourseRepository(CourseRepositorySettings))
-                .AddScoped<IRepository<CourseProgress>, RepositoryBase<CourseProgress>>(
-                    _ => new ProgressRepository(ProgressRepositorySettings))
-                .AddScoped<IRepository<User>, RepositoryBase<User>>(
-                    _ => new UserRepository(UserRepositorySettings));
+                .AddSingleton<IRepository<Course>>(new CourseRepository(CourseRepositorySettings))
+                .AddSingleton<IProgressRepository>(new ProgressRepository(ProgressRepositorySettings))
+                .AddSingleton<IUserRepository>(new UserRepository(UserRepositorySettings));
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

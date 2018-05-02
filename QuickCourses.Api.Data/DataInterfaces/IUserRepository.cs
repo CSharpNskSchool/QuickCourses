@@ -6,5 +6,6 @@ namespace QuickCourses.Api.Data.DataInterfaces
     public interface IUserRepository : IRepository<User>
     {
         Task<User> GetByLoginAsync(string login);
+        Task<bool> ContainsByLoginAsync(string login);
     }
 }

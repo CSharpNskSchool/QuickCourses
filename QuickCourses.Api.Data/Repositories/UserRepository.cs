@@ -26,5 +26,11 @@ namespace QuickCourses.Api.Data.Repositories
             var result = await Context.Collection.Find(user => user.Login == login).FirstOrDefaultAsync();
             return result;
         }
+
+        public async Task<bool> ContainsByLoginAsync(string login)
+        {
+            var user = await GetByLoginAsync(login);
+            return user != null;
+        }
     }
 }
