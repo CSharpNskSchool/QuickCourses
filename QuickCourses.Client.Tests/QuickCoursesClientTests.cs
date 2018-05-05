@@ -1,4 +1,4 @@
-using QuickCourses.Models.Primitives;
+п»їusing QuickCourses.Models.Primitives;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -148,7 +148,7 @@ namespace QuickCourses.Client.Tests
 
             AssertQuestionStateInProgrees_Like(userTicket, questionState1);
 
-            //Не знаю, что здесь должно было быть, но в курсе нет урока с индексом 1
+            //РќРµ Р·РЅР°СЋ, С‡С‚Рѕ Р·РґРµСЃСЊ РґРѕР»Р¶РЅРѕ Р±С‹Р»Рѕ Р±С‹С‚СЊ, РЅРѕ РІ РєСѓСЂСЃРµ РЅРµС‚ СѓСЂРѕРєР° СЃ РёРЅРґРµРєСЃРѕРј 1
             //var questionState2 = client.SendAnswerAsync(
             //    userTicket,
             //    firstCourse.Id,
