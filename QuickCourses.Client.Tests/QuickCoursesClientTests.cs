@@ -105,15 +105,16 @@ namespace QuickCourses.Client.Tests
 
             client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
 
-            var result = client.SendAnswerAsync(userTicket,
-                                                firstCourse.Id,
-                                                lessonId: 0,
-                                                stepId: 0,
-                                                answer: new Answer
-                                                {
-                                                    QuestionId = 0,
-                                                    SelectedAnswers = new List<int> { 0 }
-                                                }).Result;
+            var result = client.SendAnswerAsync(
+                userTicket,
+                firstCourse.Id,
+                lessonId: 0,
+                stepId: 0,
+                answer: new Answer
+                {
+                    QuestionId = 0,
+                    SelectedAnswers = new List<int> { 0 }
+                }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, result);
         }
@@ -134,27 +135,29 @@ namespace QuickCourses.Client.Tests
 
             client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
 
-            var questionState1 = client.SendAnswerAsync(userTicket,
-                                                firstCourse.Id,
-                                                lessonId: 0,
-                                                stepId: 0,
-                                                answer: new Answer
-                                                {
-                                                    QuestionId = 0,
-                                                    SelectedAnswers = new List<int> { 0 }
-                                                }).Result;
+            var questionState1 = client.SendAnswerAsync(
+                userTicket,
+                firstCourse.Id,
+                lessonId: 0,
+                stepId: 0,
+                answer: new Answer
+                {
+                    QuestionId = 0,
+                    SelectedAnswers = new List<int> { 0 }
+                }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, questionState1);
 
-            var questionState2 = client.SendAnswerAsync(userTicket,
-                                                firstCourse.Id,
-                                                lessonId: 1,
-                                                stepId: 0,
-                                                answer: new Answer
-                                                {
-                                                    QuestionId = 0,
-                                                    SelectedAnswers = new List<int> { 0 }
-                                                }).Result;
+            var questionState2 = client.SendAnswerAsync(
+                userTicket,
+                firstCourse.Id,
+                lessonId: 1,
+                stepId: 0,
+                answer: new Answer
+                {
+                    QuestionId = 0,
+                    SelectedAnswers = new List<int> { 0 }
+                }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, questionState2);
         }

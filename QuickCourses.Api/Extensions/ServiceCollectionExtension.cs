@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
 
 namespace QuickCourses.Api.Extensions
@@ -21,6 +22,7 @@ namespace QuickCourses.Api.Extensions
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
+                        LifetimeValidator = CustomLifetimeValidator,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = configuration["JasonWebToken:Issuer"],
                         ValidAudience = configuration["JasonWebToken:Issuer"],
@@ -29,6 +31,14 @@ namespace QuickCourses.Api.Extensions
                     };
                 });
             return services;
+        }
+        private static bool CustomLifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken tokenToValidate, TokenValidationParameters @param)
+        {
+            if (expires != null)
+            {
+                return expires > DateTime.UtcNow || notBefore == null;
+            }
+            return false;
         }
     }
 }

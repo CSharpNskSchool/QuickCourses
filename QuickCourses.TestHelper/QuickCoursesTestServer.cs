@@ -4,7 +4,6 @@ using QuickCourses.Api;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Models.Primitives;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using QuickCourses.Models.Authentication;
 
@@ -25,22 +24,8 @@ namespace QuickCourses.TestHelper
             progressRepository = (IProgressRepository)server.Host.Services.GetService(typeof(IProgressRepository));
         }
 
-        public TestServer Server
-        {
-            get
-            {
-                return server;
-            }
-        }
-
-        public Uri BaseAddress
-        {
-            get
-            {
-                return server.BaseAddress;
-            }
-        }
-
+        public TestServer Server => server;
+        public Uri BaseAddress => server.BaseAddress;
         public HttpClient CreateClient()
         {
             return server.CreateClient();
