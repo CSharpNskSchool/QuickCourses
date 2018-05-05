@@ -10,10 +10,10 @@ api/v1/courses - get Enum<Courses>, получить все курсы
 api/v1/registration - post User, создание нового юзера
 
 api/v1/progress - get Enum<CourseProgress>, запущенные курсы	
-		- post CourseStartOptions, начать новый курс
+		- post CourseStartOptions (возвращает CourseProgress), начать новый курс
 	/{id:course} - get CourseProgress, получение прогесса	
 		/lessons
 			/{id:lesson} - get LessonProgress
 				/step
 					/{id:step} - get StepProgress
-					   	   - post Answer, отправка ответа
+					   	   - post Answer (возвращает QuestionState), отправка ответа
