@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QuickCourses.Models.Authentication;
 using System.Net.Http;
 using Newtonsoft.Json;
@@ -8,22 +6,23 @@ using System.Text;
 using System.Net;
 using System;
 using System.Threading;
+using QuickCourses.TestHelper;
 
 namespace QuickCourses.Api.Tests
 {
-   [TestFixture]
+    [TestFixture]
     public class AuthControllerTests
     {
-        TestServer server;
+        QuickCoursesTestServer server;
         HttpClient client;
         Ticket ticket;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
-            server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
-        
+            server = new QuickCoursesTestServer();
+            server.UseCourses(TestCourses.CreateBasicSample());
+            server.UseUsers(TestUsers.CreateSuperUserSample(), TestUsers.CreateUserSample());
             client = server.CreateClient();
         }
 
@@ -93,6 +92,7 @@ namespace QuickCourses.Api.Tests
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
+
         [Test]
         [Order(2)]
         public void Auth_CantUseApiWithBrokenTicket()
@@ -137,6 +137,7 @@ namespace QuickCourses.Api.Tests
 
             Assert.AreEqual(response.StatusCode, HttpStatusCode.Unauthorized);
         }
+
         [Test]
         public void Auth_CantUseMethodApiWithoutTicket()
         {
@@ -149,6 +150,7 @@ namespace QuickCourses.Api.Tests
 
             Assert.AreEqual(response.StatusCode, HttpStatusCode.Unauthorized);
         }
+
         [Test]
         public void Auth_ClientCanGetUserDataByLogin() 
         {
@@ -185,7 +187,8 @@ namespace QuickCourses.Api.Tests
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
-        [TearDown]
+
+        [OneTimeTearDown]
         public void Dispose()
         {
             client.Dispose();

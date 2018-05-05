@@ -1,49 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using KellermanSoftware.CompareNetObjects;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using Moq;
-using NUnit.Framework;
-using QuickCourses.Models.Primitives;
+﻿using QuickCourses.Models.Primitives;
+using System.Collections.Generic;
 
-namespace QuickCourses.Api.Tests
+namespace QuickCourses.TestHelper
 {
-    public static class Utilits
+    public class TestCourses
     {
-        public static void CheckResponseValue<TResponse, TValue>(IActionResult response, TValue expectedValue)
-            where TResponse : ObjectResult
-        {
-            Assert.IsInstanceOf(typeof(TResponse), response);
-
-            var value = ((TResponse)response).Value;
-
-            var compareLogic = new CompareLogic();
-            var compareResult = compareLogic.Compare(expectedValue, value);
-
-            Assert.IsTrue(compareResult.AreEqual);
-        }
-
-        public static HttpContext CreateContext(string scheme, string host, string path, ClaimsPrincipal user = null)
-        {
-            var httpContext = new Mock<HttpContext>();
-            httpContext.Setup(context => context.Request.Scheme).Returns(() => scheme);
-            httpContext.Setup(context => context.Request.Host).Returns(() => new HostString(host));
-            httpContext.Setup(context => context.Request.Path).Returns(() => new PathString($"/{path}"));
-            httpContext.Setup(context => context.Request.Query).Returns(() => new QueryCollection());
-            httpContext.Setup(context => context.User).Returns(() => user);
-
-            return httpContext.Object;
-        }
-        
-        public static Course CreateCourse()
+        public static Course CreateBasicSample()
         {
             return new Course
             {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Description = new Description {Name = "Test Course", Overview = "Course to test Api"},
+                Id = "88a0eed0-6980-4264-8ae4-08c22e701fd7", //some GUID
+                Description = new Description { Name = "Test Course", Overview = "Course to test Api" },
                 Lessons = new List<Lesson>
                 {
                     new Lesson
