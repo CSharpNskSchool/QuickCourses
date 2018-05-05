@@ -21,3 +21,10 @@ QuickCourses.Extensions/bin
 QuickCourses.Extensions/obj
 QuickCourses.Api.Data.Tests/obj
 QuickCourses.Api.Data.Tests/bin
+/QuickCourses.TelegramBot
+/QuickCourses.TelegramBot.Data
+/QuickCourses.TelegramBot.Models
+/QuickCourses.TestHelper/bin/Debug/netcoreapp2.0
+/QuickCourses.TestHelper/obj/Debug/netcoreapp2.0
+/QuickCourses.TestHelper/obj
+/QuickCourses.TestHost/bin/Debug/netcoreapp2.0
