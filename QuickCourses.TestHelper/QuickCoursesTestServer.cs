@@ -22,6 +22,7 @@ namespace QuickCourses.TestHelper
             server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
             courseeRepository = (IRepository<Course>)server.Host.Services.GetService(typeof(IRepository<Course>));
             userRepository = (IUserRepository)server.Host.Services.GetService(typeof(IUserRepository));
+            progressRepository = (IProgressRepository)server.Host.Services.GetService(typeof(IProgressRepository));
         }
 
         public TestServer Server
