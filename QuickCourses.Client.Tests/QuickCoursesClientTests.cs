@@ -197,6 +197,7 @@ namespace QuickCourses.Client.Tests
         public void Dispose()
         {
             client.Dispose();
+            server.Dispose();
         }
     }
 }
