@@ -1,5 +1,6 @@
 QuickCourses.Api/obj
 QuickCourses.Api/bin
+QuickCourses.Api/appsettings.json
 QuickCourses.Api/Properties/PublishProfiles
 QuickCourses.Api.Data/obj
 QuickCourses.Api.Data/bin
@@ -21,3 +22,7 @@ QuickCourses.Extensions/bin
 QuickCourses.Extensions/obj
 QuickCourses.Api.Data.Tests/obj
 QuickCourses.Api.Data.Tests/bin
+QuickCourses.CourseUploader/obj
+QuickCourses.CourseUploader/bin
+*.json
+*.sln.DotSettings.user
