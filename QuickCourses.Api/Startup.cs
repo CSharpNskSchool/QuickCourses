@@ -39,6 +39,7 @@ namespace QuickCourses.Api
         }
 
         public IConfigurationRoot Configuration { get; }
+        public IServiceCollection Services { get; }
         private Settings CourseRepositorySettings { get; }
         private Settings ProgressRepositorySettings { get; }
         private Settings UserRepositorySettings { get; }

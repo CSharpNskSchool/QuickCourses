@@ -19,7 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Extensions", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Data.Tests", "QuickCourses.Api.Data.Tests\QuickCourses.Api.Data.Tests.csproj", "{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.CourseUploader", "QuickCourses.CourseUploader\QuickCourses.CourseUploader.csproj", "{253F341B-FF09-4807-803C-CA32C5F406F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.TestHelper", "QuickCourses.TestHelper\QuickCourses.TestHelper.csproj", "{B88F8939-5DD9-4875-9E7B-C1A7A6672C54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC1}") = "QuickCourses.CourseUploader", "QuickCourses.CourseUploader\QuickCourses.CourseUploader.csproj", "{253F341B-FF09-4807-803C-CA32C5F406F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +60,10 @@ Global
 		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5162743D-67B0-452E-B2BF-1CCBC52DEFEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B88F8939-5DD9-4875-9E7B-C1A7A6672C54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B88F8939-5DD9-4875-9E7B-C1A7A6672C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B88F8939-5DD9-4875-9E7B-C1A7A6672C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B88F8939-5DD9-4875-9E7B-C1A7A6672C54}.Release|Any CPU.Build.0 = Release|Any CPU
 		{253F341B-FF09-4807-803C-CA32C5F406F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{253F341B-FF09-4807-803C-CA32C5F406F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{253F341B-FF09-4807-803C-CA32C5F406F3}.Release|Any CPU.ActiveCfg = Release|Any CPU

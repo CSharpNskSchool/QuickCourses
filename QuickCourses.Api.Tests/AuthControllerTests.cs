@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QuickCourses.Models.Authentication;
 using System.Net.Http;
 using Newtonsoft.Json;
@@ -8,22 +6,23 @@ using System.Text;
 using System.Net;
 using System;
 using System.Threading;
+using QuickCourses.TestHelper;
 
 namespace QuickCourses.Api.Tests
 {
-   [TestFixture]
+    [TestFixture]
     public class AuthControllerTests
     {
-        TestServer server;
+        QuickCoursesTestServer server;
         HttpClient client;
         Ticket ticket;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
-            server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
-        
+            server = new QuickCoursesTestServer();
+            server.UseCourses(TestCourses.CreateBasicSample());
+            server.UseUsers(TestUsers.CreateSuperUserSample(), TestUsers.CreateUserSample());
             client = server.CreateClient();
         }
 
@@ -87,18 +86,23 @@ namespace QuickCourses.Api.Tests
                 RequestUri = new Uri(server.BaseAddress + "api/v1/courses")
             };
 
-            request.Headers.Add("Authorization", "Bearer " + ticket.Source);
+            request.Headers.Add("Authorization", ticket.ToString());
 
             var response = client.SendAsync(request).Result;
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
+
         [Test]
         [Order(2)]
         public void Auth_CantUseApiWithBrokenTicket()
         {
             Assert.NotNull(ticket);
-            ticket.Source += "1";
+            var badTicket = new Ticket
+            {
+                Source = ticket.Source + "hacked",
+                ValidUntil = ticket.ValidUntil
+            };
 
             var request = new HttpRequestMessage
             {
@@ -106,7 +110,7 @@ namespace QuickCourses.Api.Tests
                 RequestUri = new Uri(server.BaseAddress + "api/v1/courses")
             };
 
-            request.Headers.Add("Authorization", "Bearer " + ticket.Source);
+            request.Headers.Add("Authorization", badTicket.ToString());
 
             var response = client.SendAsync(request).Result;
 
@@ -119,7 +123,7 @@ namespace QuickCourses.Api.Tests
         {
             Assert.NotNull(ticket);
 
-            var leftTime = (int)Math.Floor(ticket.ValidUntil.Subtract(DateTime.Now).TotalMilliseconds);
+            var leftTime = (int)Math.Floor(ticket.ValidUntil.Subtract(DateTime.UtcNow).TotalMilliseconds);
 
             if (leftTime > 0)
             {
@@ -131,12 +135,13 @@ namespace QuickCourses.Api.Tests
                 RequestUri = new Uri(server.BaseAddress + "api/v1/courses")
             };
 
-            request.Headers.Add("Authorization", "Bearer " + ticket.Source);
+            request.Headers.Add("Authorization", ticket.ToString());
 
             var response = client.SendAsync(request).Result;
 
             Assert.AreEqual(response.StatusCode, HttpStatusCode.Unauthorized);
         }
+
         [Test]
         public void Auth_CantUseMethodApiWithoutTicket()
         {
@@ -149,6 +154,7 @@ namespace QuickCourses.Api.Tests
 
             Assert.AreEqual(response.StatusCode, HttpStatusCode.Unauthorized);
         }
+
         [Test]
         public void Auth_ClientCanGetUserDataByLogin() 
         {
@@ -179,13 +185,14 @@ namespace QuickCourses.Api.Tests
                 RequestUri = new Uri(server.BaseAddress + "api/v1/auth"),
             };
 
-            request.Headers.Add("Authorization", "Bearer " + ticket.Source);
+            request.Headers.Add("Authorization", ticket.ToString());
             request.Headers.Add("Login", "mihail");
             response = client.SendAsync(request).Result;
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
-        [TearDown]
+
+        [OneTimeTearDown]
         public void Dispose()
         {
             client.Dispose();

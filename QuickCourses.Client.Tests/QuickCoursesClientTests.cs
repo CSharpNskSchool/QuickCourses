@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
 using QuickCourses.Models.Primitives;
 using System;
 using System.Linq;
@@ -9,6 +7,7 @@ using Newtonsoft.Json;
 using QuickCourses.Models.Authentication;
 using QuickCourses.Models.Progress;
 using QuickCourses.Models.Interaction;
+using QuickCourses.TestHelper;
 
 namespace QuickCourses.Client.Tests
 {
@@ -45,7 +44,7 @@ namespace QuickCourses.Client.Tests
 
     public class QuickCoursesClientTests : IDisposable
     {
-        private readonly TestServer server;
+        private readonly QuickCoursesTestServer server;
         private readonly QuickCoursesClient client;
         private readonly IEnumerable<Course> courses;
         private readonly Course firstCourse;
@@ -53,14 +52,15 @@ namespace QuickCourses.Client.Tests
 
         public QuickCoursesClientTests()
         {
-            this.server = new TestServer(new WebHostBuilder().UseStartup<Api.Startup>());
-            this.client = new QuickCoursesClient(ApiVersion.V1, server.CreateClient());
-            this.ticket = client.GetTicketAsync(new AuthData { Login = "bot", Password = "12345" }).Result;
-            this.courses = client.GetCoursesAsync(ticket).Result;
+            server = new QuickCoursesTestServer();
+            client = new QuickCoursesClient(ApiVersion.V1, server.CreateClient());
 
-            Assert.NotNull(courses);
-            firstCourse = courses.FirstOrDefault();
-            Assert.NotNull(firstCourse);
+            server.UseUsers(TestUsers.CreateSuperUserSample(), TestUsers.CreateUserSample());
+            server.UseCourses(TestCourses.CreateBasicSample());
+
+            ticket = client.GetTicketAsync(new AuthData { Login = "bot", Password = "12345" }).Result;
+            courses = client.GetCoursesAsync(ticket).Result;
+            firstCourse = courses.First();
         }
         
         [Fact]
@@ -105,15 +105,16 @@ namespace QuickCourses.Client.Tests
 
             client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
 
-            var result = client.SendAnswerAsync(userTicket,
-                                                firstCourse.Id,
-                                                lessonId: 0,
-                                                stepId: 0,
-                                                answer: new Answer
-                                                {
-                                                    QuestionId = 0,
-                                                    SelectedAnswers = new List<int> { 0 }
-                                                }).Result;
+            var result = client.SendAnswerAsync(
+                userTicket,
+                firstCourse.Id,
+                lessonId: 0,
+                stepId: 0,
+                answer: new Answer
+                {
+                    QuestionId = 0,
+                    SelectedAnswers = new List<int> { 0 }
+                }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, result);
         }
@@ -134,27 +135,29 @@ namespace QuickCourses.Client.Tests
 
             client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
 
-            var questionState1 = client.SendAnswerAsync(userTicket,
-                                                firstCourse.Id,
-                                                lessonId: 0,
-                                                stepId: 0,
-                                                answer: new Answer
-                                                {
-                                                    QuestionId = 0,
-                                                    SelectedAnswers = new List<int> { 0 }
-                                                }).Result;
+            var questionState1 = client.SendAnswerAsync(
+                userTicket,
+                firstCourse.Id,
+                lessonId: 0,
+                stepId: 0,
+                answer: new Answer
+                {
+                    QuestionId = 0,
+                    SelectedAnswers = new List<int> { 0 }
+                }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, questionState1);
 
-            var questionState2 = client.SendAnswerAsync(userTicket,
-                                                firstCourse.Id,
-                                                lessonId: 1,
-                                                stepId: 0,
-                                                answer: new Answer
-                                                {
-                                                    QuestionId = 0,
-                                                    SelectedAnswers = new List<int> { 0 }
-                                                }).Result;
+            var questionState2 = client.SendAnswerAsync(
+                userTicket,
+                firstCourse.Id,
+                lessonId: 1,
+                stepId: 0,
+                answer: new Answer
+                {
+                    QuestionId = 0,
+                    SelectedAnswers = new List<int> { 0 }
+                }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, questionState2);
         }
@@ -194,6 +197,7 @@ namespace QuickCourses.Client.Tests
         public void Dispose()
         {
             client.Dispose();
+            server.Dispose();
         }
     }
 }

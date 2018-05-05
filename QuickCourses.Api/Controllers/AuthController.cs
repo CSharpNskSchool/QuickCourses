@@ -48,10 +48,10 @@ namespace QuickCourses.Api.Controllers
                 return NotFound("Bad password or login.");
             }
 
-            var ticketTime = user.Role == "Client" ? 
-                            int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForClient"]) :
-                            int.Parse(configuration["JasonWebToken:LifeTimeInMinutes:ForUser"]);
-
+            var ticketTime = user.Role == "Client" ?
+                configuration.GetValue<double>("JasonWebToken:LifeTimeInMinutes:ForClient") :
+                configuration.GetValue<double>("JasonWebToken:LifeTimeInMinutes:ForUser");
+            
             var result = GetTicket(user, ticketTime);
 
             return Ok(result);
@@ -78,8 +78,13 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        private Ticket GetTicket(User user, int minutes)
+        private Ticket GetTicket(User user, double minutes)
         {
+            if (minutes < 0 )
+            {
+                throw new InvalidOperationException("minutes must be positive");
+            }
+
             var securityKey = GetSymmetricSecurityKey();
             var jwtToken = GetJwtSecurityToken(user, securityKey, minutes);
             var tokenSource = securityTokenHandler.WriteToken(jwtToken);
@@ -99,7 +104,7 @@ namespace QuickCourses.Api.Controllers
             return new SymmetricSecurityKey(binnaryKey);
         }
 
-        private JwtSecurityToken GetJwtSecurityToken(User user, SymmetricSecurityKey securityKey, int minutes)
+        private JwtSecurityToken GetJwtSecurityToken(User user, SymmetricSecurityKey securityKey, double minutes)
         {
             var claims = new[]
             {
@@ -109,12 +114,15 @@ namespace QuickCourses.Api.Controllers
             };
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var notBefore = DateTime.UtcNow;
 
-            return new JwtSecurityToken(configuration["JasonWebToken:Issuer"],
-                                        configuration["JasonWebToken:Issuer"],
-                                        claims: claims,
-                                        expires: DateTime.Now.AddMinutes(minutes),
-                                        signingCredentials: credentials);
+            return new JwtSecurityToken(
+                configuration["JasonWebToken:Issuer"],
+                configuration["JasonWebToken:Issuer"],
+                claims: claims,
+                notBefore: minutes == 0 ? null : new DateTime?(notBefore),
+                expires: notBefore.AddMinutes(minutes),
+                signingCredentials: credentials);
         }
     }
 }

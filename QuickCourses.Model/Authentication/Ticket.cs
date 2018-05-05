@@ -6,5 +6,10 @@ namespace QuickCourses.Models.Authentication
     {
         public string Source { get; set; }
         public DateTime ValidUntil { get; set; }
+
+        public override string ToString()
+        {
+            return $"Bearer {Source}";
+        }
     }
 }
