@@ -27,7 +27,7 @@ namespace QuickCourses.CourseUploader
             }
             catch (Exception ex)
             {
-                Console.Write($"Error: {ex}");
+                Console.WriteLine($"Error: {ex}");
             }
         }
 

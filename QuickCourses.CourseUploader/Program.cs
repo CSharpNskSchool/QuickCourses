@@ -11,10 +11,18 @@ namespace QuickCourses.CourseUploader
     {
         public static void Main(string[] paths)
         {
-            var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText("config.json"));
-            var repository = new RepositoryBase<Course>(settings);
-            var uploader = new Uploader<Course>(repository);
-            uploader.Upload(paths);
+            try
+            {
+                var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText("config.json"));
+                var repository = new RepositoryBase<Course>(settings);
+                var uploader = new Uploader<Course>(repository);
+                uploader.Upload(paths);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
