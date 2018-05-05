@@ -1,5 +1,6 @@
 QuickCourses.Api/obj
 QuickCourses.Api/bin
+QuickCourses.Api/appsettings.json
 QuickCourses.Api/Properties/PublishProfiles
 QuickCourses.Api.Data/obj
 QuickCourses.Api.Data/bin
@@ -32,3 +33,5 @@ QuickCourses.Api.Data.Tests/bin
 /QuickCourses.TestHelper/bin/Debug/netcoreapp2.0
 /QuickCourses.TestHelper/obj
 /QuickCourses.TestHost/bin/Debug/netcoreapp2.0
+/QuickCourses.CourseUploader/obj
+/ЭQuickCourses.CourseUploader/bin
