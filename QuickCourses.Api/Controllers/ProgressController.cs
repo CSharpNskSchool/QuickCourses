@@ -62,10 +62,10 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{courseId}")]
-        public async Task<IActionResult> GetCourseProgressById(string courseId)
+        public async Task<IActionResult> GetCourseProgress(string courseId)
         {
             var userId = User.GetId();
-            var result = await courseProgressRepository.GetAsync(courseId);
+            var result = await courseProgressRepository.GetAsync(userId, courseId);
 
             if (result == null)
             {
@@ -133,7 +133,7 @@ namespace QuickCourses.Api.Controllers
 
             if (question == null)
             {
-                return NotFound($"Question {answer.QuestionId} doesn't exist");
+                return NotFound($"Invalid combination of lessonId = {lessonId}, stepId = {stepId}, questionId = {answer.QuestionId} doesn't exist");
             }
 
             var questionState = courseProgress
