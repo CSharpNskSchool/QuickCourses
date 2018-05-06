@@ -97,7 +97,7 @@ namespace QuickCourses.Client
                 CourseId = courseId
             };
 
-            return InvokeApiMethod<LessonStep>(HttpMethod.Post, "progress", ticket, content: startOptions);
+            return InvokeApiMethod<CourseProgress>(HttpMethod.Post, "progress", ticket, content: startOptions);
         }
 
         public Task<LessonProgress> GetLessonProgressAsync(Ticket ticket, string courseId, int lessonId)

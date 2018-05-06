@@ -56,7 +56,7 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetCourseTest_ValidTest()
         {
-            var response = controller.GetCourseProgressById(courseProgress.Id).Result;
+            var response = controller.GetCourseProgress(course.Id).Result;
 
             Utilits.CheckResponseValue<OkObjectResult, CourseProgress>(response, courseProgress);
         }
@@ -101,7 +101,7 @@ namespace QuickCourses.Api.Tests
         public void GetCourseProgress_InvalidUrl()
         {
             var invalidId = ObjectId.GenerateNewId().ToString();
-            var response = controller.GetCourseProgressById(invalidId).Result;
+            var response = controller.GetCourseProgress(invalidId).Result;
 
             var expectedValue = new Error 
             {

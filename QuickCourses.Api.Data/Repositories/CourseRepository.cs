@@ -23,7 +23,7 @@ namespace QuickCourses.Api.Data.Repositories
         public override async Task<Course> GetAsync(string id)
         {
             var result = await base.GetAsync(id);
-            result.SetUpLinks();
+            result?.SetUpLinks();
             return result;
         }
     }

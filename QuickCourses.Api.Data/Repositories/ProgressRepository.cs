@@ -72,7 +72,7 @@ namespace QuickCourses.Api.Data.Repositories
             }
 
             var result = await base.GetAsync(id);
-            result.SetUpLinks();
+            result?.SetUpLinks();
             return result;
         }
 
