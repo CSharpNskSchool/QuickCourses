@@ -7,6 +7,8 @@ namespace QuickCourses.Models.Progress
     public class QuestionState
     {
         [BsonIgnore]
+        public string ProgressId { get; set; }
+        [BsonIgnore]
         public string CourseId { get; set; }
         [BsonIgnore]
         public int LessonId { get; set; }

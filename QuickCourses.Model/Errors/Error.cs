@@ -6,7 +6,8 @@
         {
             BadArgument,
             NotFound,
-            InvalidOperation
+            InvalidOperation,
+            Forbidden
         }
 
         public ErrorCode Code;

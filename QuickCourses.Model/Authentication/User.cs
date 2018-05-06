@@ -3,7 +3,7 @@ using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.Models.Authentication
 {
-    public class User : IValueWithId
+    public class User : IIdentifiable
     {
         public string Id { get; set; }
         public string Role { get; set; } 

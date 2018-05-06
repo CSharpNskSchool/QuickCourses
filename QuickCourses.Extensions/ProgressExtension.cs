@@ -3,7 +3,7 @@ using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Extensions
 {
-    public static class CourseProgressExtension
+    public static class ProgressExtension
     {
         public static CourseProgress Update(
             this CourseProgress courseProgress,
@@ -57,6 +57,7 @@ namespace QuickCourses.Extensions
 
                     foreach (var questionState in stepProgress.QuestionStates)
                     {
+                        questionState.ProgressId = courseProgress.Id;
                         questionState.CourseId = courseProgress.CourceId;
                         questionState.LessonId = lessonProgress.LessonId;
                         questionState.StepId = stepProgress.StepId;

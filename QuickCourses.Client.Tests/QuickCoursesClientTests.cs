@@ -53,7 +53,7 @@ namespace QuickCourses.Client.Tests
         public QuickCoursesClientTests()
         {
             server = new QuickCoursesTestServer();
-            client = new QuickCoursesClient(ApiVersion.V1, server.CreateClient());
+            client = new QuickCoursesClient(ApiVersion.V1, "http://api", server.CreateClient());
 
             server.UseUsers(TestUsers.CreateSuperUserSample(), TestUsers.CreateUserSample());
             server.UseCourses(TestCourses.CreateBasicSample());
@@ -85,7 +85,12 @@ namespace QuickCourses.Client.Tests
         {
             var firstLessonStep = firstCourse.Lessons.FirstOrDefault()?.Steps.FirstOrDefault();
             Assert.NotNull(firstCourse);
-            var lessonStepFromId = client.GetLessonStepAsync(ticket, firstLessonStep.CourseId.ToString(), firstLessonStep.LessonId, firstLessonStep.Id).Result;
+            var lessonStepFromId = client.GetLessonStepAsync(
+                ticket, 
+                firstLessonStep.CourseId, 
+                firstLessonStep.LessonId, 
+                firstLessonStep.Id).Result;
+            
             Assert.Equal(firstLessonStep, lessonStepFromId, new JsonComparer<LessonStep>());
         }
 
@@ -103,71 +108,28 @@ namespace QuickCourses.Client.Tests
 
             var userTicket = client.GetTicketAsync(ticket, user.Login).Result;
 
-            client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
+            var progress = client.StartCourseAsync(userTicket, firstCourse.Id).Result;
 
             var result = client.SendAnswerAsync(
                 userTicket,
-                firstCourse.Id,
+                progress.Id,
                 lessonId: 0,
                 stepId: 0,
                 answer: new Answer
                 {
                     QuestionId = 0,
-                    SelectedAnswers = new List<int> { 0 }
+                    SelectedAnswers = new List<int> {0}
                 }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, result);
         }
 
         [Fact]
-        public void User_RegisterAndGiveAnswer_Hard()
+        public async void Course_ThrowsWhen_BadArgrumnts()
         {
-            var user = new User
-            {
-                Name = "Vasya",
-                Password = "12345",
-                Login = "Vasya228"
-            };
-
-            client.RegisterAsync(user).Wait();
-
-            var userTicket = client.GetTicketAsync(ticket, user.Login).Result;
-
-            client.StartCourseAsync(userTicket, firstCourse.Id).Wait();
-
-            var questionState1 = client.SendAnswerAsync(
-                userTicket,
-                firstCourse.Id,
-                lessonId: 0,
-                stepId: 0,
-                answer: new Answer
-                {
-                    QuestionId = 0,
-                    SelectedAnswers = new List<int> { 0 }
-                }).Result;
-
-            AssertQuestionStateInProgrees_Like(userTicket, questionState1);
-
-            //Не знаю, что здесь должно было быть, но в курсе нет урока с индексом 1
-            //var questionState2 = client.SendAnswerAsync(
-            //    userTicket,
-            //    firstCourse.Id,
-            //    lessonId: 1,
-            //    stepId: 0,
-            //    answer: new Answer
-            //    {
-            //        QuestionId = 0,
-            //        SelectedAnswers = new List<int> { 0 }
-            //    }).Result;
-
-            //AssertQuestionStateInProgrees_Like(userTicket, questionState2);
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => client.GetCourseAsync(ticket, "im smart client give me my items"));
         }
-
-        [Fact]
-        public void Course_ThrowsWhen_BadArgrumnts()
-        {
-            Assert.ThrowsAsync<ArgumentException>(()=>client.GetCourseAsync(ticket, "im smart client give me my items"));
-        }
+        
         [Fact]
         public void Client_ThrowsWhen_NullApiUrl_And_NullApiVer()
         {
@@ -176,7 +138,7 @@ namespace QuickCourses.Client.Tests
 
         private void AssertQuestionStateInProgrees_Like(Ticket userTicket, QuestionState questionState)
         {
-            var progress = client.GetCourseProgressAsync(userTicket, questionState.CourseId).Result;
+            var progress = client.GetCourseProgressAsync(userTicket, questionState.ProgressId).Result;
             Assert.NotNull(progress.LessonProgresses);
 
             var firstLessonProgress = progress.LessonProgresses.FirstOrDefault(x => x.LessonId == questionState.LessonId);
@@ -185,16 +147,28 @@ namespace QuickCourses.Client.Tests
             var firstStepProgress = firstLessonProgress
                                         .StepProgresses
                                         .FirstOrDefault(x => x.StepId == questionState.StepId);
+            
             Assert.NotNull(firstStepProgress);
 
             var firstQuestionState = firstStepProgress
                                         .QuestionStates
                                         .FirstOrDefault(x =>x.QuestionId == questionState.QuestionId);
+            
             Assert.NotNull(firstQuestionState);
 
             Assert.Equal(firstQuestionState, questionState, new JsonComparer<QuestionState>());
         }
 
+        [Fact]
+        public void GetIdByLogin_Test()
+        {
+            var user = TestUsers.CreateUserSample();
+
+            var result = client.GetIdByLoginAsync(ticket, user.Login).Result;
+            
+            Assert.True(!string.IsNullOrEmpty(result));
+        }
+        
         public void Dispose()
         {
             client.Dispose();

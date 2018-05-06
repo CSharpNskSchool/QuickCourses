@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Extensions;
@@ -16,28 +17,44 @@ namespace QuickCourses.Api.Controllers
     public class ProgressController : ControllerBase
     {
         private readonly IRepository<Course> courseRepository;
-        private readonly IProgressRepository courseProgressRepository;
+        private readonly IProgressRepository progressRepository;
 
-        public ProgressController(IProgressRepository courseProgressRepository, IRepository<Course> courseRepository)
+        public ProgressController(
+            IProgressRepository progressRepository, 
+            IRepository<Course> courseRepository)
         {
-            this.courseProgressRepository = courseProgressRepository;
+            this.progressRepository = progressRepository;
             this.courseRepository = courseRepository;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCoursesProgresses()
+        public async Task<IActionResult> GetAllCoursesProgresses([FromQuery]string userId)
         {
-            var userId = User.GetId();
-            var result = await courseProgressRepository.GetAllByUserAsync(userId);
+            if (!User.IsInRole("Client") || string.IsNullOrEmpty(userId))
+            {
+                userId = User.GetId();
+            }
+                
+            var result = await progressRepository.GetAllByUserAsync(userId);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> StartCourse([FromBody]CourseStartOptions startOptions)
+        public async Task<IActionResult> StartCourse([FromBody]CourseStartOptions startOptions, [FromQuery]string userId)
         {
             if (startOptions == null)
             {
                 return BadRequest("CourseStartOptions is null");
+            }
+
+            if (!User.IsInRole("Client") || string.IsNullOrEmpty(userId))
+            {
+                userId = User.GetId();
+            }
+            
+            if (!IdIsValid(userId))
+            {
+                return Forbid($"The user has no rights or the id = {userId} is invalid");
             }
 
             var course = await courseRepository.GetAsync(startOptions.CourseId);
@@ -46,60 +63,74 @@ namespace QuickCourses.Api.Controllers
             {
                 return BadRequest($"Invalid course id = {startOptions.CourseId}");
             }
-
-            var userId = User.GetId();
             
-            if (await courseProgressRepository.ContainsAsync(userId, course.Id))
+            if (await progressRepository.ContainsAsync(userId, course.Id))
             {
                 return BadRequest($"User id = {userId} hasn't course with id = {startOptions.CourseId}");
             }
 
             var courseProgress = course.CreateProgress(userId);
-            courseProgress.Id = await courseProgressRepository.InsertAsync(courseProgress);
+            courseProgress.Id = await progressRepository.InsertAsync(courseProgress);
 
             var uri = Request.GetUri();
             return Created($"{uri}/{courseProgress.CourceId}", courseProgress);
         }
 
-        [HttpGet("{courseId}")]
-        public async Task<IActionResult> GetCourseProgress(string courseId)
+        [HttpGet("{progressId}")]
+        public async Task<IActionResult> GetCourseProgress(string progressId)
         {
-            var userId = User.GetId();
-            var result = await courseProgressRepository.GetAsync(userId, courseId);
+            var result = await progressRepository.GetAsync(progressId);
 
             if (result == null)
             {
-                return NotFound($"Invalid combination of usersId = {userId} and courseId = {courseId}");
+                return NotFound($"Invalid progressId = {progressId}");
+            }
+
+            var userId = result.UserId;
+
+            if (!IdIsValid(userId))
+            {
+                return Forbid($"The user has no rights or the id = {userId} is invalid");
+            }
+            
+            return Ok(result);
+        }
+
+        [HttpGet("{progressId}/lessons/{lessonId:int}")]
+        public async Task<IActionResult> GetLessonProgressById(string progressId, int lessonId)
+        {
+            var result = await GetLessonProgress(progressId, lessonId);
+
+            if (result == null)
+            {
+                return NotFound($"Invalid combination of progressId = {progressId}, lessonId = {lessonId}");
             }
 
             return Ok(result);
         }
 
-        [HttpGet("{courseId}/lessons/{lessonId:int}")]
-        public async Task<IActionResult> GetLessonProgressById(string courseId, int lessonId)
+        [HttpGet("{progressId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        public async Task<IActionResult> GetLessonStep(string progressId, int lessonId, int stepId)
         {
-            var userId = User.GetId();
+            var courseProgress = await progressRepository.GetAsync(progressId);
 
-            var result = await GetLessonProgress(userId, courseId, lessonId);
-
-            if (result == null)
+            if (courseProgress == null)
             {
-                return NotFound($"Invalid combination of userId = {userId}, courseId = {courseId}, lessonId = {lessonId}");
+                return NotFound($"Invalid progressId = {progressId}");
+            }
+            
+            var userId = courseProgress.UserId;
+
+            if (!IdIsValid(userId))
+            {
+                return Forbid($"The user with id = {userId} has no rights");
             }
 
-            return Ok(result);
-        }
-
-        [HttpGet("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> GetLessonStep(string courseId, int lessonId, int stepId)
-        {
-            var userId = User.GetId();
-
-            var lesson = await GetLessonProgress(userId, courseId, lessonId);
+            courseProgress.LessonProgresses.TryGetValue(lessonId, out var lesson);
 
             if (lesson == null)
             {
-                return NotFound($"Invalid combination of userId = {userId}, courseId = {courseId}, lessonId = {lessonId}");
+                return NotFound($"Invalid combination of progressId = {progressId}, lessonId = {lessonId}");
             }
 
             if (!lesson.StepProgresses.TryGetValue(stepId, out var result))
@@ -110,23 +141,28 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
-        public async Task<IActionResult> PostAnswer(string courseId, int lessonId, int stepId, [FromBody]Answer answer)
+        [HttpPost("{progressId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        public async Task<IActionResult> PostAnswer(string progressId, int lessonId, int stepId, [FromBody]Answer answer)
         {
-            var userId = User.GetId();
-
             if (answer == null)
             {
                 return BadRequest("answer is null");
             }
             
-            var courseProgress = await courseProgressRepository.GetAsync(userId, courseId);
+            var courseProgress = await progressRepository.GetAsync(progressId);
 
             if (courseProgress == null)
             {
-                return NotFound($"Invalid combination of userId = {userId}, courseId = {courseId}");
+                return NotFound($"Invalid progressId = {progressId}");
             }
+            
+            var userId = courseProgress.UserId;
 
+            if (!IdIsValid(userId))
+            {
+                return Forbid($"The user with id = {userId} has no rights");
+            }
+            
             var course = await courseRepository.GetAsync(courseProgress.CourceId);
 
             var question = course.GetQuestion(lessonId, stepId, answer.QuestionId);
@@ -141,7 +177,7 @@ namespace QuickCourses.Api.Controllers
                 .StepProgresses[stepId]
                 .QuestionStates[answer.QuestionId];
 
-            var result = question.GetQuestionState(answer, questionState.CurrentAttemptsCount + 1);
+            var result = questionState.Update(question, answer.SelectedAnswers);
 
             if (question.TotalAttemptsCount < result.CurrentAttemptsCount)
             {
@@ -149,14 +185,14 @@ namespace QuickCourses.Api.Controllers
             }
 
             courseProgress.Update(lessonId, stepId, answer.QuestionId, result);
-            await courseProgressRepository.ReplaceAsync(courseProgress.Id, courseProgress);
+            await progressRepository.ReplaceAsync(courseProgress.Id, courseProgress);
 
             return Ok(result);
         }
 
-        private async Task<LessonProgress> GetLessonProgress(string userId, string courseId, int lessonId)
+        private async Task<LessonProgress> GetLessonProgress(string progressId, int lessonId)
         {
-            var course = await courseProgressRepository.GetAsync(userId, courseId);
+            var course = await progressRepository.GetAsync(progressId);
             if (course == null)
             {
                 return null;
@@ -168,6 +204,17 @@ namespace QuickCourses.Api.Controllers
             }
 
             return course.LessonProgresses[lessonId];
+        }
+        
+        private bool IdIsValid(string id)
+        {
+            if (User.IsInRole("Client"))
+            {
+                return !string.IsNullOrEmpty(id);
+            }
+
+            var userId = User.GetId();
+            return userId == id;
         }
     }
 }

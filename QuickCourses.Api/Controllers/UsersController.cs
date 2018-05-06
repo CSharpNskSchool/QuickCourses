@@ -10,7 +10,7 @@ using QuickCourses.Models.Authentication;
 namespace QuickCourses.Api.Controllers
 {
     [AllowAnonymous]
-    [Route("api/v1/registration")]
+    [Route("api/v1/users")]
     [Produces("application/json")]
     public class UsersController : ControllerBase
     {
@@ -41,6 +41,19 @@ namespace QuickCourses.Api.Controllers
             await userRepository.InsertAsync(user);
 
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        [HttpGet("{login}/id")]
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> GetId(string login)
+        {
+            var user = await userRepository.GetByLoginAsync(login);
+            if (user == null)
+            {
+                return NotFound($"User with login = {login} doesnt exits");
+            }
+
+            return Ok(user.Id);
         }
     }
 }
