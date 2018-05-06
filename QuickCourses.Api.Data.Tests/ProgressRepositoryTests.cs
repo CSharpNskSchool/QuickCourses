@@ -14,7 +14,7 @@ namespace QuickCourses.Api.Data.Tests
     {
         private Settings settings;
         private IProgressRepository progressRepository;
-        private Context<CourseProgress> context;
+        private Context<Progress> context;
 
         [SetUp]
         public void Init()
@@ -27,7 +27,7 @@ namespace QuickCourses.Api.Data.Tests
 
             progressRepository = new ProgressRepository(settings);
 
-            context = new Context<CourseProgress>(settings);
+            context = new Context<Progress>(settings);
         }
 
         [TearDown]
@@ -43,16 +43,16 @@ namespace QuickCourses.Api.Data.Tests
 
             var currentUserProgresses = new[]
             {
-                new CourseProgress {Id = $"{user.Login}{123}", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = $"{user.Login}{124}", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = $"{user.Login}{125}", LessonProgresses = new List<LessonProgress>()},
+                new Progress {Id = $"{user.Login}{123}", LessonProgresses = new List<LessonProgress>()},
+                new Progress {Id = $"{user.Login}{124}", LessonProgresses = new List<LessonProgress>()},
+                new Progress {Id = $"{user.Login}{125}", LessonProgresses = new List<LessonProgress>()},
             };
 
             var otherProgresses = new[]
             {
-                new CourseProgress {Id = "someid1", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = "someid2", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = "someid3", LessonProgresses = new List<LessonProgress>()}
+                new Progress {Id = "someid1", LessonProgresses = new List<LessonProgress>()},
+                new Progress {Id = "someid2", LessonProgresses = new List<LessonProgress>()},
+                new Progress {Id = "someid3", LessonProgresses = new List<LessonProgress>()}
             };
 
             context.Collection.InsertMany(currentUserProgresses);

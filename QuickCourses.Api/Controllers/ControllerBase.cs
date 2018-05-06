@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Models.Errors;
 
 namespace QuickCourses.Api.Controllers
@@ -36,6 +37,17 @@ namespace QuickCourses.Api.Controllers
             };
                 
             return BadRequest(error);
+        }
+
+        public IActionResult Forbid(string message)
+        {
+            var error = new Error
+            {
+                Code = Error.ErrorCode.Forbidden,
+                Message = message
+            };
+
+            return StatusCode(StatusCodes.Status403Forbidden, error);
         }
     }
 }

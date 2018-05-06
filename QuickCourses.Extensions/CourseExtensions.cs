@@ -8,14 +8,14 @@ namespace QuickCourses.Extensions
 {
     public static class CourseExtensions
     {
-        public static CourseProgress CreateProgress(this Course course, string userId)
+        public static Progress CreateProgress(this Course course, string userId)
         {
             if (course == null)
             {
                 throw new ArgumentNullException(nameof(course));
             }
 
-            var result = new CourseProgress
+            var result = new Progress
             {
                 LessonProgresses = new List<LessonProgress>(),
                 CourceId = course.Id,
@@ -91,12 +91,12 @@ namespace QuickCourses.Extensions
             return course.Lessons.Sum(lesson => lesson.Steps.Sum(step => step.Questions.Count));
         }
 
-        private static void AddLessonProgress(CourseProgress courseProgress, Lesson lesson)
+        private static void AddLessonProgress(Progress progress, Lesson lesson)
         {
             var lessonProgress = new LessonProgress
             {
                 LessonId = lesson.Id,
-                StepProgresses = new List<LessonStepProgress>()
+                StepProgresses = new List<StepProgress>()
             };
 
             foreach (var step in lesson.Steps)
@@ -104,25 +104,20 @@ namespace QuickCourses.Extensions
                 AddStepProgress(lessonProgress, step);
             }
 
-            courseProgress.LessonProgresses.Add(lessonProgress);
+            progress.LessonProgresses.Add(lessonProgress);
         }
 
         private static void AddStepProgress(LessonProgress lessonProgress, LessonStep step)
         {
-            var stepProgress = new LessonStepProgress
+            var stepProgress = new StepProgress
             {
                 StepId = step.Id,
                 QuestionStates = new List<QuestionState>()
             };
 
-            for (var i = 0; i < step.Questions.Count; i++)
+            foreach (var question in step.Questions)
             {
-                var questionState = new QuestionState
-                {
-                    CorrectlySelectedAnswers = new List<int>(),
-                    SelectedAnswers = new List<int>()
-                };
-
+                var questionState = question.GetQuestionState();
                 stepProgress.QuestionStates.Add(questionState);
             }
 

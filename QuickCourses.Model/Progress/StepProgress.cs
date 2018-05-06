@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace QuickCourses.Models.Progress
 {
-    public class LessonStepProgress
+    public class StepProgress
     {
         [BsonIgnore]
         public string CourseId { get; set; }

@@ -3,18 +3,18 @@ using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Extensions
 {
-    public static class CourseProgressExtension
+    public static class ProgressExtension
     {
-        public static CourseProgress Update(
-            this CourseProgress courseProgress,
+        public static Progress Update(
+            this Progress progress,
             int lessonId,
             int stepId,
             int questionId,
             QuestionState questionState)
         {
-            if (courseProgress == null)
+            if (progress == null)
             {
-                throw new ArgumentNullException(nameof(courseProgress));
+                throw new ArgumentNullException(nameof(progress));
             }
 
             if (questionState == null)
@@ -22,49 +22,50 @@ namespace QuickCourses.Extensions
                 throw new ArgumentNullException(nameof(questionState));
             }
 
-            var lessonProgress = courseProgress.LessonProgresses[lessonId];
+            var lessonProgress = progress.LessonProgresses[lessonId];
             var stepProgress = lessonProgress.StepProgresses[stepId];
             var questionStates = stepProgress.QuestionStates;
 
-            courseProgress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
+            progress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
             
             questionStates[questionId] = questionState;
 
             stepProgress.Passed = stepProgress.QuestionStates.TrueForAll(x => x.Passed);
             lessonProgress.Passed = lessonProgress.StepProgresses.TrueForAll(x => x.Passed);
-            courseProgress.Passed = courseProgress.LessonProgresses.TrueForAll(x => x.Passed);
+            progress.Passed = progress.LessonProgresses.TrueForAll(x => x.Passed);
 
-            return courseProgress;
+            return progress;
         }
 
         //Этот метод точно такой же как и SetUpLinks для Course только с другими названиями переменных
         //можно что-то продумать, наверное
-        public static CourseProgress SetUpLinks(this CourseProgress courseProgress)
+        public static Progress SetUpLinks(this Progress progress)
         {
-            if (courseProgress == null)
+            if (progress == null)
             {
-                throw new ArgumentNullException(nameof(courseProgress));
+                throw new ArgumentNullException(nameof(progress));
             }
 
-            foreach (var lessonProgress in courseProgress.LessonProgresses)
+            foreach (var lessonProgress in progress.LessonProgresses)
             {
-                lessonProgress.CourseId = courseProgress.CourceId;
+                lessonProgress.CourseId = progress.CourceId;
 
                 foreach (var stepProgress in lessonProgress.StepProgresses)
                 {
-                    stepProgress.CourseId = courseProgress.CourceId;
+                    stepProgress.CourseId = progress.CourceId;
                     stepProgress.LessonId = lessonProgress.LessonId;
 
                     foreach (var questionState in stepProgress.QuestionStates)
                     {
-                        questionState.CourseId = courseProgress.CourceId;
+                        questionState.ProgressId = progress.Id;
+                        questionState.CourseId = progress.CourceId;
                         questionState.LessonId = lessonProgress.LessonId;
                         questionState.StepId = stepProgress.StepId;
                     }
                 }
             }
 
-            return courseProgress;
+            return progress;
         }
 
         private static int GetDelta(QuestionState curState, QuestionState newState)

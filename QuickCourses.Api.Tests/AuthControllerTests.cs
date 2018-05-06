@@ -123,12 +123,13 @@ namespace QuickCourses.Api.Tests
         {
             Assert.NotNull(ticket);
 
-            var leftTime = (int)Math.Floor(ticket.ValidUntil.Subtract(DateTime.UtcNow).TotalMilliseconds);
+            var leftTime = (int)Math.Ceiling(ticket.ValidUntil.Subtract(DateTime.UtcNow).TotalMilliseconds);
 
             if (leftTime > 0)
             {
                 Thread.Sleep(leftTime);
             }
+            
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
@@ -139,7 +140,7 @@ namespace QuickCourses.Api.Tests
 
             var response = client.SendAsync(request).Result;
 
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.Unauthorized);
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Test]

@@ -8,14 +8,14 @@ using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Api.Data.Repositories
 {
-    public class ProgressRepository : RepositoryBase<CourseProgress>, IProgressRepository
+    public class ProgressRepository : RepositoryBase<Progress>, IProgressRepository
     {
         public ProgressRepository(Settings settings) 
             : base(settings)
         {
         }
 
-        public async Task<List<CourseProgress>> GetAllByUserAsync(string userId)
+        public async Task<List<Progress>> GetAllByUserAsync(string userId)
         {
             if (userId == null)
             {
@@ -27,7 +27,7 @@ namespace QuickCourses.Api.Data.Repositories
             return result;
         }
 
-        public Task<CourseProgress> GetAsync(string userId, string courseId)
+        public Task<Progress> GetAsync(string userId, string courseId)
         {
             if (userId == null)
             {
@@ -57,14 +57,14 @@ namespace QuickCourses.Api.Data.Repositories
             return ContainsAsync($"{userId}{courseId}");
         }
 
-        public override async Task<List<CourseProgress>> GetAllAsync()
+        public override async Task<List<Progress>> GetAllAsync()
         {
             var result = await base.GetAllAsync();
             result.ForEach(progress => progress.SetUpLinks());
             return result;
         }
 
-        public override async Task<CourseProgress> GetAsync(string id)
+        public override async Task<Progress> GetAsync(string id)
         {
             if (id == null)
             {
@@ -76,7 +76,7 @@ namespace QuickCourses.Api.Data.Repositories
             return result;
         }
 
-        public override async Task<string> InsertAsync(CourseProgress value)
+        public override async Task<string> InsertAsync(Progress value)
         {
             if (value == null)
             {

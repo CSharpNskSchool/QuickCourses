@@ -23,7 +23,7 @@ namespace QuickCourses.Api.Data.Repositories
 
             Context = new Context<TValue>(settings);
         }
-        
+
         public virtual async Task<List<TValue>> GetAllAsync()
         {
             var result = await Context.Collection.Find(_ => true).ToListAsync();

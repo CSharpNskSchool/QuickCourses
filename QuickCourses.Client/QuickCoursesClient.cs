@@ -10,6 +10,7 @@ using QuickCourses.Models.Errors;
 using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Web;
 using QuickCourses.Models.Authentication;
 
 [assembly: InternalsVisibleTo("QuickCourses.Client.Tests")]
@@ -21,18 +22,11 @@ namespace QuickCourses.Client
         private readonly string apiUrl;
         private readonly string version;
         
-        public QuickCoursesClient(ApiVersion apiVersion, string apiUrl)
+        public QuickCoursesClient(ApiVersion apiVersion, string apiUrl, HttpClient client = null)
         {
             this.version = Enum.GetName(typeof(ApiVersion), apiVersion);
             this.apiUrl = apiUrl ?? throw new ArgumentNullException(nameof(apiUrl));
-            this.client = new HttpClient();
-        }
-
-        internal QuickCoursesClient(ApiVersion apiVersion, HttpClient client)
-        {
-            this.apiUrl = string.Empty;
-            this.version = Enum.GetName(typeof(ApiVersion), apiVersion);
-            this.client = client;
+            this.client = client ?? new HttpClient();
         }
 
         public void Dispose()
@@ -42,117 +36,202 @@ namespace QuickCourses.Client
 
         public Task<Ticket> GetTicketAsync(Ticket ticket, string login)
         {
-            return InvokeApiMethod<Ticket>(HttpMethod.Get, "auth", ticket, headers: new Dictionary<string, string> { ["Login"] =  login });
+            return InvokeApiMethod<Ticket>(
+                HttpMethod.Get,
+                path: "auth",
+                ticket: ticket,
+                headers: new Dictionary<string, string> {["Login"] = login});
         }
 
         public Task<Ticket> GetTicketAsync(AuthData authData)
         {
-            return InvokeApiMethod<Ticket>(HttpMethod.Post, "auth", content: authData);
+            return InvokeApiMethod<Ticket>(
+                HttpMethod.Post, 
+                path: "auth", 
+                content: authData);
         }
 
         public Task<IEnumerable<Course>> GetCoursesAsync(Ticket ticket)
         {
-            return InvokeApiMethod<IEnumerable<Course>>(HttpMethod.Get, "courses", ticket);
+            return InvokeApiMethod<IEnumerable<Course>>(
+                HttpMethod.Get, 
+                path: "courses", 
+                ticket: ticket);
         }
 
         public Task<Course> GetCourseAsync(Ticket ticket, string courseId)
         {
-            return InvokeApiMethod<Course>(HttpMethod.Get, $"courses/{courseId}", ticket);
+            return InvokeApiMethod<Course>(
+                HttpMethod.Get, 
+                path: $"courses/{courseId}", 
+                ticket: ticket);
         }
 
         public Task<Description> GetCourseDescriptionAsync(Ticket ticket, string courseId)
         {
-            return InvokeApiMethod<Description>(HttpMethod.Get, $"courses/{courseId}/dectrition", ticket);
+            return InvokeApiMethod<Description>(
+                HttpMethod.Get, 
+                path: $"courses/{courseId}/dectrition", 
+                ticket: ticket);
         }
 
         public Task<IEnumerable<Lesson>> GetLessonsAsync(Ticket ticket, string courseId)
         {
-            return InvokeApiMethod<IEnumerable<Lesson>>(HttpMethod.Get, $"courses/{courseId}/lessons", ticket);
+            return InvokeApiMethod<IEnumerable<Lesson>>(
+                HttpMethod.Get, 
+                path: $"courses/{courseId}/lessons",
+                ticket: ticket);
         }
 
         public Task<Lesson> GetLessonAsync(Ticket ticket, string courseId, int lessonId)
         {
-            return InvokeApiMethod<Lesson>(HttpMethod.Get, $"courses/{courseId}/lessons/{lessonId}", ticket);
+            return InvokeApiMethod<Lesson>(
+                HttpMethod.Get, 
+                path: $"courses/{courseId}/lessons/{lessonId}",
+                ticket: ticket);
         }
 
         public Task<IEnumerable<LessonStep>> GetLessonStepsAsync(Ticket ticket, string courseId, int lessonId)
         {
-            return InvokeApiMethod<IEnumerable<LessonStep>>(HttpMethod.Get, $"courses/{courseId}/lessons/{lessonId}/steps", ticket);
+            return InvokeApiMethod<IEnumerable<LessonStep>>(
+                HttpMethod.Get, 
+                path: $"courses/{courseId}/lessons/{lessonId}/steps", 
+                ticket: ticket);
         }
 
         public Task<LessonStep> GetLessonStepAsync(Ticket ticket, string courseId, int lessonId, int stepId)
         {
-            return InvokeApiMethod<LessonStep>(HttpMethod.Get, $"courses/{courseId}/lessons/{lessonId}/steps/{stepId}", ticket);
+            return InvokeApiMethod<LessonStep>(
+                HttpMethod.Get,
+                path: $"courses/{courseId}/lessons/{lessonId}/steps/{stepId}",
+                ticket: ticket);
         }
 
         public Task RegisterAsync(User user)
         {
-            return InvokeApiMethod(HttpMethod.Post, "registration", content: user);
+            return InvokeApiMethod(
+                HttpMethod.Post,
+                path: "registration",
+                content: user);
         }
 
-        public Task StartCourseAsync(Ticket ticket, string courseId)
+        public Task<Progress> StartCourseAsync(Ticket ticket, string courseId, string userId = null)
         {
             var startOptions = new CourseStartOptions
             {
                 CourseId = courseId
             };
 
-            return InvokeApiMethod<CourseProgress>(HttpMethod.Post, "progress", ticket, content: startOptions);
+            var query = userId != null ? new Dictionary<string, string> {["userId"] = userId} : null;
+            
+            return InvokeApiMethod<Progress>(
+                HttpMethod.Post, 
+                path: "progress", 
+                ticket: ticket, 
+                content: startOptions,
+                queryParameters: query);
         }
 
-        public Task<LessonProgress> GetLessonProgressAsync(Ticket ticket, string courseId, int lessonId)
+        public Task<LessonProgress> GetLessonProgressAsync(Ticket ticket, string progressId, int lessonId)
         {
-            return InvokeApiMethod<LessonProgress>(HttpMethod.Get, $"progress/{courseId}/lessons/{lessonId}", ticket);
+            return InvokeApiMethod<LessonProgress>(
+                HttpMethod.Get,
+                path: $"progress/{progressId}/lessons/{lessonId}", 
+                ticket: ticket);
         }
 
-        public Task<LessonStepProgress> GetLessonStepProgressAsync(Ticket ticket, string courseId, int lessonId, int stepId)
+        public Task<StepProgress> GetLessonStepProgressAsync(
+            Ticket ticket,
+            string progressId,
+            int lessonId,
+            int stepId)
         {
-            return InvokeApiMethod<LessonStepProgress>(HttpMethod.Get, $"progress/{courseId}/lessons/{lessonId}/steps/{stepId}", ticket);
+            return InvokeApiMethod<StepProgress>(
+                HttpMethod.Get, 
+                path: $"progress/{progressId}/lessons/{lessonId}/steps/{stepId}",
+                ticket: ticket);
         }
 
-        public Task<CourseProgress> GetCourseProgressAsync(Ticket ticket, string courseId)
+        public Task<Progress> GetCourseProgressAsync(Ticket ticket, string progressId)
         {
-            return InvokeApiMethod<CourseProgress>(HttpMethod.Get, $"progress/{courseId}", ticket);
+            return InvokeApiMethod<Progress>(
+                HttpMethod.Get, 
+                path: $"progress/{progressId}",
+                ticket: ticket);
         }
 
-        public Task<QuestionState> SendAnswerAsync(Ticket ticket, string courseId, int lessonId, int stepId, Answer answer)
+        public Task<QuestionState> SendAnswerAsync(
+            Ticket ticket,
+            string progressId,
+            int lessonId,
+            int stepId,
+            Answer answer)
         {
-            return InvokeApiMethod<QuestionState>(HttpMethod.Post, $"progress/{courseId}/lessons/{lessonId}/steps/{stepId}", ticket, content: answer);
+            return InvokeApiMethod<QuestionState>(
+                HttpMethod.Post,
+                path: $"progress/{progressId}/lessons/{lessonId}/steps/{stepId}",
+                ticket: ticket,
+                content: answer);
         }
 
-        public Task<IEnumerable<CourseProgress>> GetProgressAsync(Ticket ticket)
+        public Task<IEnumerable<Progress>> GetProgressAsync(Ticket ticket, string userId)
         {
-            return InvokeApiMethod<IEnumerable<CourseProgress>>(HttpMethod.Post, $"progress", ticket);
+            var query = userId != null ? new Dictionary<string, string> {["userId"] = userId} : null;
+            
+            return InvokeApiMethod<IEnumerable<Progress>>(
+                HttpMethod.Post,
+                path: $"progress",
+                ticket: ticket,
+                queryParameters: query);
         }
 
-        private Task InvokeApiMethod(HttpMethod httpMethod,
-                                     string path,
-                                     Ticket ticket = null,
-                                     object content = null,
-                                     Dictionary<string, string> headers = null)
+        private Task InvokeApiMethod(
+            HttpMethod httpMethod,
+            string path,
+            Ticket ticket = null,
+            object content = null,
+            Dictionary<string, string> headers = null)
         {
             return MakeRequest(httpMethod, path, ticket, content, headers);
         }
 
-        private async Task<T> InvokeApiMethod<T>(HttpMethod httpMethod, 
-                                                 string path, Ticket ticket = null,
-                                                 object content = null,
-                                                 Dictionary<string, string> headers = null)
+        private async Task<T> InvokeApiMethod<T>(
+            HttpMethod httpMethod,
+            string path, 
+            Ticket ticket = null,
+            object content = null,
+            Dictionary<string, string> headers = null,
+            Dictionary<string, string> queryParameters = null)
         {
             var response = await MakeRequest(httpMethod, path, ticket, content, headers);
-            
+
             var serializedObject = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(serializedObject);
         }
 
-        private async Task<HttpResponseMessage> MakeRequest(HttpMethod httpMethod,
-                                                            string path,
-                                                            Ticket ticket = null,
-                                                            object content = null,
-                                                            Dictionary<string, string> headers = null)
+        private async Task<HttpResponseMessage> MakeRequest(
+            HttpMethod httpMethod,
+            string path,
+            Ticket ticket = null,
+            object content = null,
+            Dictionary<string, string> headers = null,
+            Dictionary<string, string> queryParameters = null)
         {
-            var request = new HttpRequestMessage(httpMethod, $"{apiUrl}/api/{version}/{path}");
+            var uriBuilder = new UriBuilder($"{apiUrl}/api/{version}/{path}");
+
+            if (queryParameters != null)
+            {
+                var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                foreach (var parameter in queryParameters)
+                {
+                    query[parameter.Key] = parameter.Value;
+                }
+
+                uriBuilder.Query = query.ToString();
+            }
+            
+            var request = new HttpRequestMessage(httpMethod, uriBuilder.Uri);
 
             if (ticket != null)
             {
@@ -172,14 +251,14 @@ namespace QuickCourses.Client
 
             if (headers != null)
             {
-                foreach(var header in headers)
+                foreach (var header in headers)
                 {
                     request.Headers.Add(header.Key, header.Value);
                 }
             }
-
-            var response = await client.SendAsync(request);
             
+            var response = await client.SendAsync(request);
+
             if (!response.IsSuccessStatusCode)
             {
                 HandleError(response);
