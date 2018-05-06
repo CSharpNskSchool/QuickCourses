@@ -111,11 +111,11 @@ namespace QuickCourses.Client
         {
             return InvokeApiMethod(
                 HttpMethod.Post,
-                path: "registration",
+                path: "users",
                 content: user);
         }
 
-        public Task<Progress> StartCourseAsync(Ticket ticket, string courseId, string userId = null)
+        public Task<CourseProgress> StartCourseAsync(Ticket ticket, string courseId, string userId = null)
         {
             var startOptions = new CourseStartOptions
             {
@@ -124,7 +124,7 @@ namespace QuickCourses.Client
 
             var query = userId != null ? new Dictionary<string, string> {["userId"] = userId} : null;
             
-            return InvokeApiMethod<Progress>(
+            return InvokeApiMethod<CourseProgress>(
                 HttpMethod.Post, 
                 path: "progress", 
                 ticket: ticket, 
@@ -152,9 +152,9 @@ namespace QuickCourses.Client
                 ticket: ticket);
         }
 
-        public Task<Progress> GetCourseProgressAsync(Ticket ticket, string progressId)
+        public Task<CourseProgress> GetCourseProgressAsync(Ticket ticket, string progressId)
         {
-            return InvokeApiMethod<Progress>(
+            return InvokeApiMethod<CourseProgress>(
                 HttpMethod.Get, 
                 path: $"progress/{progressId}",
                 ticket: ticket);
@@ -174,15 +174,23 @@ namespace QuickCourses.Client
                 content: answer);
         }
 
-        public Task<IEnumerable<Progress>> GetProgressAsync(Ticket ticket, string userId)
+        public Task<IEnumerable<CourseProgress>> GetProgressAsync(Ticket ticket, string userId)
         {
             var query = userId != null ? new Dictionary<string, string> {["userId"] = userId} : null;
             
-            return InvokeApiMethod<IEnumerable<Progress>>(
+            return InvokeApiMethod<IEnumerable<CourseProgress>>(
                 HttpMethod.Post,
-                path: $"progress",
+                path: "progress",
                 ticket: ticket,
                 queryParameters: query);
+        }
+
+        public Task<string> GetIdByLoginAsync(Ticket ticket, string login)
+        {
+            return InvokeApiMethod<string>(
+                HttpMethod.Get,
+                path: $"users/{login}/id",
+                ticket: ticket);
         }
 
         private Task InvokeApiMethod(

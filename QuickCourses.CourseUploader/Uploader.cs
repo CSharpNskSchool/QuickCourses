@@ -7,7 +7,7 @@ using QuickCourses.Models.Interfaces;
 namespace QuickCourses.CourseUploader
 {
     public class Uploader<TValue>
-        where TValue : IValueWithId
+        where TValue : IIdentifiable
     {
         private readonly IRepository<TValue> repository;
 

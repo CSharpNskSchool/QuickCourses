@@ -11,7 +11,7 @@ namespace QuickCourses.Api.Data.Tests
     [NonParallelizable]
     public class RepositoryTests
     {
-        private class Value : IValueWithId
+        private class Value : IIdentifiable
         {
             public Value()
             {
@@ -22,7 +22,7 @@ namespace QuickCourses.Api.Data.Tests
         }
         
         private RepositoryBase<Value> repository;
-        private Context<Value> context;
+        private Context<Value> valueRepositoryContext;
         private Settings settings;
         
         [SetUp]
@@ -36,13 +36,13 @@ namespace QuickCourses.Api.Data.Tests
             
             repository = new RepositoryBase<Value>(settings);
         
-            context = new Context<Value>(settings);
+            valueRepositoryContext = new Context<Value>(settings);
         }
 
         [TearDown]
         public void Clear()
         {
-            context.Collection.Database.DropCollection(settings.CollectionName);
+            valueRepositoryContext.Collection.Database.DropCollection(settings.CollectionName);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace QuickCourses.Api.Data.Tests
         {
             var value = new Value();
             
-            context.Collection.InsertOne(value);
+            valueRepositoryContext.Collection.InsertOne(value);
 
             var result = repository.DeleteAsync(value.Id).Result;
             
@@ -70,7 +70,7 @@ namespace QuickCourses.Api.Data.Tests
         {
             var value = new Value();
             
-            context.Collection.InsertOne(value);
+            valueRepositoryContext.Collection.InsertOne(value);
 
             var result = repository.GetAsync(value.Id).Result;
 
@@ -85,7 +85,7 @@ namespace QuickCourses.Api.Data.Tests
         {
             var value = new Value();
             
-            context.Collection.InsertOne(value);
+            valueRepositoryContext.Collection.InsertOne(value);
 
             var result = repository.ContainsAsync(value.Id).Result;
             

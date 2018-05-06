@@ -31,16 +31,18 @@ namespace QuickCourses.Client
         
         Task RegisterAsync(User user);
         
-        Task<Progress> StartCourseAsync(Ticket ticket, string userId, string courseId);
+        Task<CourseProgress> StartCourseAsync(Ticket ticket, string userId, string courseId);
         
         Task<LessonProgress> GetLessonProgressAsync(Ticket ticket, string progressId, int lessonId);
         
         Task<StepProgress> GetLessonStepProgressAsync(Ticket ticket, string progressId, int lessonId, int stepId);
         
-        Task<Progress> GetCourseProgressAsync(Ticket ticket, string progressId);
+        Task<CourseProgress> GetCourseProgressAsync(Ticket ticket, string progressId);
         
         Task<QuestionState> SendAnswerAsync(Ticket ticket, string progressId, int lessonId, int stepId, Answer answer);
         
-        Task<IEnumerable<Progress>> GetProgressAsync(Ticket ticket, string userId);
+        Task<IEnumerable<CourseProgress>> GetProgressAsync(Ticket ticket, string userId);
+        
+        Task<string> GetIdByLoginAsync(Ticket ticket, string login);
     }
 }

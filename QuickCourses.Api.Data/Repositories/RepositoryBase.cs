@@ -10,7 +10,7 @@ using QuickCourses.Models.Interfaces;
 namespace QuickCourses.Api.Data.Repositories
 {
     public class RepositoryBase<TValue> : IRepository<TValue>
-        where TValue : IValueWithId
+        where TValue : IIdentifiable
     {
         protected readonly Context<TValue> Context;
 

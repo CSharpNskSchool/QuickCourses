@@ -5,16 +5,16 @@ namespace QuickCourses.Extensions
 {
     public static class ProgressExtension
     {
-        public static Progress Update(
-            this Progress progress,
+        public static CourseProgress Update(
+            this CourseProgress courseProgress,
             int lessonId,
             int stepId,
             int questionId,
             QuestionState questionState)
         {
-            if (progress == null)
+            if (courseProgress == null)
             {
-                throw new ArgumentNullException(nameof(progress));
+                throw new ArgumentNullException(nameof(courseProgress));
             }
 
             if (questionState == null)
@@ -22,50 +22,50 @@ namespace QuickCourses.Extensions
                 throw new ArgumentNullException(nameof(questionState));
             }
 
-            var lessonProgress = progress.LessonProgresses[lessonId];
+            var lessonProgress = courseProgress.LessonProgresses[lessonId];
             var stepProgress = lessonProgress.StepProgresses[stepId];
             var questionStates = stepProgress.QuestionStates;
 
-            progress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
+            courseProgress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
             
             questionStates[questionId] = questionState;
 
             stepProgress.Passed = stepProgress.QuestionStates.TrueForAll(x => x.Passed);
             lessonProgress.Passed = lessonProgress.StepProgresses.TrueForAll(x => x.Passed);
-            progress.Passed = progress.LessonProgresses.TrueForAll(x => x.Passed);
+            courseProgress.Passed = courseProgress.LessonProgresses.TrueForAll(x => x.Passed);
 
-            return progress;
+            return courseProgress;
         }
 
         //Этот метод точно такой же как и SetUpLinks для Course только с другими названиями переменных
         //можно что-то продумать, наверное
-        public static Progress SetUpLinks(this Progress progress)
+        public static CourseProgress SetUpLinks(this CourseProgress courseProgress)
         {
-            if (progress == null)
+            if (courseProgress == null)
             {
-                throw new ArgumentNullException(nameof(progress));
+                throw new ArgumentNullException(nameof(courseProgress));
             }
 
-            foreach (var lessonProgress in progress.LessonProgresses)
+            foreach (var lessonProgress in courseProgress.LessonProgresses)
             {
-                lessonProgress.CourseId = progress.CourceId;
+                lessonProgress.CourseId = courseProgress.CourceId;
 
                 foreach (var stepProgress in lessonProgress.StepProgresses)
                 {
-                    stepProgress.CourseId = progress.CourceId;
+                    stepProgress.CourseId = courseProgress.CourceId;
                     stepProgress.LessonId = lessonProgress.LessonId;
 
                     foreach (var questionState in stepProgress.QuestionStates)
                     {
-                        questionState.ProgressId = progress.Id;
-                        questionState.CourseId = progress.CourceId;
+                        questionState.ProgressId = courseProgress.Id;
+                        questionState.CourseId = courseProgress.CourceId;
                         questionState.LessonId = lessonProgress.LessonId;
                         questionState.StepId = stepProgress.StepId;
                     }
                 }
             }
 
-            return progress;
+            return courseProgress;
         }
 
         private static int GetDelta(QuestionState curState, QuestionState newState)

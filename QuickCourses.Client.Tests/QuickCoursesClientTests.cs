@@ -108,7 +108,7 @@ namespace QuickCourses.Client.Tests
 
             var userTicket = client.GetTicketAsync(ticket, user.Login).Result;
 
-           var progress = client.StartCourseAsync(userTicket, firstCourse.Id).Result;
+            var progress = client.StartCourseAsync(userTicket, firstCourse.Id).Result;
 
             var result = client.SendAnswerAsync(
                 userTicket,
@@ -159,6 +159,16 @@ namespace QuickCourses.Client.Tests
             Assert.Equal(firstQuestionState, questionState, new JsonComparer<QuestionState>());
         }
 
+        [Fact]
+        public void GetIdByLogin_Test()
+        {
+            var user = TestUsers.CreateUserSample();
+
+            var result = client.GetIdByLoginAsync(ticket, user.Login).Result;
+            
+            Assert.True(!string.IsNullOrEmpty(result));
+        }
+        
         public void Dispose()
         {
             client.Dispose();

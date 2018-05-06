@@ -8,14 +8,14 @@ namespace QuickCourses.Extensions
 {
     public static class CourseExtensions
     {
-        public static Progress CreateProgress(this Course course, string userId)
+        public static CourseProgress CreateProgress(this Course course, string userId)
         {
             if (course == null)
             {
                 throw new ArgumentNullException(nameof(course));
             }
 
-            var result = new Progress
+            var result = new CourseProgress
             {
                 LessonProgresses = new List<LessonProgress>(),
                 CourceId = course.Id,
@@ -91,7 +91,7 @@ namespace QuickCourses.Extensions
             return course.Lessons.Sum(lesson => lesson.Steps.Sum(step => step.Questions.Count));
         }
 
-        private static void AddLessonProgress(Progress progress, Lesson lesson)
+        private static void AddLessonProgress(CourseProgress courseProgress, Lesson lesson)
         {
             var lessonProgress = new LessonProgress
             {
@@ -104,7 +104,7 @@ namespace QuickCourses.Extensions
                 AddStepProgress(lessonProgress, step);
             }
 
-            progress.LessonProgresses.Add(lessonProgress);
+            courseProgress.LessonProgresses.Add(lessonProgress);
         }
 
         private static void AddStepProgress(LessonProgress lessonProgress, LessonStep step)

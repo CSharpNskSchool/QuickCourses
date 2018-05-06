@@ -65,7 +65,7 @@ namespace QuickCourses.Api.Tests
             repo
                 .Setup(x => x.ContainsByLoginAsync(user.Login))
                 .Returns(() => Task.FromResult(true));
-
+            
             var usersController = new UsersController(repo.Object);
 
             var response = usersController.PostUser(user).Result;
@@ -76,6 +76,27 @@ namespace QuickCourses.Api.Tests
             };
 
             Utilits.CheckResponseValue<BadRequestObjectResult, Error>(response, extectedResult);
+        }
+
+        [Test]
+        public void GetIdTest()
+        {
+            var user = new User
+            {
+                Login = "123",
+                Id = "123"
+            };
+            
+            var repo = new Mock<IUserRepository>();
+            repo
+                .Setup(x => x.GetByLoginAsync(user.Login))
+                .Returns(() => Task.FromResult(user));
+            
+            var usersController = new UsersController(repo.Object);
+
+            var response = usersController.GetId(user.Login).Result;
+
+            Utilits.CheckResponseValue<OkObjectResult, string>(response, user.Id);
         }
     }
 }

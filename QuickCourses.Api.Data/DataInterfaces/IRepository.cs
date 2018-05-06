@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace QuickCourses.Api.Data.DataInterfaces
 {
     public interface IRepository<TValue>
-        where TValue : IValueWithId
+        where TValue : IIdentifiable
     {
         Task<List<TValue>> GetAllAsync();
         Task<TValue> GetAsync(string id);

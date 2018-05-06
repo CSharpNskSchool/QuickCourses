@@ -3,7 +3,7 @@ using QuickCourses.Models.Interfaces;
 
 namespace QuickCourses.Models.Progress
 {
-    public class Progress : IValueWithId
+    public class CourseProgress : IIdentifiable
     {
         public string Id { get; set; }
         public Statistics Statistics { get; set; }
