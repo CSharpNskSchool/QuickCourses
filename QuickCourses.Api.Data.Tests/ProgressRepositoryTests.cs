@@ -4,9 +4,9 @@ using KellermanSoftware.CompareNetObjects;
 using NUnit.Framework;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
+using QuickCourses.Api.Data.Models.Authentication;
+using QuickCourses.Api.Data.Models.Progress;
 using QuickCourses.Api.Data.Repositories;
-using QuickCourses.Models.Authentication;
-using QuickCourses.Models.Progress;
 
 namespace QuickCourses.Api.Data.Tests
 {
@@ -14,7 +14,7 @@ namespace QuickCourses.Api.Data.Tests
     {
         private Settings settings;
         private IProgressRepository progressRepository;
-        private Context<CourseProgress> progressRepositoryContext;
+        private Context<CourseProgressData> progressRepositoryContext;
 
         [SetUp]
         public void Init()
@@ -27,7 +27,7 @@ namespace QuickCourses.Api.Data.Tests
 
             progressRepository = new ProgressRepository(settings);
 
-            progressRepositoryContext = new Context<CourseProgress>(settings);
+            progressRepositoryContext = new Context<CourseProgressData>(settings);
         }
 
         [TearDown]
@@ -39,20 +39,20 @@ namespace QuickCourses.Api.Data.Tests
         [Test]
         public void GetByLoginTest()
         {
-            var user = new User { Login = "123", Id = "123" };
+            var user = new UserData { Login = "123", Id = "123" };
 
             var currentUserProgresses = new[]
             {
-                new CourseProgress {Id = $"{user.Login}{123}", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = $"{user.Login}{124}", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = $"{user.Login}{125}", LessonProgresses = new List<LessonProgress>()},
+                new CourseProgressData {Id = $"{user.Login}{123}", LessonProgresses = new List<LessonProgressData>()},
+                new CourseProgressData {Id = $"{user.Login}{124}", LessonProgresses = new List<LessonProgressData>()},
+                new CourseProgressData {Id = $"{user.Login}{125}", LessonProgresses = new List<LessonProgressData>()},
             };
 
             var otherProgresses = new[]
             {
-                new CourseProgress {Id = "someid1", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = "someid2", LessonProgresses = new List<LessonProgress>()},
-                new CourseProgress {Id = "someid3", LessonProgresses = new List<LessonProgress>()}
+                new CourseProgressData {Id = "someid1", LessonProgresses = new List<LessonProgressData>()},
+                new CourseProgressData {Id = "someid2", LessonProgresses = new List<LessonProgressData>()},
+                new CourseProgressData {Id = "someid3", LessonProgresses = new List<LessonProgressData>()}
             };
 
             progressRepositoryContext.Collection.InsertMany(currentUserProgresses);

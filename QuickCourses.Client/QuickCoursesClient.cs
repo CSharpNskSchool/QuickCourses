@@ -3,15 +3,15 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text;
 using System;
-using QuickCourses.Models.Primitives;
-using QuickCourses.Models.Interaction;
-using QuickCourses.Models.Progress;
-using QuickCourses.Models.Errors;
 using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Web;
-using QuickCourses.Models.Authentication;
+using QuickCourses.Api.Models.Authentication;
+using QuickCourses.Api.Models.Errors;
+using QuickCourses.Api.Models.Interaction;
+using QuickCourses.Api.Models.Primitives;
+using QuickCourses.Api.Models.Progress;
 
 [assembly: InternalsVisibleTo("QuickCourses.Client.Tests")]
 namespace QuickCourses.Client
@@ -211,7 +211,7 @@ namespace QuickCourses.Client
             Dictionary<string, string> headers = null,
             Dictionary<string, string> queryParameters = null)
         {
-            var response = await MakeRequest(httpMethod, path, ticket, content, headers);
+            var response = await MakeRequest(httpMethod, path, ticket, content, headers, queryParameters);
 
             var serializedObject = await response.Content.ReadAsStringAsync();
 

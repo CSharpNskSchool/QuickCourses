@@ -1,4 +1,4 @@
-﻿namespace QuickCourses.Models.Primitives
+﻿namespace QuickCourses.Api.Models.Primitives
 {
     public class EducationalMaterial
     {

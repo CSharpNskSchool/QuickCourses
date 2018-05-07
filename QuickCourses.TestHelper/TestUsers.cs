@@ -1,12 +1,12 @@
-﻿using QuickCourses.Models.Authentication;
+﻿using QuickCourses.Api.Data.Models.Authentication;
 
 namespace QuickCourses.TestHelper
 {
     public static class TestUsers
     {
-        public static User CreateSuperUserSample()
+        public static UserData CreateSuperUserSample()
         {
-            return new User
+            return new UserData
             {
                 Login = "bot",
                 Name = "bot",
@@ -15,9 +15,9 @@ namespace QuickCourses.TestHelper
             };
         }
 
-        public static User CreateUserSample()
+        public static UserData CreateUserSample()
         {
-            return new User
+            return new UserData
             {
                 Name = "misha",
                 Login = "mihail",

@@ -1,6 +1,6 @@
-﻿using QuickCourses.Models.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using QuickCourses.Api.Data.Models.Interfaces;
 
 namespace QuickCourses.Api.Data.DataInterfaces
 {

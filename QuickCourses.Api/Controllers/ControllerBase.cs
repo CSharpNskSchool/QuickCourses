@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuickCourses.Models.Errors;
+using QuickCourses.Api.Models.Errors;
 
 namespace QuickCourses.Api.Controllers
 {

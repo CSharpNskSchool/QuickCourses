@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace QuickCourses.Models.Primitives
+namespace QuickCourses.Api.Data.Models.Primitives
 {
-    public class LessonStep
+    public class LessonStepData
     {
         [BsonIgnore]
         public string CourseId { get; set; }
         [BsonIgnore]
         public int LessonId { get; set; }
         public int Id { get; set; }
-        public EducationalMaterial EducationalMaterial { get; set; }
-        public List<Question> Questions { get; set; }
+        public EducationalMaterialData EducationalMaterialData { get; set; }
+        public List<QuestionData> Questions { get; set; }
     }
 }

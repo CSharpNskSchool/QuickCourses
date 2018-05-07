@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
-using QuickCourses.Models.Authentication;
+using QuickCourses.Api.Data.Models.Authentication;
 
 namespace QuickCourses.Api.Data.DataInterfaces
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IUserRepository : IRepository<UserData>
     {
-        Task<User> GetByLoginAsync(string login);
+        Task<UserData> GetByLoginAsync(string login);
         Task<bool> ContainsByLoginAsync(string login);
     }
 }

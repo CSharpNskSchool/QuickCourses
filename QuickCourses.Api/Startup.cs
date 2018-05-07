@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
+using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Data.Repositories;
 using QuickCourses.Api.Extensions;
-using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.Api
 {
@@ -52,7 +52,7 @@ namespace QuickCourses.Api
                 .AddMvc();
             
             services
-                .AddSingleton<IRepository<Course>>(new CourseRepository(CourseRepositorySettings))
+                .AddSingleton<IRepository<CourseData>>(new CourseRepository(CourseRepositorySettings))
                 .AddSingleton<IProgressRepository>(new ProgressRepository(ProgressRepositorySettings))
                 .AddSingleton<IUserRepository>(new UserRepository(UserRepositorySettings));
         }

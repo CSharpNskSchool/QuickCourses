@@ -1,76 +1,97 @@
 ﻿using System;
-using QuickCourses.Models.Progress;
+using System.Linq;
+using QuickCourses.Api.Data.Models.Progress;
+using QuickCourses.Api.Models.Progress;
 
-namespace QuickCourses.Extensions
+namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class ProgressExtension
     {
-        public static CourseProgress Update(
-            this CourseProgress courseProgress,
+        public static CourseProgressData Update(
+            this CourseProgressData courseProgressData,
             int lessonId,
             int stepId,
             int questionId,
-            QuestionState questionState)
+            QuestionStateData questionStateData)
         {
-            if (courseProgress == null)
+            if (courseProgressData == null)
             {
-                throw new ArgumentNullException(nameof(courseProgress));
+                throw new ArgumentNullException(nameof(courseProgressData));
             }
 
-            if (questionState == null)
+            if (questionStateData == null)
             {
-                throw new ArgumentNullException(nameof(questionState));
+                throw new ArgumentNullException(nameof(questionStateData));
             }
 
-            var lessonProgress = courseProgress.LessonProgresses[lessonId];
+            var lessonProgress = courseProgressData.LessonProgresses[lessonId];
             var stepProgress = lessonProgress.StepProgresses[stepId];
             var questionStates = stepProgress.QuestionStates;
 
-            courseProgress.Statistics.PassedQuestionsCount += GetDelta(questionStates[questionId], questionState);
+            courseProgressData.StatisticsData.PassedQuestionsCount += GetDelta(questionStates[questionId], questionStateData);
             
-            questionStates[questionId] = questionState;
+            questionStates[questionId] = questionStateData;
 
             stepProgress.Passed = stepProgress.QuestionStates.TrueForAll(x => x.Passed);
             lessonProgress.Passed = lessonProgress.StepProgresses.TrueForAll(x => x.Passed);
-            courseProgress.Passed = courseProgress.LessonProgresses.TrueForAll(x => x.Passed);
+            courseProgressData.Passed = courseProgressData.LessonProgresses.TrueForAll(x => x.Passed);
 
-            return courseProgress;
+            return courseProgressData;
         }
-
-        //Этот метод точно такой же как и SetUpLinks для Course только с другими названиями переменных
-        //можно что-то продумать, наверное
-        public static CourseProgress SetUpLinks(this CourseProgress courseProgress)
+        
+        public static CourseProgressData SetUpLinks(this CourseProgressData courseProgressData)
         {
-            if (courseProgress == null)
+            if (courseProgressData == null)
             {
-                throw new ArgumentNullException(nameof(courseProgress));
+                throw new ArgumentNullException(nameof(courseProgressData));
             }
 
-            foreach (var lessonProgress in courseProgress.LessonProgresses)
+            foreach (var lessonProgress in courseProgressData.LessonProgresses)
             {
-                lessonProgress.CourseId = courseProgress.CourceId;
+                lessonProgress.CourseId = courseProgressData.CourceId;
 
                 foreach (var stepProgress in lessonProgress.StepProgresses)
                 {
-                    stepProgress.CourseId = courseProgress.CourceId;
+                    stepProgress.CourseId = courseProgressData.CourceId;
                     stepProgress.LessonId = lessonProgress.LessonId;
 
                     foreach (var questionState in stepProgress.QuestionStates)
                     {
-                        questionState.ProgressId = courseProgress.Id;
-                        questionState.CourseId = courseProgress.CourceId;
+                        questionState.ProgressId = courseProgressData.Id;
+                        questionState.CourseId = courseProgressData.CourceId;
                         questionState.LessonId = lessonProgress.LessonId;
-                        questionState.StepId = stepProgress.StepId;
+                        questionState.StepId = stepProgress.Id;
                     }
                 }
             }
 
-            return courseProgress;
+            return courseProgressData;
         }
 
-        private static int GetDelta(QuestionState curState, QuestionState newState)
+        public static CourseProgress ToApiModel(this CourseProgressData progressData)
         {
-            return Convert.ToInt32(newState.Passed) - Convert.ToInt32(curState.Passed);
+            var result = new CourseProgress
+            {
+                CourceId = progressData.CourceId,
+                Id = progressData.Id,
+                LessonProgresses =
+                    progressData.LessonProgresses.Select(lessonProgress => lessonProgress.ToApiModel()).ToList(),
+                Passed = progressData.Passed,
+                Statistics = new Statistics
+                {
+                    Passed = progressData.StatisticsData.Passed,
+                    PassedQuestionsCount = progressData.StatisticsData.PassedQuestionsCount,
+                    TotalQuestionsCount = progressData.StatisticsData.TotalQuestionsCount
+                },
+                UserId = progressData.UserId
+            };
+
+            return result;
+        }
+
+        private static int GetDelta(QuestionStateData curStateData, QuestionStateData newStateData)
+        {
+            return Convert.ToInt32(newStateData.Passed) - Convert.ToInt32(curStateData.Passed);
         }
     }
 }

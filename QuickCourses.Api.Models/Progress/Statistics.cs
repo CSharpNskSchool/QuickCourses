@@ -1,4 +1,4 @@
-﻿namespace QuickCourses.Models.Progress
+﻿namespace QuickCourses.Api.Models.Progress
 {
     public class Statistics
     {

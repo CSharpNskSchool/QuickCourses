@@ -1,9 +1,9 @@
 ﻿using System;
-using QuickCourses.Models.Interfaces;
+using QuickCourses.Api.Data.Models.Interfaces;
 
-namespace QuickCourses.Models.Authentication
+namespace QuickCourses.Api.Data.Models.Authentication
 {
-    public class User : IIdentifiable
+    public class UserData : IIdentifiable
     {
         public string Id { get; set; }
         public string Role { get; set; } 

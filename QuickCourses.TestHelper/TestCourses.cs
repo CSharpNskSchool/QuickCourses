@@ -1,45 +1,45 @@
-﻿using QuickCourses.Models.Primitives;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using QuickCourses.Api.Data.Models.Primitives;
 
 namespace QuickCourses.TestHelper
 {
     public class TestCourses
     {
-        public static Course CreateBasicSample()
+        public static CourseData CreateBasicSample()
         {
-            return new Course
+            return new CourseData
             {
                 Id = "88a0eed0-6980-4264-8ae4-08c22e701fd7", //some GUID
-                Description = new Description { Name = "Test Course", Overview = "Course to test Api" },
-                Lessons = new List<Lesson>
+                DescriptionData = new DescriptionData { Name = "Test Course", Overview = "Course to test Api" },
+                Lessons = new List<LessonData>
                 {
-                    new Lesson
+                    new LessonData
                     {
                         Id = 0,
-                        Description =
-                            new Description {Name = "Only lesson", Overview = "Only lesson of test course"},
-                        Steps = new List<LessonStep>
+                        DescriptionData =
+                            new DescriptionData {Name = "Only lesson", Overview = "Only lesson of test course"},
+                        Steps = new List<LessonStepData>
                         {
-                            new LessonStep
+                            new LessonStepData
                             {
                                 Id = 0,
-                                EducationalMaterial = new EducationalMaterial
+                                EducationalMaterialData = new EducationalMaterialData
                                 {
-                                    Description = new Description
+                                    DescriptionData = new DescriptionData
                                     {
                                         Name = "Only step",
                                         Overview = "Only step of only lesson of only course"
                                     },
                                     Article = "You must love this API"
                                 },
-                                Questions = new List<Question>
+                                Questions = new List<QuestionData>
                                 {
-                                    new Question
+                                    new QuestionData
                                     {
                                         Text = "Do you love this API?",
-                                        AnswerVariants = new List<AnswerVariant>
+                                        AnswerVariants = new List<AnswerVariantData>
                                         {
-                                            new AnswerVariant {Id = 0, Text = "Yes"}
+                                            new AnswerVariantData {Id = 0, Text = "Yes"}
                                         },
                                         CorrectAnswers = new List<int> {0},
                                         TotalAttemptsCount = 2

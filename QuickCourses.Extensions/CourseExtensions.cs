@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuickCourses.Models.Primitives;
-using QuickCourses.Models.Progress;
+using QuickCourses.Api.Data.Models.Primitives;
+using QuickCourses.Api.Data.Models.Progress;
 
-namespace QuickCourses.Extensions
+namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class CourseExtensions
     {
-        public static CourseProgress CreateProgress(this Course course, string userId)
+        public static CourseProgressData CreateProgress(this CourseData courseData, string userId)
         {
-            if (course == null)
+            if (courseData == null)
             {
-                throw new ArgumentNullException(nameof(course));
+                throw new ArgumentNullException(nameof(courseData));
             }
 
-            var result = new CourseProgress
+            var result = new CourseProgressData
             {
-                LessonProgresses = new List<LessonProgress>(),
-                CourceId = course.Id,
+                LessonProgresses = new List<LessonProgressData>(),
+                CourceId = courseData.Id,
                 UserId = userId,
-                Statistics = new Statistics {TotalQuestionsCount = QuestionsCount(course)}
+                StatisticsData = new StatisticsData {TotalQuestionsCount = QuestionsCount(courseData)}
             };
 
-            foreach (var lesson in course.Lessons)
+            foreach (var lesson in courseData.Lessons)
             {
                 AddLessonProgress(result, lesson);
             }
@@ -31,14 +31,14 @@ namespace QuickCourses.Extensions
             return result;
         }
 
-        public static Question GetQuestion(this Course course, int lessonId, int stepId, int questionId)
+        public static QuestionData GetQuestion(this CourseData courseData, int lessonId, int stepId, int questionId)
         {
-            if (course == null)
+            if (courseData == null)
             {
-                throw new ArgumentNullException(nameof(course));
+                throw new ArgumentNullException(nameof(courseData));
             }
 
-            if (!course.Lessons.TryGetValue(lessonId, out var lesson))
+            if (!courseData.Lessons.TryGetValue(lessonId, out var lesson))
             {
                 return null;
             }
@@ -53,75 +53,87 @@ namespace QuickCourses.Extensions
             return result;
         }
 
-        public static Course SetUpLinks(this Course course)
+        public static CourseData SetUpLinks(this CourseData courseData)
         {
-            if (course == null)
+            if (courseData == null)
             {
-                throw new ArgumentNullException(nameof(course));
+                throw new ArgumentNullException(nameof(courseData));
             }
 
-            foreach (var lesson in course.Lessons)
+            foreach (var lesson in courseData.Lessons)
             {
-                lesson.CourseId = course.Id;
+                lesson.CourseId = courseData.Id;
 
                 foreach (var step in lesson.Steps)
                 {
-                    step.CourseId = course.Id;
+                    step.CourseId = courseData.Id;
                     step.LessonId = lesson.Id;
 
                     foreach (var question in step.Questions)
                     {
-                        question.CourseId = course.Id;
+                        question.CourseId = courseData.Id;
                         question.LessonId = lesson.Id;
                         question.StepId = step.Id;
                     }
                 }
             }
 
-            return course;
+            return courseData;
         }
 
-        private static int QuestionsCount(Course course)
+        public static Api.Models.Primitives.Course ToApiModel(this CourseData courseData)
         {
-            if (course == null)
+            var result = new Api.Models.Primitives.Course 
             {
-                throw new ArgumentNullException(nameof(course));
-            }
-
-            return course.Lessons.Sum(lesson => lesson.Steps.Sum(step => step.Questions.Count));
-        }
-
-        private static void AddLessonProgress(CourseProgress courseProgress, Lesson lesson)
-        {
-            var lessonProgress = new LessonProgress
-            {
-                LessonId = lesson.Id,
-                StepProgresses = new List<StepProgress>()
+                Description = courseData.DescriptionData.ToApiModel(),
+                Id = courseData.Id,
+                Lessons = courseData.Lessons.Select(x => x.ToApiModel()).ToList()
             };
 
-            foreach (var step in lesson.Steps)
+            return result;
+        }
+
+        private static int QuestionsCount(CourseData courseData)
+        {
+            if (courseData == null)
+            {
+                throw new ArgumentNullException(nameof(courseData));
+            }
+
+            return courseData.Lessons.Sum(lesson => lesson.Steps.Sum(step => step.Questions.Count));
+        }
+
+        private static void AddLessonProgress(CourseProgressData courseProgressData, LessonData lessonData)
+        {
+            var lessonProgress = new LessonProgressData
+            {
+                LessonId = lessonData.Id,
+                StepProgresses = new List<StepProgressData>()
+            };
+
+            foreach (var step in lessonData.Steps)
             {
                 AddStepProgress(lessonProgress, step);
             }
 
-            courseProgress.LessonProgresses.Add(lessonProgress);
+            courseProgressData.LessonProgresses.Add(lessonProgress);
         }
 
-        private static void AddStepProgress(LessonProgress lessonProgress, LessonStep step)
+        private static void AddStepProgress(LessonProgressData lessonProgressData, LessonStepData stepData)
         {
-            var stepProgress = new StepProgress
+            var stepProgress = new StepProgressData
             {
-                StepId = step.Id,
-                QuestionStates = new List<QuestionState>()
+                Id = stepData.Id,
+                QuestionStates = new List<QuestionStateData>()
             };
 
-            foreach (var question in step.Questions)
+            foreach (var question in stepData.Questions)
             {
                 var questionState = question.GetQuestionState();
                 stepProgress.QuestionStates.Add(questionState);
             }
 
-            lessonProgress.StepProgresses.Add(stepProgress);
+            lessonProgressData.StepProgresses.Add(stepProgress);
         }
     }
 }

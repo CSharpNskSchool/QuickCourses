@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuickCourses.Models.Primitives;
-using QuickCourses.Models.Progress;
+using QuickCourses.Api.Data.Models.Primitives;
+using QuickCourses.Api.Data.Models.Progress;
+using QuickCourses.Api.Models.Progress;
 
-namespace QuickCourses.Extensions
+namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class QuestionStateExtensions
     {
-        public static QuestionState Update(this QuestionState state, Question question, List<int> selected)
+        public static QuestionStateData Update(this QuestionStateData stateData, QuestionData questionData, List<int> selected)
         {
-            if (state == null)
+            if (stateData == null)
             {
-                throw new ArgumentNullException(nameof(state));
+                throw new ArgumentNullException(nameof(stateData));
             }
 
-            if (question == null)
+            if (questionData == null)
             {
-                throw new ArgumentNullException(nameof(question));
+                throw new ArgumentNullException(nameof(questionData));
             }
 
             if (selected == null)
@@ -25,10 +26,28 @@ namespace QuickCourses.Extensions
                 throw new ArgumentNullException(nameof(selected));
             }
             
-            state.SelectedAnswers = new List<int>(selected);
-            state.CorrectlySelectedAnswers = selected.Where(x => question.CorrectAnswers.Contains(x)).ToList();
-            state.CurrentAttemptsCount++;
-            return state;
+            stateData.SelectedAnswers = new List<int>(selected);
+            stateData.CorrectlySelectedAnswers = selected.Where(x => questionData.CorrectAnswers.Contains(x)).ToList();
+            stateData.CurrentAttemptsCount++;
+            return stateData;
+        }
+
+        public static QuestionState ToApiModel(this QuestionStateData questionStateData)
+        {
+            var result = new QuestionState
+            {
+                ProgressId = questionStateData.ProgressId,
+                CourseId = questionStateData.CourseId,
+                LessonId = questionStateData.LessonId,
+                StepId = questionStateData.StepId,
+                QuestionId = questionStateData.QuestionId,
+                CurrentAttemptsCount = questionStateData.CurrentAttemptsCount,
+                Passed = questionStateData.Passed,
+                CorrectlySelectedAnswers = new List<int>(questionStateData.CorrectlySelectedAnswers),
+                SelectedAnswers = new List<int>(questionStateData.SelectedAnswers)
+            };
+
+            return result;
         }
     }
 }

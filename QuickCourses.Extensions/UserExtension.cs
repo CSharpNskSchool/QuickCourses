@@ -1,17 +1,24 @@
-﻿using System;
-using System.Security.Claims;
+﻿using QuickCourses.Api.Data.Models.Authentication;
+using QuickCourses.Api.Models.Authentication;
 
-namespace QuickCourses.Extensions
+namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class UserExtension
     {
-        public static string GetId(this ClaimsPrincipal user)
+        public static User ToApiModel(this UserData userData)
         {
-            var result = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (result == null)
+            var result = new User
             {
-                throw new ArgumentException("No id");
-            }
+                Id = userData.Id,
+                Role = userData.Role,
+                Password = userData.Password,
+                Login = userData.Password,
+                Name = userData.Name,
+                Surname = userData.Surname,
+                Email = userData.Email,
+                Born = userData.Born,
+                RegistrationTime = userData.RegistrationTime
+            };
 
             return result;
         }

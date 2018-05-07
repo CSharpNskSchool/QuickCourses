@@ -6,8 +6,8 @@ using Moq;
 using NUnit.Framework;
 using QuickCourses.Api.Controllers;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Models.Errors;
-using QuickCourses.Models.Primitives;
+using QuickCourses.Api.Data.Models.Primitives;
+using QuickCourses.Api.Models.Errors;
 
 namespace QuickCourses.Api.Tests
 {
@@ -15,12 +15,12 @@ namespace QuickCourses.Api.Tests
     public class CoursesControllerTests
     {
         private CoursesController controller;
-        private Course course;
+        private CourseData courseData;
 
         [SetUp]
         public void Init()
         {
-            course = Utilits.CreateCourse();
+            courseData = Utilits.CreateCourse();
             controller = CreateCourseController();
         }
 
@@ -29,23 +29,23 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetAllCourses().Result;
 
-            Utilits.CheckResponseValue<OkObjectResult, List<Course>>(response, new List<Course> {course});
+            Utilits.CheckResponseValue<OkObjectResult, List<CourseData>>(response, new List<CourseData> {courseData});
         }
 
         [Test]
         public void GetCourseTest()
         {
-            var response = controller.GetCourse(course.Id).Result;
+            var response = controller.GetCourse(courseData.Id).Result;
             
-            Utilits.CheckResponseValue<OkObjectResult, Course>(response, course);
+            Utilits.CheckResponseValue<OkObjectResult, CourseData>(response, courseData);
         }
         
         [Test]
         public void GetDescriptionTest()
         {
-            var response = controller.GetDescription(course.Id).Result;
+            var response = controller.GetDescription(courseData.Id).Result;
             
-            Utilits.CheckResponseValue<OkObjectResult, Description>(response, course.Description);
+            Utilits.CheckResponseValue<OkObjectResult, DescriptionData>(response, courseData.DescriptionData);
         }
 
         [Test]
@@ -62,53 +62,53 @@ namespace QuickCourses.Api.Tests
         [Test]
         public void GetAllLessonsTest()
         {
-            var response = controller.GetAllLessons(course.Id).Result;
+            var response = controller.GetAllLessons(courseData.Id).Result;
 
-            var expectedResult = course.Lessons;
+            var expectedResult = courseData.Lessons;
 
-            Utilits.CheckResponseValue<OkObjectResult, List<Lesson>>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, List<LessonData>>(response, expectedResult);
         }
 
         [Test]
         public void GetLessonByIdTest()
         {
-            var response = controller.GetLessonById(course.Id, 0).Result;
+            var response = controller.GetLessonById(courseData.Id, 0).Result;
 
-            var expecteResult = course.Lessons[0];
+            var expecteResult = courseData.Lessons[0];
 
-            Utilits.CheckResponseValue<OkObjectResult, Lesson>(response, expecteResult);
+            Utilits.CheckResponseValue<OkObjectResult, LessonData>(response, expecteResult);
         }
 
         [Test]
         public void GetAllStepsTest()
         {
-            var response = controller.GetAllSteps(course.Id, 0).Result;
+            var response = controller.GetAllSteps(courseData.Id, 0).Result;
 
-            var expectedResult = course.Lessons[0].Steps;
+            var expectedResult = courseData.Lessons[0].Steps;
 
-            Utilits.CheckResponseValue<OkObjectResult, List<LessonStep>>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, List<LessonStepData>>(response, expectedResult);
         }
 
         [Test]
         public void GetStepByIdTest()
         {
-            var response = controller.GetStepById(course.Id, 0, 0).Result;
+            var response = controller.GetStepById(courseData.Id, 0, 0).Result;
 
-            var expectedResult = course.Lessons[0].Steps[0];
+            var expectedResult = courseData.Lessons[0].Steps[0];
             
-            Utilits.CheckResponseValue<OkObjectResult, LessonStep>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, LessonStepData>(response, expectedResult);
         }
 
         private CoursesController CreateCourseController()
         {
-            var mockRepo = new Mock<IRepository<Course>>();
+            var mockRepo = new Mock<IRepository<CourseData>>();
             mockRepo
                 .Setup(repo => repo.GetAllAsync())
-                .Returns(Task.FromResult(new List<Course> {course}));
+                .Returns(Task.FromResult(new List<CourseData> {courseData}));
 
             mockRepo
-                .Setup(repo => repo.GetAsync(course.Id))
-                .Returns(Task.FromResult(course));
+                .Setup(repo => repo.GetAsync(courseData.Id))
+                .Returns(Task.FromResult(courseData));
 
             var result = new CoursesController(mockRepo.Object);
             return result;

@@ -5,7 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
-using QuickCourses.Models.Interfaces;
+using QuickCourses.Api.Data.Models.Interfaces;
 
 namespace QuickCourses.Api.Data.Repositories
 {

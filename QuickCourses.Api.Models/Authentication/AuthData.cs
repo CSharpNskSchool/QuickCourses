@@ -1,4 +1,4 @@
-﻿namespace QuickCourses.Models.Authentication
+﻿namespace QuickCourses.Api.Models.Authentication
 {
     public class AuthData
     {

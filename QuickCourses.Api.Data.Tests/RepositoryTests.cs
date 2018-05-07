@@ -2,8 +2,8 @@
 using NUnit.Framework;
 using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Repositories;
-using QuickCourses.Models.Interfaces;
 using KellermanSoftware.CompareNetObjects;
+using QuickCourses.Api.Data.Models.Interfaces;
 
 namespace QuickCourses.Api.Data.Tests
 {

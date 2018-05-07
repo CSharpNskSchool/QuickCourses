@@ -1,12 +1,12 @@
-﻿using QuickCourses.Models.Primitives;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using Xunit;
 using Newtonsoft.Json;
-using QuickCourses.Models.Authentication;
-using QuickCourses.Models.Progress;
-using QuickCourses.Models.Interaction;
+using QuickCourses.Api.Models.Authentication;
+using QuickCourses.Api.Models.Interaction;
+using QuickCourses.Api.Models.Primitives;
+using QuickCourses.Api.Models.Progress;
 using QuickCourses.TestHelper;
 
 namespace QuickCourses.Client.Tests
@@ -146,7 +146,7 @@ namespace QuickCourses.Client.Tests
 
             var firstStepProgress = firstLessonProgress
                                         .StepProgresses
-                                        .FirstOrDefault(x => x.StepId == questionState.StepId);
+                                        .FirstOrDefault(x => x.Id == questionState.StepId);
             
             Assert.NotNull(firstStepProgress);
 

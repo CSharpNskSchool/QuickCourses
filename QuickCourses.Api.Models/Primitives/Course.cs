@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using QuickCourses.Models.Interfaces;
 
-namespace QuickCourses.Models.Primitives
+namespace QuickCourses.Api.Models.Primitives
 {
-    public class Course : IIdentifiable
+    public class Course
     {
         public string Id { get; set; }
         public Description Description { get; set; }

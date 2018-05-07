@@ -1,5 +1,5 @@
-﻿using QuickCourses.Models.Authentication;
-using System;
+﻿using System;
+using QuickCourses.Api.Models.Authentication;
 
 namespace QuickCourses.Client
 {

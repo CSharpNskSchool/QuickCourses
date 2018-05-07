@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using QuickCourses.Models.Interfaces;
 
-namespace QuickCourses.Models.Progress
+namespace QuickCourses.Api.Models.Progress
 {
-    public class CourseProgress : IIdentifiable
+    public class CourseProgress
     {
         public string Id { get; set; }
         public Statistics Statistics { get; set; }

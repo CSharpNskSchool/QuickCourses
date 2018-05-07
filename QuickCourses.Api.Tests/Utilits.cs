@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Moq;
 using NUnit.Framework;
-using QuickCourses.Models.Primitives;
+using QuickCourses.Api.Data.Models.Primitives;
 
 namespace QuickCourses.Api.Tests
 {
@@ -38,41 +38,41 @@ namespace QuickCourses.Api.Tests
             return httpContext.Object;
         }
         
-        public static Course CreateCourse()
+        public static CourseData CreateCourse()
         {
-            return new Course
+            return new CourseData
             {
                 Id = ObjectId.GenerateNewId().ToString(),
-                Description = new Description {Name = "Test Course", Overview = "Course to test Api"},
-                Lessons = new List<Lesson>
+                DescriptionData = new DescriptionData {Name = "Test Course", Overview = "Course to test Api"},
+                Lessons = new List<LessonData>
                 {
-                    new Lesson
+                    new LessonData
                     {
                         Id = 0,
-                        Description =
-                            new Description {Name = "Only lesson", Overview = "Only lesson of test course"},
-                        Steps = new List<LessonStep>
+                        DescriptionData =
+                            new DescriptionData {Name = "Only lesson", Overview = "Only lesson of test course"},
+                        Steps = new List<LessonStepData>
                         {
-                            new LessonStep
+                            new LessonStepData
                             {
                                 Id = 0,
-                                EducationalMaterial = new EducationalMaterial
+                                EducationalMaterialData = new EducationalMaterialData
                                 {
-                                    Description = new Description
+                                    DescriptionData = new DescriptionData
                                     {
                                         Name = "Only step",
                                         Overview = "Only step of only lesson of only course"
                                     },
                                     Article = "You must love this API"
                                 },
-                                Questions = new List<Question>
+                                Questions = new List<QuestionData>
                                 {
-                                    new Question
+                                    new QuestionData
                                     {
                                         Text = "Do you love this API?",
-                                        AnswerVariants = new List<AnswerVariant>
+                                        AnswerVariants = new List<AnswerVariantData>
                                         {
-                                            new AnswerVariant {Id = 0, Text = "Yes"}
+                                            new AnswerVariantData {Id = 0, Text = "Yes"}
                                         },
                                         CorrectAnswers = new List<int> {0},
                                         TotalAttemptsCount = 2

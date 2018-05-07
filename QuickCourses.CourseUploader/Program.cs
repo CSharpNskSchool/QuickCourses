@@ -2,8 +2,8 @@
 using System.IO;
 using Newtonsoft.Json;
 using QuickCourses.Api.Data.Infrastructure;
+using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Data.Repositories;
-using QuickCourses.Models.Primitives;
 
 namespace QuickCourses.CourseUploader
 {
@@ -14,8 +14,8 @@ namespace QuickCourses.CourseUploader
             try
             {
                 var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText("config.json"));
-                var repository = new RepositoryBase<Course>(settings);
-                var uploader = new Uploader<Course>(repository);
+                var repository = new RepositoryBase<CourseData>(settings);
+                var uploader = new Uploader<CourseData>(repository);
                 uploader.Upload(paths);
             }
             catch (Exception e)

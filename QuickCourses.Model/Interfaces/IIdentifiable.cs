@@ -1,7 +1,6 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace QuickCourses.Models.Interfaces
+namespace QuickCourses.Api.Data.Models.Interfaces
 {
     public interface IIdentifiable
     {

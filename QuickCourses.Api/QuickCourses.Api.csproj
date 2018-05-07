@@ -20,7 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuickCourses.Api.Data\QuickCourses.Api.Data.csproj" />
-    <ProjectReference Include="..\QuickCourses.Extensions\QuickCourses.Extensions.csproj" />
-    <ProjectReference Include="..\QuickCourses.Model\QuickCourses.Models.csproj" />
+    <ProjectReference Include="..\QuickCourses.Api.Models\QuickCourses.Api.Models.csproj" />
+    <ProjectReference Include="..\QuickCourses.Extensions\QuickCourses.Api.Data.Models.Extensions.csproj" />
+    <ProjectReference Include="..\QuickCourses.Model\QuickCourses.Api.Data.Models.csproj" />
   </ItemGroup>
 </Project>
