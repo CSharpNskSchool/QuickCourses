@@ -1,10 +1,11 @@
-﻿using QuickCourses.Api.Models.Primitives;
+﻿using QuickCourses.Api.Data.Models.Primitives;
+using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class DescriptionExtensions
     {
-        public static Description ToApiModel(this Primitives.DescriptionData descriptionData)
+        public static Description ToApiModel(this DescriptionData descriptionData)
         {
             var result = new Description
             {

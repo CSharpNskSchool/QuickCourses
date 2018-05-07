@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using QuickCourses.Api.Data.Models.Progress;
 using QuickCourses.Api.Models.Progress;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class LessonProgressExtensions
     {
-        public static LessonProgress ToApiModel(this Progress.LessonProgressData lessonProgressData)
+        public static LessonProgress ToApiModel(this LessonProgressData lessonProgressData)
         {
             var result = new LessonProgress
             {

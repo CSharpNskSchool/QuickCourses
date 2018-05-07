@@ -6,8 +6,10 @@ using Moq;
 using NUnit.Framework;
 using QuickCourses.Api.Controllers;
 using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Api.Data.Models.Extensions;
 using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Models.Errors;
+using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Tests
 {
@@ -16,11 +18,13 @@ namespace QuickCourses.Api.Tests
     {
         private CoursesController controller;
         private CourseData courseData;
+        private Course course;
 
         [SetUp]
         public void Init()
         {
             courseData = Utilits.CreateCourse();
+            course = courseData.ToApiModel();
             controller = CreateCourseController();
         }
 
@@ -29,7 +33,7 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetAllCourses().Result;
 
-            Utilits.CheckResponseValue<OkObjectResult, List<CourseData>>(response, new List<CourseData> {courseData});
+            Utilits.CheckResponseValue<OkObjectResult, List<Course>>(response, new List<Course> {course});
         }
 
         [Test]
@@ -37,7 +41,7 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetCourse(courseData.Id).Result;
             
-            Utilits.CheckResponseValue<OkObjectResult, CourseData>(response, courseData);
+            Utilits.CheckResponseValue<OkObjectResult, Course>(response, course);
         }
         
         [Test]
@@ -45,7 +49,7 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetDescription(courseData.Id).Result;
             
-            Utilits.CheckResponseValue<OkObjectResult, DescriptionData>(response, courseData.DescriptionData);
+            Utilits.CheckResponseValue<OkObjectResult, Description>(response, course.Description);
         }
 
         [Test]
@@ -64,9 +68,9 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetAllLessons(courseData.Id).Result;
 
-            var expectedResult = courseData.Lessons;
+            var expectedResult = course.Lessons;
 
-            Utilits.CheckResponseValue<OkObjectResult, List<LessonData>>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, List<Lesson>>(response, expectedResult);
         }
 
         [Test]
@@ -74,9 +78,9 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetLessonById(courseData.Id, 0).Result;
 
-            var expecteResult = courseData.Lessons[0];
+            var expecteResult = course.Lessons[0];
 
-            Utilits.CheckResponseValue<OkObjectResult, LessonData>(response, expecteResult);
+            Utilits.CheckResponseValue<OkObjectResult, Lesson>(response, expecteResult);
         }
 
         [Test]
@@ -84,9 +88,9 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetAllSteps(courseData.Id, 0).Result;
 
-            var expectedResult = courseData.Lessons[0].Steps;
+            var expectedResult = course.Lessons[0].Steps;
 
-            Utilits.CheckResponseValue<OkObjectResult, List<LessonStepData>>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, List<LessonStep>>(response, expectedResult);
         }
 
         [Test]
@@ -94,9 +98,9 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetStepById(courseData.Id, 0, 0).Result;
 
-            var expectedResult = courseData.Lessons[0].Steps[0];
+            var expectedResult = course.Lessons[0].Steps[0];
             
-            Utilits.CheckResponseValue<OkObjectResult, LessonStepData>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, LessonStep>(response, expectedResult);
         }
 
         private CoursesController CreateCourseController()

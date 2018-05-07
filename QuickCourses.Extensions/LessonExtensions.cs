@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class LessonExtensions
     {
-        public static Lesson ToApiModel(this Primitives.LessonData lessonData)
+        public static Lesson ToApiModel(this LessonData lessonData)
         {
             var result = new Lesson
             {

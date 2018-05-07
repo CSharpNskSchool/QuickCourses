@@ -76,7 +76,7 @@ namespace QuickCourses.Client.Tests
         {
             var firstLesson = firstCourse.Lessons.FirstOrDefault();
             Assert.NotNull(firstCourse);
-            var lessonFromId = client.GetLessonAsync(ticket, firstLesson.CourseId.ToString(), firstLesson.Id).Result;
+            var lessonFromId = client.GetLessonAsync(ticket, firstLesson.CourseId, firstLesson.Id).Result;
             Assert.Equal(firstLesson, lessonFromId, new JsonComparer<Lesson>());
         }
 

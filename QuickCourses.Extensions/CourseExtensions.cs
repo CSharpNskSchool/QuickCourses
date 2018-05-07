@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Data.Models.Progress;
+using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
@@ -81,9 +82,9 @@ namespace QuickCourses.Api.Data.Models.Extensions
             return courseData;
         }
 
-        public static Api.Models.Primitives.Course ToApiModel(this CourseData courseData)
+        public static Course ToApiModel(this CourseData courseData)
         {
-            var result = new Api.Models.Primitives.Course 
+            var result = new Course 
             {
                 Description = courseData.DescriptionData.ToApiModel(),
                 Id = courseData.Id,
