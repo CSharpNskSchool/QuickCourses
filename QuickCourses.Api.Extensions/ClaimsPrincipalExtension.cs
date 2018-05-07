@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 
-namespace QuickCourses.Api.Data.Models.Extensions
+namespace QuickCourses.Api.Extensions
 {
     public static class ClaimsPrincipalExtension
     {

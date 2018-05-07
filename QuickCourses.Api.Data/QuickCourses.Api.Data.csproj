@@ -6,8 +6,8 @@
     <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuickCourses.Extensions\QuickCourses.Api.Data.Models.Extensions.csproj" />
-    <ProjectReference Include="..\QuickCourses.Model\QuickCourses.Api.Data.Models.csproj" />
+    <ProjectReference Include="..\QuickCourses.Api.Data.Models.Extensions\QuickCourses.Api.Data.Models.Extensions.csproj" />
+    <ProjectReference Include="..\QuickCourses.Api.Data.Models\QuickCourses.Api.Data.Models.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.Options">

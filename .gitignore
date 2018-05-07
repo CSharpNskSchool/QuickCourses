@@ -4,8 +4,6 @@ QuickCourses.Api/appsettings.json
 QuickCourses.Api/Properties/PublishProfiles
 QuickCourses.Api.Data/obj
 QuickCourses.Api.Data/bin
-QuickCourses.Model/obj
-QuickCourses.Model/bin
 QuickCourses.Api.Tests/bin
 QuickCourses.Api.Tests/obj
 .vs
@@ -39,3 +37,9 @@ QuickCourses.Api.Data.Tests/bin
 QuickCourses.sln.DotSettings.user
 QuickCourses.Api.Models/bin
 QuickCourses.Api.Models/obj
+QuickCourses.Api.Data.Models.Extensions/obj
+QuickCourses.Api.Data.Models.Extensions/bin
+QuickCourses.Api.Data.Models/bin
+QuickCourses.Api.Data.Models/obj
+QuickCourses.Api.Extensions/obj
+QuickCourses.Api.Extensions/bin

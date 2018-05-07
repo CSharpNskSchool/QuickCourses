@@ -3,7 +3,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QuickCourses.Api.Data.Models\QuickCourses.Api.Data.Models.csproj" />
+    <ProjectReference Include="..\QuickCourses.Api.Extensions\QuickCourses.Api.Extensions.csproj" />
     <ProjectReference Include="..\QuickCourses.Api.Models\QuickCourses.Api.Models.csproj" />
-    <ProjectReference Include="..\QuickCourses.Model\QuickCourses.Api.Data.Models.csproj" />
   </ItemGroup>
 </Project>

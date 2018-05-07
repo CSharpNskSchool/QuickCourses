@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Data.Models.Progress;
+using QuickCourses.Api.Extensions;
 using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Models.Extensions

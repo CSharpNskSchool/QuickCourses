@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuickCourses.Api.Data.Models.Extensions
+namespace QuickCourses.Api.Extensions
 {
     public static class ListExtensions
     {

@@ -16,7 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\QuickCourses.Api.Data\QuickCourses.Api.Data.csproj" />
     <ProjectReference Include="..\QuickCourses.Api\QuickCourses.Api.csproj" />
-    <ProjectReference Include="..\QuickCourses.Model\QuickCourses.Api.Data.Models.csproj" />
     <ProjectReference Include="..\QuickCourses.TestHelper\QuickCourses.TestHelper.csproj" />
   </ItemGroup>
 
