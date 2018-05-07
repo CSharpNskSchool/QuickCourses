@@ -107,12 +107,12 @@ namespace QuickCourses.Client
                 ticket: ticket);
         }
 
-        public Task RegisterAsync(User user)
+        public Task RegisterAsync(RegistrationInfo registrationInfo)
         {
             return InvokeApiMethod(
                 HttpMethod.Post,
                 path: "users",
-                content: user);
+                content: registrationInfo);
         }
 
         public Task<CourseProgress> StartCourseAsync(Ticket ticket, string courseId, string userId = null)

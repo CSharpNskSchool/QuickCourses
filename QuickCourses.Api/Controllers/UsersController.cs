@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,9 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody]User user)
+        public async Task<IActionResult> PostUser([FromBody]RegistrationInfo registrationInfo)
         { 
-            var login = user?.Login;
+            var login = registrationInfo?.Login;
 
             if (string.IsNullOrEmpty(login))
             {
@@ -36,12 +37,12 @@ namespace QuickCourses.Api.Controllers
 
             var userData = new Data.Models.Authentication.UserData
             {
-                Born = user.Born,
-                Email = user.Email,
-                Login = user.Login,
-                Name = user.Name,
-                Password = user.Password,
-                RegistrationTime = user.RegistrationTime,
+                Born = registrationInfo.Born,
+                Email = registrationInfo.Email,
+                Login = registrationInfo.Login,
+                Name = registrationInfo.Name,
+                Password = registrationInfo.Password,
+                RegistrationTime = DateTime.Now,
                 Role = "User"
             };
 

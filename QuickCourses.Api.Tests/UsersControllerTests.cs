@@ -15,16 +15,17 @@ namespace QuickCourses.Api.Tests
     public class UsersControllerTests
     {
         private UserData userData;
-        private User user;
+        private RegistrationInfo registrationInfo;
 
         [SetUp]
         public void Init()
         {
             userData = new UserData {
-                Login = "123"
+                Login = "123",
+                Id = "123"
             };
 
-            user = new User {
+            registrationInfo = new RegistrationInfo {
                 Login = userData.Login
             };
         }
@@ -37,7 +38,7 @@ namespace QuickCourses.Api.Tests
             repo.Setup(x => x.InsertAsync(It.IsAny<UserData>())).Returns(() => Task.FromResult(string.Empty));
             var usersController = new UsersController(repo.Object);
             
-            var response = usersController.PostUser(user).Result;
+            var response = usersController.PostUser(registrationInfo).Result;
 
             Assert.IsInstanceOf<StatusCodeResult>(response);
 
@@ -51,7 +52,7 @@ namespace QuickCourses.Api.Tests
         public void PostInvalidUserTest()
         {
             var usersController = new UsersController(null);
-            var invalidUser = new User();
+            var invalidUser = new RegistrationInfo();
 
             var response = usersController.PostUser(invalidUser).Result;
 
@@ -69,16 +70,16 @@ namespace QuickCourses.Api.Tests
         {
             var repo = new Mock<IUserRepository>();
             repo
-                .Setup(x => x.ContainsByLoginAsync(user.Login))
+                .Setup(x => x.ContainsByLoginAsync(registrationInfo.Login))
                 .Returns(() => Task.FromResult(true));
             
             var usersController = new UsersController(repo.Object);
 
-            var response = usersController.PostUser(user).Result;
+            var response = usersController.PostUser(registrationInfo).Result;
 
             var extectedResult = new Error {
                 Code = Error.ErrorCode.InvalidOperation,
-                Message = $"User with login {user.Login} already exists"
+                Message = $"User with login {registrationInfo.Login} already exists"
             };
 
             Utilits.CheckResponseValue<BadRequestObjectResult, Error>(response, extectedResult);
@@ -89,14 +90,14 @@ namespace QuickCourses.Api.Tests
         {
             var repo = new Mock<IUserRepository>();
             repo
-                .Setup(x => x.GetByLoginAsync(user.Login))
+                .Setup(x => x.GetByLoginAsync(registrationInfo.Login))
                 .Returns(() => Task.FromResult(userData));
             
             var usersController = new UsersController(repo.Object);
 
-            var response = usersController.GetId(user.Login).Result;
+            var response = usersController.GetId(registrationInfo.Login).Result;
 
-            Utilits.CheckResponseValue<OkObjectResult, string>(response, user.Id);
+            Utilits.CheckResponseValue<OkObjectResult, string>(response, userData.Id);
         }
     }
 }

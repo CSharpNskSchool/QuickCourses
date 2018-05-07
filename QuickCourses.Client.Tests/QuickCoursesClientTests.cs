@@ -97,7 +97,7 @@ namespace QuickCourses.Client.Tests
         [Fact]
         public void User_RegisterAndGiveMakeAnswer_Easy()
         {
-            var user = new User
+            var user = new RegistrationInfo
             {
                 Name = "Vasya",
                 Password = "12345",

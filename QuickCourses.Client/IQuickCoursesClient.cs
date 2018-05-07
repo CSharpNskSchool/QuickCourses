@@ -29,7 +29,7 @@ namespace QuickCourses.Client
         
         Task<LessonStep> GetLessonStepAsync(Ticket ticket, string courseId, int lessonId, int stepId);
         
-        Task RegisterAsync(User user);
+        Task RegisterAsync(RegistrationInfo registrationInfo);
         
         Task<CourseProgress> StartCourseAsync(Ticket ticket, string userId, string courseId);
         
