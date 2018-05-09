@@ -29,10 +29,12 @@ namespace QuickCourses.Api.Tests
         public void Init()
         {
             course = Utilits.CreateCourse();
+            course.SetUpLinks();
             userId = "1";
             user = new ClaimsPrincipal(new ClaimsIdentity(new[] {new Claim(ClaimTypes.NameIdentifier, userId)}));
             courseProgress = course.CreateProgress(userId);
             courseProgress.Id = $"{userId}{course.Id}";
+            courseProgress.SetUpLinks();
             controller = CreateProgressController();
         }
 
@@ -94,7 +96,8 @@ namespace QuickCourses.Api.Tests
 
             var question = course.Lessons[lessonId].Steps[stepId].Questions[questionId];
             var expectedValue = question.GetQuestionState().Update(question, answer.SelectedAnswers);
-
+            expectedValue.ProgressId = courseProgress.Id;
+            
             Utilits.CheckResponseValue<OkObjectResult, QuestionState>(result, expectedValue);
         }
 
