@@ -71,6 +71,7 @@ namespace QuickCourses.Api.Controllers
 
             var courseProgress = course.CreateProgress(userId);
             courseProgress.Id = await progressRepository.InsertAsync(courseProgress);
+            courseProgress.SetUpLinks();
 
             var uri = Request.GetUri();
             return Created($"{uri}/{courseProgress.CourceId}", courseProgress);

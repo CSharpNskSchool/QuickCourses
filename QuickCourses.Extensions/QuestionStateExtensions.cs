@@ -27,6 +27,7 @@ namespace QuickCourses.Extensions
             
             state.SelectedAnswers = new List<int>(selected);
             state.CorrectlySelectedAnswers = selected.Where(x => question.CorrectAnswers.Contains(x)).ToList();
+            state.Passed = state.SelectedAnswers.Count == state.CorrectlySelectedAnswers.Count;
             state.CurrentAttemptsCount++;
             return state;
         }

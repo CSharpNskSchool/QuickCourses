@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using KellermanSoftware.CompareNetObjects;
 using Xunit;
 using Newtonsoft.Json;
 using QuickCourses.Models.Authentication;
@@ -167,6 +168,63 @@ namespace QuickCourses.Client.Tests
             var result = client.GetIdByLoginAsync(ticket, user.Login).Result;
             
             Assert.True(!string.IsNullOrEmpty(result));
+        }
+
+        [Fact]
+        public async void PostUserAnswerByClient()
+        {
+            var user = new User{Login = "PostUserAnswerByClient" };
+
+            await client.RegisterAsync(user);
+            var userId = await client.GetIdByLoginAsync(ticket, user.Login);
+
+            var progress = await client.StartCourseAsync(ticket, firstCourse.Id, userId);
+
+            var answer = new Answer {QuestionId = 0, SelectedAnswers = new List<int> {0}};
+
+            var result = await client.SendAnswerAsync(ticket, progress.Id, lessonId: 0, stepId: 0, answer: answer);
+
+            var expectedResult = new QuestionState
+            {
+                CorrectlySelectedAnswers = new List<int> {0},
+                CourseId = firstCourse.Id,
+                CurrentAttemptsCount = 1,
+                LessonId = 0,
+                Passed = true,
+                ProgressId = progress.Id,
+                QuestionId = 0,
+                StepId = 0,
+                SelectedAnswers = new List<int> {0}
+            };
+
+            var compareLogic = new CompareLogic();
+            var compareResult = compareLogic.Compare(expectedResult, result);
+            Assert.True(compareResult.AreEqual);
+        }
+
+        [Fact]
+        public async void GetUserProgressByCient()
+        {
+            var user = new User { Login = "GetUserProgressByCient" };
+
+            await client.RegisterAsync(user);
+            var userId = await client.GetIdByLoginAsync(ticket, user.Login);
+
+            var progress = await client.StartCourseAsync(ticket, firstCourse.Id, userId);
+
+            var result = await client.GetProgressAsync(ticket, userId);
+
+            var compareLogic = new CompareLogic
+            {
+                Config =
+                {
+                    IgnoreCollectionOrder = true,
+                    IgnoreObjectTypes = true
+                }
+            };
+
+            var compareResult = compareLogic.Compare(new[] {progress}, result);
+            Assert.True(compareResult.AreEqual);
         }
         
         public void Dispose()
