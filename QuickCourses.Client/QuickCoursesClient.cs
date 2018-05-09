@@ -179,7 +179,7 @@ namespace QuickCourses.Client
             var query = userId != null ? new Dictionary<string, string> {["userId"] = userId} : null;
             
             return InvokeApiMethod<IEnumerable<CourseProgress>>(
-                HttpMethod.Post,
+                HttpMethod.Get,
                 path: "progress",
                 ticket: ticket,
                 queryParameters: query);
@@ -211,7 +211,7 @@ namespace QuickCourses.Client
             Dictionary<string, string> headers = null,
             Dictionary<string, string> queryParameters = null)
         {
-            var response = await MakeRequest(httpMethod, path, ticket, content, headers);
+            var response = await MakeRequest(httpMethod, path, ticket, content, headers, queryParameters);
 
             var serializedObject = await response.Content.ReadAsStringAsync();
 
