@@ -3,31 +3,31 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
-using QuickCourses.Extensions;
-using QuickCourses.Models.Progress;
+using QuickCourses.Api.Data.Models.Extensions;
+using QuickCourses.Api.Data.Models.Progress;
 
 namespace QuickCourses.Api.Data.Repositories
 {
-    public class ProgressRepository : RepositoryBase<CourseProgress>, IProgressRepository
+    public class ProgressRepository : RepositoryBase<CourseProgressData>, IProgressRepository
     {
         public ProgressRepository(Settings settings) 
             : base(settings)
         {
         }
 
-        public async Task<List<CourseProgress>> GetAllByUserAsync(string userId)
+        public async Task<List<CourseProgressData>> GetAllByUserAsync(string userId)
         {
             if (userId == null)
             {
                 throw new System.ArgumentNullException(nameof(userId));
             }
 
-            var result = await Context.Collection.Find(progress => progress.Id.StartsWith(userId)).ToListAsync();
+            var result = await DbContext.Collection.Find(progress => progress.Id.StartsWith(userId)).ToListAsync();
             result.ForEach(progress => progress.SetUpLinks());
             return result;
         }
 
-        public Task<CourseProgress> GetAsync(string userId, string courseId)
+        public Task<CourseProgressData> GetAsync(string userId, string courseId)
         {
             if (userId == null)
             {
@@ -57,14 +57,14 @@ namespace QuickCourses.Api.Data.Repositories
             return ContainsAsync($"{userId}{courseId}");
         }
 
-        public override async Task<List<CourseProgress>> GetAllAsync()
+        public override async Task<List<CourseProgressData>> GetAllAsync()
         {
             var result = await base.GetAllAsync();
             result.ForEach(progress => progress.SetUpLinks());
             return result;
         }
 
-        public override async Task<CourseProgress> GetAsync(string id)
+        public override async Task<CourseProgressData> GetAsync(string id)
         {
             if (id == null)
             {
@@ -76,7 +76,7 @@ namespace QuickCourses.Api.Data.Repositories
             return result;
         }
 
-        public override async Task<string> InsertAsync(CourseProgress value)
+        public override async Task<string> InsertAsync(CourseProgressData value)
         {
             if (value == null)
             {
@@ -85,7 +85,7 @@ namespace QuickCourses.Api.Data.Repositories
 
             var id = $"{value.UserId}{value.CourceId}";
             value.Id = id;
-            await Context.Collection.InsertOneAsync(value);
+            await DbContext.Collection.InsertOneAsync(value);
             return id;
         }
     }

@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Models.Authentication;
+using QuickCourses.Api.Models.Authentication;
 
 namespace QuickCourses.Api.Controllers
 {
@@ -22,9 +21,9 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody]User user)
+        public async Task<IActionResult> PostUser([FromBody]RegistrationInfo registrationInfo)
         { 
-            var login = user?.Login;
+            var login = registrationInfo?.Login;
 
             if (string.IsNullOrEmpty(login))
             {
@@ -36,9 +35,18 @@ namespace QuickCourses.Api.Controllers
                 return InvalidOperation($"User with login {login} already exists");
             }
 
-            user.Role = "User";
+            var userData = new Data.Models.Authentication.UserData
+            {
+                Born = registrationInfo.Born,
+                Email = registrationInfo.Email,
+                Login = registrationInfo.Login,
+                Name = registrationInfo.Name,
+                Password = registrationInfo.Password,
+                RegistrationTime = DateTime.Now,
+                Role = "User"
+            };
 
-            await userRepository.InsertAsync(user);
+            await userRepository.InsertAsync(userData);
 
             return StatusCode(StatusCodes.Status201Created);
         }

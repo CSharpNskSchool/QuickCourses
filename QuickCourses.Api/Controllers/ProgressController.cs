@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Extensions;
-using QuickCourses.Models.Interaction;
-using QuickCourses.Models.Primitives;
-using QuickCourses.Models.Progress;
+using QuickCourses.Api.Data.Models.Extensions;
+using QuickCourses.Api.Data.Models.Primitives;
+using QuickCourses.Api.Data.Models.Progress;
+using QuickCourses.Api.Extensions;
+using QuickCourses.Api.Models.Interaction;
 
 namespace QuickCourses.Api.Controllers
 {
@@ -16,12 +16,12 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class ProgressController : ControllerBase
     {
-        private readonly IRepository<Course> courseRepository;
+        private readonly IRepository<CourseData> courseRepository;
         private readonly IProgressRepository progressRepository;
 
         public ProgressController(
             IProgressRepository progressRepository, 
-            IRepository<Course> courseRepository)
+            IRepository<CourseData> courseRepository)
         {
             this.progressRepository = progressRepository;
             this.courseRepository = courseRepository;
@@ -191,7 +191,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        private async Task<LessonProgress> GetLessonProgress(string progressId, int lessonId)
+        private async Task<LessonProgressData> GetLessonProgress(string progressId, int lessonId)
         {
             var course = await progressRepository.GetAsync(progressId);
             if (course == null)

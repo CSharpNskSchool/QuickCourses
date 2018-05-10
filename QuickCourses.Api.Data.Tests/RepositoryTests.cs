@@ -2,8 +2,8 @@
 using NUnit.Framework;
 using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Repositories;
-using QuickCourses.Models.Interfaces;
 using KellermanSoftware.CompareNetObjects;
+using QuickCourses.Api.Data.Models.Interfaces;
 
 namespace QuickCourses.Api.Data.Tests
 {
@@ -22,7 +22,7 @@ namespace QuickCourses.Api.Data.Tests
         }
         
         private RepositoryBase<Value> repository;
-        private Context<Value> valueRepositoryContext;
+        private DbContext<Value> valueRepositoryDbContext;
         private Settings settings;
         
         [SetUp]
@@ -36,13 +36,13 @@ namespace QuickCourses.Api.Data.Tests
             
             repository = new RepositoryBase<Value>(settings);
         
-            valueRepositoryContext = new Context<Value>(settings);
+            valueRepositoryDbContext = new DbContext<Value>(settings);
         }
 
         [TearDown]
         public void Clear()
         {
-            valueRepositoryContext.Collection.Database.DropCollection(settings.CollectionName);
+            valueRepositoryDbContext.Collection.Database.DropCollection(settings.CollectionName);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace QuickCourses.Api.Data.Tests
         {
             var value = new Value();
             
-            valueRepositoryContext.Collection.InsertOne(value);
+            valueRepositoryDbContext.Collection.InsertOne(value);
 
             var result = repository.DeleteAsync(value.Id).Result;
             
@@ -70,7 +70,7 @@ namespace QuickCourses.Api.Data.Tests
         {
             var value = new Value();
             
-            valueRepositoryContext.Collection.InsertOne(value);
+            valueRepositoryDbContext.Collection.InsertOne(value);
 
             var result = repository.GetAsync(value.Id).Result;
 
@@ -85,7 +85,7 @@ namespace QuickCourses.Api.Data.Tests
         {
             var value = new Value();
             
-            valueRepositoryContext.Collection.InsertOne(value);
+            valueRepositoryDbContext.Collection.InsertOne(value);
 
             var result = repository.ContainsAsync(value.Id).Result;
             

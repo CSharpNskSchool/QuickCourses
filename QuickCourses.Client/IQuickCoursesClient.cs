@@ -1,10 +1,10 @@
-﻿using QuickCourses.Models.Authentication;
-using QuickCourses.Models.Interaction;
-using QuickCourses.Models.Primitives;
-using QuickCourses.Models.Progress;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using QuickCourses.Api.Models.Authentication;
+using QuickCourses.Api.Models.Interaction;
+using QuickCourses.Api.Models.Primitives;
+using QuickCourses.Api.Models.Progress;
 
 namespace QuickCourses.Client
 {
@@ -29,7 +29,7 @@ namespace QuickCourses.Client
         
         Task<LessonStep> GetLessonStepAsync(Ticket ticket, string courseId, int lessonId, int stepId);
         
-        Task RegisterAsync(User user);
+        Task RegisterAsync(RegistrationInfo registrationInfo);
         
         Task<CourseProgress> StartCourseAsync(Ticket ticket, string userId, string courseId);
         

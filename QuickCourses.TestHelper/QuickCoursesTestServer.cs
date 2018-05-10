@@ -2,24 +2,24 @@
 using Microsoft.AspNetCore.TestHost;
 using QuickCourses.Api;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Models.Primitives;
 using System;
 using System.Net.Http;
-using QuickCourses.Models.Authentication;
+using QuickCourses.Api.Data.Models.Authentication;
+using QuickCourses.Api.Data.Models.Primitives;
 
 namespace QuickCourses.TestHelper
 {
     public class QuickCoursesTestServer : IDisposable
     {
         private readonly TestServer server;
-        private readonly IRepository<Course> courseeRepository;
+        private readonly IRepository<CourseData> courseeRepository;
         private readonly IUserRepository userRepository;
         private readonly IProgressRepository progressRepository;
 
         public QuickCoursesTestServer()
         {
             server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
-            courseeRepository = (IRepository<Course>)server.Host.Services.GetService(typeof(IRepository<Course>));
+            courseeRepository = (IRepository<CourseData>)server.Host.Services.GetService(typeof(IRepository<CourseData>));
             userRepository = (IUserRepository)server.Host.Services.GetService(typeof(IUserRepository));
             progressRepository = (IProgressRepository)server.Host.Services.GetService(typeof(IProgressRepository));
         }
@@ -31,17 +31,17 @@ namespace QuickCourses.TestHelper
             return server.CreateClient();
         }
 
-        public void UseCourses(params Course[] courses)
+        public void UseCourses(params CourseData[] coursesData)
         {
-            foreach(var course in courses)
+            foreach(var course in coursesData)
             {
                 courseeRepository.InsertAsync(course).Wait();
             }
         }
 
-        public void UseUsers(params User[] users)
+        public void UseUsers(params UserData[] usersData)
         {
-            foreach(var user in users)
+            foreach(var user in usersData)
             {
                 userRepository.InsertAsync(user).Wait();
             }

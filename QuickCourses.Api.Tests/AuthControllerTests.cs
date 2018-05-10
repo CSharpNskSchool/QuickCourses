@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
-using QuickCourses.Models.Authentication;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
 using System.Net;
 using System;
 using System.Threading;
+using QuickCourses.Api.Models.Authentication;
 using QuickCourses.TestHelper;
 
 namespace QuickCourses.Api.Tests

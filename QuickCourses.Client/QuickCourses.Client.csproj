@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QuickCourses.Model\QuickCourses.Models.csproj" />
+    <ProjectReference Include="..\QuickCourses.Api.Models\QuickCourses.Api.Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Models.Authentication;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using QuickCourses.Api.Data.Models.Authentication;
+using QuickCourses.Api.Models.Authentication;
 
 namespace QuickCourses.Api.Controllers
 {
@@ -78,7 +79,7 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        private Ticket GetTicket(User user, double minutes)
+        private Ticket GetTicket(UserData userData, double minutes)
         {
             if (minutes < 0 )
             {
@@ -86,7 +87,7 @@ namespace QuickCourses.Api.Controllers
             }
 
             var securityKey = GetSymmetricSecurityKey();
-            var jwtToken = GetJwtSecurityToken(user, securityKey, minutes);
+            var jwtToken = GetJwtSecurityToken(userData, securityKey, minutes);
             var tokenSource = securityTokenHandler.WriteToken(jwtToken);
 
             return new Ticket
@@ -104,13 +105,13 @@ namespace QuickCourses.Api.Controllers
             return new SymmetricSecurityKey(binnaryKey);
         }
 
-        private JwtSecurityToken GetJwtSecurityToken(User user, SymmetricSecurityKey securityKey, double minutes)
+        private JwtSecurityToken GetJwtSecurityToken(UserData userData, SymmetricSecurityKey securityKey, double minutes)
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Name ?? ""),
-                new Claim(ClaimTypes.NameIdentifier, user.Id ?? ""),
-                new Claim(ClaimTypes.Role, user.Role ?? "")
+                new Claim(ClaimTypes.Name, userData.Name ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, userData.Id ?? ""),
+                new Claim(ClaimTypes.Role, userData.Role ?? "")
             };
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

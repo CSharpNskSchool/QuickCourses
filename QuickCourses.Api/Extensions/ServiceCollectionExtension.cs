@@ -32,7 +32,7 @@ namespace QuickCourses.Api.Extensions
                 });
             return services;
         }
-        private static bool CustomLifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken tokenToValidate, TokenValidationParameters @param)
+        private static bool CustomLifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken tokenToValidate, TokenValidationParameters param)
         {
             if (expires != null)
             {

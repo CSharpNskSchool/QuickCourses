@@ -3,15 +3,15 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text;
 using System;
-using QuickCourses.Models.Primitives;
-using QuickCourses.Models.Interaction;
-using QuickCourses.Models.Progress;
-using QuickCourses.Models.Errors;
 using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Web;
-using QuickCourses.Models.Authentication;
+using QuickCourses.Api.Models.Authentication;
+using QuickCourses.Api.Models.Errors;
+using QuickCourses.Api.Models.Interaction;
+using QuickCourses.Api.Models.Primitives;
+using QuickCourses.Api.Models.Progress;
 
 [assembly: InternalsVisibleTo("QuickCourses.Client.Tests")]
 namespace QuickCourses.Client
@@ -107,12 +107,12 @@ namespace QuickCourses.Client
                 ticket: ticket);
         }
 
-        public Task RegisterAsync(User user)
+        public Task RegisterAsync(RegistrationInfo registrationInfo)
         {
             return InvokeApiMethod(
                 HttpMethod.Post,
                 path: "users",
-                content: user);
+                content: registrationInfo);
         }
 
         public Task<CourseProgress> StartCourseAsync(Ticket ticket, string courseId, string userId = null)

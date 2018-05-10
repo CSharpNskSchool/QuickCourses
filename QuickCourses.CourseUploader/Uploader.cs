@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using QuickCourses.Api.Data.DataInterfaces;
-using QuickCourses.Models.Interfaces;
+using QuickCourses.Api.Data.Models.Interfaces;
 
 namespace QuickCourses.CourseUploader
 {

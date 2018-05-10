@@ -2,8 +2,8 @@
 using NUnit.Framework;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
+using QuickCourses.Api.Data.Models.Authentication;
 using QuickCourses.Api.Data.Repositories;
-using QuickCourses.Models.Authentication;
 
 namespace QuickCourses.Api.Data.Tests
 {
@@ -12,7 +12,7 @@ namespace QuickCourses.Api.Data.Tests
     {
         private Settings settings;
         private IUserRepository userRepository;
-        private Context<User> userRepositoryContext;
+        private DbContext<UserData> userRepositoryDbContext;
 
         [SetUp]
         public void Init()
@@ -25,21 +25,21 @@ namespace QuickCourses.Api.Data.Tests
 
             userRepository = new UserRepository(settings);
 
-            userRepositoryContext = new Context<User>(settings);
+            userRepositoryDbContext = new DbContext<UserData>(settings);
         }
 
         [TearDown]
         public void Clear()
         {
-            userRepositoryContext.Collection.Database.DropCollection(settings.CollectionName);
+            userRepositoryDbContext.Collection.Database.DropCollection(settings.CollectionName);
         }
 
         [Test]
         public void GetByLoginTest()
         {
-            var user = new User {Login = "123", Id = "123"};
+            var user = new UserData {Login = "123", Id = "123"};
 
-            userRepositoryContext.Collection.InsertOne(user);
+            userRepositoryDbContext.Collection.InsertOne(user);
 
             var result = userRepository.GetByLoginAsync(user.Login).Result;
 

@@ -1,13 +1,13 @@
-﻿using QuickCourses.Models.Primitives;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using KellermanSoftware.CompareNetObjects;
 using Xunit;
 using Newtonsoft.Json;
-using QuickCourses.Models.Authentication;
-using QuickCourses.Models.Progress;
-using QuickCourses.Models.Interaction;
+using QuickCourses.Api.Models.Authentication;
+using QuickCourses.Api.Models.Interaction;
+using QuickCourses.Api.Models.Primitives;
+using QuickCourses.Api.Models.Progress;
 using QuickCourses.TestHelper;
 
 namespace QuickCourses.Client.Tests
@@ -77,7 +77,7 @@ namespace QuickCourses.Client.Tests
         {
             var firstLesson = firstCourse.Lessons.FirstOrDefault();
             Assert.NotNull(firstCourse);
-            var lessonFromId = client.GetLessonAsync(ticket, firstLesson.CourseId.ToString(), firstLesson.Id).Result;
+            var lessonFromId = client.GetLessonAsync(ticket, firstLesson.CourseId, firstLesson.Id).Result;
             Assert.Equal(firstLesson, lessonFromId, new JsonComparer<Lesson>());
         }
 
@@ -98,7 +98,7 @@ namespace QuickCourses.Client.Tests
         [Fact]
         public void User_RegisterAndGiveMakeAnswer_Easy()
         {
-            var user = new User
+            var user = new RegistrationInfo
             {
                 Name = "Vasya",
                 Password = "12345",
@@ -147,7 +147,7 @@ namespace QuickCourses.Client.Tests
 
             var firstStepProgress = firstLessonProgress
                                         .StepProgresses
-                                        .FirstOrDefault(x => x.StepId == questionState.StepId);
+                                        .FirstOrDefault(x => x.Id == questionState.StepId);
             
             Assert.NotNull(firstStepProgress);
 
@@ -173,10 +173,10 @@ namespace QuickCourses.Client.Tests
         [Fact]
         public async void PostUserAnswerByClient()
         {
-            var user = new User{Login = "PostUserAnswerByClient" };
+            var registrationInfo = new RegistrationInfo {Login = "PostUserAnswerByClient" };
 
-            await client.RegisterAsync(user);
-            var userId = await client.GetIdByLoginAsync(ticket, user.Login);
+            await client.RegisterAsync(registrationInfo);
+            var userId = await client.GetIdByLoginAsync(ticket, registrationInfo.Login);
 
             var progress = await client.StartCourseAsync(ticket, firstCourse.Id, userId);
 
@@ -205,10 +205,10 @@ namespace QuickCourses.Client.Tests
         [Fact]
         public async void GetUserProgressByCient()
         {
-            var user = new User { Login = "GetUserProgressByCient" };
+            var registrationInfo = new RegistrationInfo { Login = "GetUserProgressByCient" };
 
-            await client.RegisterAsync(user);
-            var userId = await client.GetIdByLoginAsync(ticket, user.Login);
+            await client.RegisterAsync(registrationInfo);
+            var userId = await client.GetIdByLoginAsync(ticket, registrationInfo.Login);
 
             var progress = await client.StartCourseAsync(ticket, firstCourse.Id, userId);
 
