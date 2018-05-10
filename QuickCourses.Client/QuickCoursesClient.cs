@@ -179,7 +179,7 @@ namespace QuickCourses.Client
             var query = userId != null ? new Dictionary<string, string> {["userId"] = userId} : null;
             
             return InvokeApiMethod<IEnumerable<CourseProgress>>(
-                HttpMethod.Post,
+                HttpMethod.Get,
                 path: "progress",
                 ticket: ticket,
                 queryParameters: query);

@@ -28,6 +28,7 @@ namespace QuickCourses.Api.Data.Models.Extensions
             
             stateData.SelectedAnswers = new List<int>(selected);
             stateData.CorrectlySelectedAnswers = selected.Where(x => questionData.CorrectAnswers.Contains(x)).ToList();
+            stateData.Passed = stateData.SelectedAnswers.Count == stateData.CorrectlySelectedAnswers.Count;
             stateData.CurrentAttemptsCount++;
             return stateData;
         }
