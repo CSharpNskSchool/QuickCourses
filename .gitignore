@@ -43,3 +43,5 @@ QuickCourses.Api.Data.Models/bin
 QuickCourses.Api.Data.Models/obj
 QuickCourses.Api.Extensions/obj
 QuickCourses.Api.Extensions/bin
+/QuickCourses.Model/bin
+/QuickCourses.Model/obj
