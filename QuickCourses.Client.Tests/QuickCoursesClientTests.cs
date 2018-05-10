@@ -226,6 +226,20 @@ namespace QuickCourses.Client.Tests
             var compareResult = compareLogic.Compare(new[] {progress}, result);
             Assert.True(compareResult.AreEqual);
         }
+
+        [Fact]
+        public async void StartUserCourseByClien()
+        {
+            var registrationInfo = new RegistrationInfo {Login = "StartUserCourseByClien"};
+            await client.RegisterAsync(registrationInfo);
+            var userId = await client.GetIdByLoginAsync(ticket, registrationInfo.Login);
+
+            var progress = await client.StartCourseAsync(ticket, firstCourse.Id, userId);
+
+            var expectedId = $"{userId}{firstCourse.Id}";
+
+            Assert.Equal(expectedId, progress.Id);
+        }
         
         public void Dispose()
         {
