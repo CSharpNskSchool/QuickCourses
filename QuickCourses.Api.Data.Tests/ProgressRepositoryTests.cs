@@ -14,7 +14,7 @@ namespace QuickCourses.Api.Data.Tests
     {
         private Settings settings;
         private IProgressRepository progressRepository;
-        private Context<CourseProgressData> progressRepositoryContext;
+        private DbContext<CourseProgressData> progressRepositoryDbContext;
 
         [SetUp]
         public void Init()
@@ -27,13 +27,13 @@ namespace QuickCourses.Api.Data.Tests
 
             progressRepository = new ProgressRepository(settings);
 
-            progressRepositoryContext = new Context<CourseProgressData>(settings);
+            progressRepositoryDbContext = new DbContext<CourseProgressData>(settings);
         }
 
         [TearDown]
         public void Clear()
         {
-            progressRepositoryContext.Collection.Database.DropCollection(settings.CollectionName);
+            progressRepositoryDbContext.Collection.Database.DropCollection(settings.CollectionName);
         }
 
         [Test]
@@ -55,8 +55,8 @@ namespace QuickCourses.Api.Data.Tests
                 new CourseProgressData {Id = "someid3", LessonProgresses = new List<LessonProgressData>()}
             };
 
-            progressRepositoryContext.Collection.InsertMany(currentUserProgresses);
-            progressRepositoryContext.Collection.InsertMany(otherProgresses);
+            progressRepositoryDbContext.Collection.InsertMany(currentUserProgresses);
+            progressRepositoryDbContext.Collection.InsertMany(otherProgresses);
 
             var result = progressRepository.GetAllByUserAsync(user.Id).Result.ToList();
 

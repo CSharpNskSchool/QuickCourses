@@ -3,12 +3,12 @@ using MongoDB.Driver;
 
 namespace QuickCourses.Api.Data.Infrastructure
 {
-    public class Context<TValue>
+    public class DbContext<TValue>
     {
         private readonly IMongoDatabase database;
         private readonly string collectionName;
 
-        public Context(Settings settings)
+        public DbContext(Settings settings)
         {
             if (settings == null)
             {

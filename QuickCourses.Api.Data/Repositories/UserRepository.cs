@@ -21,7 +21,7 @@ namespace QuickCourses.Api.Data.Repositories
                 throw new ArgumentNullException(nameof(login));
             }
 
-            var result = await Context.Collection.Find(user => user.Login == login).FirstOrDefaultAsync();
+            var result = await DbContext.Collection.Find(user => user.Login == login).FirstOrDefaultAsync();
             return result;
         }
 

@@ -12,7 +12,7 @@ namespace QuickCourses.Api.Data.Tests
     {
         private Settings settings;
         private IUserRepository userRepository;
-        private Context<UserData> userRepositoryContext;
+        private DbContext<UserData> userRepositoryDbContext;
 
         [SetUp]
         public void Init()
@@ -25,13 +25,13 @@ namespace QuickCourses.Api.Data.Tests
 
             userRepository = new UserRepository(settings);
 
-            userRepositoryContext = new Context<UserData>(settings);
+            userRepositoryDbContext = new DbContext<UserData>(settings);
         }
 
         [TearDown]
         public void Clear()
         {
-            userRepositoryContext.Collection.Database.DropCollection(settings.CollectionName);
+            userRepositoryDbContext.Collection.Database.DropCollection(settings.CollectionName);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace QuickCourses.Api.Data.Tests
         {
             var user = new UserData {Login = "123", Id = "123"};
 
-            userRepositoryContext.Collection.InsertOne(user);
+            userRepositoryDbContext.Collection.InsertOne(user);
 
             var result = userRepository.GetByLoginAsync(user.Login).Result;
 

@@ -12,7 +12,7 @@ namespace QuickCourses.Api.Data.Repositories
     public class RepositoryBase<TValue> : IRepository<TValue>
         where TValue : IIdentifiable
     {
-        protected readonly Context<TValue> Context;
+        protected readonly DbContext<TValue> DbContext;
 
         public RepositoryBase(Settings settings)
         {
@@ -21,12 +21,12 @@ namespace QuickCourses.Api.Data.Repositories
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            Context = new Context<TValue>(settings);
+            DbContext = new DbContext<TValue>(settings);
         }
 
         public virtual async Task<List<TValue>> GetAllAsync()
         {
-            var result = await Context.Collection.Find(_ => true).ToListAsync();
+            var result = await DbContext.Collection.Find(_ => true).ToListAsync();
             return result;
         }
 
@@ -37,7 +37,7 @@ namespace QuickCourses.Api.Data.Repositories
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var result = await Context.Collection.Find(value => value.Id == id).FirstOrDefaultAsync();
+            var result = await DbContext.Collection.Find(value => value.Id == id).FirstOrDefaultAsync();
             return result;
         }
 
@@ -64,7 +64,7 @@ namespace QuickCourses.Api.Data.Repositories
                 throw new ArgumentNullException(nameof(newValue));
             }
 
-            await Context.Collection.ReplaceOneAsync(value => value.Id == id, newValue);
+            await DbContext.Collection.ReplaceOneAsync(value => value.Id == id, newValue);
         }
 
         public virtual async Task<string> InsertAsync(TValue value)
@@ -76,7 +76,7 @@ namespace QuickCourses.Api.Data.Repositories
 
             var id = ObjectId.GenerateNewId().ToString();
             value.Id = id;
-            await Context.Collection.InsertOneAsync(value);
+            await DbContext.Collection.InsertOneAsync(value);
             return id;
         }
 
@@ -87,7 +87,7 @@ namespace QuickCourses.Api.Data.Repositories
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var result = await Context.Collection.DeleteOneAsync(value => value.Id == id);
+            var result = await DbContext.Collection.DeleteOneAsync(value => value.Id == id);
             return result.DeletedCount == 1;
         }
     }

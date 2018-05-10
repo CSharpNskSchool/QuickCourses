@@ -22,7 +22,7 @@ namespace QuickCourses.Api.Data.Repositories
                 throw new System.ArgumentNullException(nameof(userId));
             }
 
-            var result = await Context.Collection.Find(progress => progress.Id.StartsWith(userId)).ToListAsync();
+            var result = await DbContext.Collection.Find(progress => progress.Id.StartsWith(userId)).ToListAsync();
             result.ForEach(progress => progress.SetUpLinks());
             return result;
         }
@@ -85,7 +85,7 @@ namespace QuickCourses.Api.Data.Repositories
 
             var id = $"{value.UserId}{value.CourceId}";
             value.Id = id;
-            await Context.Collection.InsertOneAsync(value);
+            await DbContext.Collection.InsertOneAsync(value);
             return id;
         }
     }
