@@ -241,6 +241,17 @@ namespace QuickCourses.Client.Tests
             Assert.Equal(expectedId, progress.Id);
         }
         
+        [Fact]
+        public async void ForNewUserReturnsEmptyProgress()
+        {
+            var registrationInfo = new RegistrationInfo { Login = "Evrei" };
+            await client.RegisterAsync(registrationInfo);
+            var userId = await client.GetIdByLoginAsync(ticket, registrationInfo.Login);
+            var progress = await client.GetProgressAsync(ticket, userId);
+            Assert.NotNull(progress);
+            Assert.Empty(progress);
+        }
+
         public void Dispose()
         {
             client.Dispose();
