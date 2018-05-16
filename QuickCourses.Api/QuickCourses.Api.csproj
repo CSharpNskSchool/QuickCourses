@@ -1,16 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-
+  <ItemGroup>
+    <Compile Remove="CourseExtention\**" />
+    <Content Remove="CourseExtention\**" />
+    <EmbeddedResource Remove="CourseExtention\**" />
+    <None Remove="CourseExtention\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Extensions\CourseExtentions.cs~RF559c64a.TMP" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\QuickCourses.Api.Data\QuickCourses.Api.Data.csproj" />
+    <ProjectReference Include="..\QuickCourses.Api.Extensions\QuickCourses.Api.Extensions.csproj" />
+    <ProjectReference Include="..\QuickCourses.Api.Models\QuickCourses.Api.Models.csproj" />
+  </ItemGroup>
 </Project>
