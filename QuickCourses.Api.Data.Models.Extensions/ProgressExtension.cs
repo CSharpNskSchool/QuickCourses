@@ -48,10 +48,12 @@ namespace QuickCourses.Api.Data.Models.Extensions
 
             foreach (var lessonProgress in courseProgressData.LessonProgresses)
             {
+                lessonProgress.ProgressId = courseProgressData.Id;
                 lessonProgress.CourseId = courseProgressData.CourceId;
 
                 foreach (var stepProgress in lessonProgress.StepProgresses)
                 {
+                    stepProgress.ProgressId = courseProgressData.Id;
                     stepProgress.CourseId = courseProgressData.CourceId;
                     stepProgress.LessonId = lessonProgress.LessonId;
 

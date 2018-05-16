@@ -18,6 +18,7 @@ namespace QuickCourses.Api.Data.Models.Extensions
             
             var result = new QuestionStateData
             {
+                QuestionId = questionData.Id,
                 CourseId = questionData.CourseId,
                 LessonId = questionData.LessonId,
                 StepId = questionData.StepId,
