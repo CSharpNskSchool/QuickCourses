@@ -126,6 +126,46 @@ namespace QuickCourses.Client.Tests
         }
 
         [Fact]
+        public async void Course_StatisticsAreUpdated()
+        {
+            var user = new RegistrationInfo
+            {
+                Login = "Course_StatisticsAreUpdated"
+            };
+
+            client.RegisterAsync(user).Wait();
+
+            var userId = await client.GetIdByLoginAsync(ticket, user.Login);
+
+            var progress = await client.StartCourseAsync(ticket, firstCourse.Id, userId);
+
+            await client.SendAnswerAsync(
+                ticket,
+                progress.Id,
+                lessonId: 0,
+                stepId: 0,
+                answer: new Answer
+                {
+                    QuestionId = 0,
+                    SelectedAnswers = new List<int> {0}
+                });
+
+            var updatedProgress = await client.GetCourseProgressAsync(ticket, progress.Id);
+
+            var statistics = updatedProgress.Statistics;
+            var expectedStatistics = new Statistics
+            {
+                Passed = true,
+                PassedQuestionsCount = 1,
+                TotalQuestionsCount = 1
+            };
+
+            var compareLogic = new CompareLogic();
+            var compareResult = compareLogic.Compare(statistics, expectedStatistics);
+            Assert.True(compareResult.AreEqual);
+        }
+
+        [Fact]
         public async void Course_ThrowsWhen_BadArgrumnts()
         {
             await Assert.ThrowsAsync<KeyNotFoundException>(() => client.GetCourseAsync(ticket, "im smart client give me my items"));

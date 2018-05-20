@@ -9,7 +9,7 @@ namespace QuickCourses.Api.Data.Models.Extensions
 {
     public static class QuestionStateExtensions
     {
-        public static QuestionStateData Update(this QuestionStateData stateData, QuestionData questionData, List<int> selected)
+        public static QuestionStateData GetUpdated(this QuestionStateData stateData, QuestionData questionData, List<int> selected)
         {
             if (stateData == null)
             {
@@ -25,12 +25,20 @@ namespace QuickCourses.Api.Data.Models.Extensions
             {
                 throw new ArgumentNullException(nameof(selected));
             }
-            
-            stateData.SelectedAnswers = new List<int>(selected);
-            stateData.CorrectlySelectedAnswers = selected.Where(x => questionData.CorrectAnswers.Contains(x)).ToList();
-            stateData.Passed = stateData.SelectedAnswers.Count == stateData.CorrectlySelectedAnswers.Count;
-            stateData.CurrentAttemptsCount++;
-            return stateData;
+
+            var result = new QuestionStateData
+            {
+                ProgressId = stateData.ProgressId,
+                CourseId = stateData.CourseId,
+                SelectedAnswers = new List<int>(selected),
+                CorrectlySelectedAnswers = selected
+                    .Where(x => questionData.CorrectAnswers.Contains(x))
+                    .ToList(),
+                Passed = stateData.SelectedAnswers.Count == stateData.CorrectlySelectedAnswers.Count,
+                CurrentAttemptsCount = stateData.CurrentAttemptsCount + 1
+            };
+
+            return result;
         }
 
         public static QuestionState ToApiModel(this QuestionStateData questionStateData)
