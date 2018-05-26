@@ -7,7 +7,7 @@ using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
-    public static class QuestionExtension
+    public static class QuestionDataExtension
     {
         public static QuestionStateData GetQuestionState(this QuestionData questionData)
         {

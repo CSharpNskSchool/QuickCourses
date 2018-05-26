@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuickCourses.Api.Models.Primitives
 {
@@ -8,9 +9,13 @@ namespace QuickCourses.Api.Models.Primitives
         public int LessonId { get; set; }
         public int StepId { get; set; }
         public int Id { get; set; }
+        [Required]
         public string Text { get; set; }
+        [Required]
         public List<AnswerVariant> AnswerVariants { get; set; }
+        [Required]
         public List<int> CorrectAnswers { get; set; }
-        public int TotalAttemptsCount { get; set; }
+        [Required]
+        public int? TotalAttemptsCount { get; set; }
     }
 }

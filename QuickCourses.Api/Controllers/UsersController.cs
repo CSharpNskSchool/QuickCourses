@@ -48,7 +48,7 @@ namespace QuickCourses.Api.Controllers
 
             await userRepository.InsertAsync(userData);
 
-            return StatusCode(StatusCodes.Status201Created);
+            return Created();
         }
 
         [HttpGet("{login}/id")]

@@ -3,7 +3,7 @@ using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
-    public static class DescriptionExtensions
+    public static class DescriptionDataExtensions
     {
         public static Description ToApiModel(this DescriptionData descriptionData)
         {

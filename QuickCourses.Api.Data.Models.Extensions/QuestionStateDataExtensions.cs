@@ -7,7 +7,7 @@ using QuickCourses.Api.Models.Progress;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
-    public static class QuestionStateExtensions
+    public static class QuestionStateDataExtensions
     {
         public static QuestionStateData GetUpdated(this QuestionStateData stateData, QuestionData questionData, List<int> selected)
         {

@@ -15,6 +15,6 @@ namespace QuickCourses.Api.Data.Models.Primitives
         public string Text { get; set; }
         public List<AnswerVariantData> AnswerVariants { get; set; }
         public List<int> CorrectAnswers { get; set; }
-        public int TotalAttemptsCount { get; set; }
+        public int? TotalAttemptsCount { get; set; }
     }
 }
