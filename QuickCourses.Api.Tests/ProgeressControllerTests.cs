@@ -12,6 +12,7 @@ using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Data.Models.Progress;
 using QuickCourses.Api.Models.Errors;
 using QuickCourses.Api.Models.Interaction;
+using QuickCourses.Api.Models.Progress;
 
 namespace QuickCourses.Api.Tests
 {
@@ -19,6 +20,7 @@ namespace QuickCourses.Api.Tests
     public class ProgeressControllerTests
     {
         private CourseData courseData;
+        private CourseProgress courseProgress;
         private CourseProgressData courseProgressData;
         private string userId;
         private ClaimsPrincipal user;
@@ -34,6 +36,7 @@ namespace QuickCourses.Api.Tests
             courseProgressData = courseData.CreateProgress(userId);
             courseProgressData.Id = $"{userId}{courseData.Id}";
 			courseProgressData.SetUpLinks();
+            courseProgress = courseProgressData.ToApiModel();
             controller = CreateProgressController();
         }
 
@@ -42,7 +45,7 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.StartCourse(new CourseStartOptions {CourseId = courseData.Id}, null).Result;
 
-            Utilits.CheckResponseValue<CreatedResult, CourseProgressData>(response, courseProgressData);
+            Utilits.CheckResponseValue<CreatedResult, CourseProgress>(response, courseProgress);
         }
 
         [Test]
@@ -50,37 +53,37 @@ namespace QuickCourses.Api.Tests
         {
             var response = controller.GetAllCoursesProgresses(null).Result;
 
-            Utilits.CheckResponseValue<OkObjectResult, List<CourseProgressData>>(
+            Utilits.CheckResponseValue<OkObjectResult, List<CourseProgress>>(
                 response,
-                new List<CourseProgressData> {courseProgressData});
+                new List<CourseProgress> {courseProgress});
         }
 
         [Test]
         public void GetCourseTest_ValidTest()
         {
-            var response = controller.GetCourseProgress(courseProgressData.Id).Result;
+            var response = controller.GetCourseProgress(courseProgress.Id).Result;
 
-            Utilits.CheckResponseValue<OkObjectResult, CourseProgressData>(response, courseProgressData);
+            Utilits.CheckResponseValue<OkObjectResult, CourseProgress>(response, courseProgress);
         }
 
         [Test]
         public void GetCourseLesson_ValidTest()
         {
-            var response = controller.GetLessonProgressById(courseProgressData.Id, lessonId: 0).Result;
+            var response = controller.GetLessonProgressById(courseProgress.Id, lessonId: 0).Result;
 
-            var expectedResult = courseProgressData.LessonProgresses[0];
+            var expectedResult = courseProgress.LessonProgresses[0];
 
-            Utilits.CheckResponseValue<OkObjectResult, LessonProgressData>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, LessonProgress>(response, expectedResult);
         }
 
         [Test]
         public void GetCourseLessonStep_ValidTest()
         {
-            var response = controller.GetLessonStep(courseProgressData.Id, lessonId: 0, stepId: 0).Result;
+            var response = controller.GetLessonStep(courseProgress.Id, lessonId: 0, stepId: 0).Result;
 
-            var expectedResult = courseProgressData.LessonProgresses[0].StepProgresses[0];
+            var expectedResult = courseProgress.LessonProgresses[0].StepProgresses[0];
 
-            Utilits.CheckResponseValue<OkObjectResult, StepProgressData>(response, expectedResult);
+            Utilits.CheckResponseValue<OkObjectResult, StepProgress>(response, expectedResult);
         }
         
         [Test]
@@ -91,12 +94,16 @@ namespace QuickCourses.Api.Tests
             const int questionId = 0;
 
             var answer = new Answer { QuestionId = questionId, SelectedAnswers = new List<int> { 0 } };
-            var result = controller.PostAnswer(courseProgressData.Id, lessonId, stepId, answer).Result;
+            var result = controller.PostAnswer(courseProgress.Id, lessonId, stepId, answer).Result;
 
             var question = courseData.Lessons[lessonId].Steps[stepId].Questions[questionId];
-            var expectedValue = question.GetQuestionState().Update(question, answer.SelectedAnswers);
-            expectedValue.ProgressId = courseProgressData.Id;
-            Utilits.CheckResponseValue<OkObjectResult, QuestionStateData>(result, expectedValue);
+            var expectedValue = question
+                                    .GetQuestionState()
+                                    .GetUpdated(question, answer.SelectedAnswers)
+                                    .ToApiModel();
+
+            expectedValue.ProgressId = courseProgress.Id;
+            Utilits.CheckResponseValue<OkObjectResult, QuestionState>(result, expectedValue);
         }
 
         [Test]

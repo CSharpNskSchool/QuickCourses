@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,8 @@ namespace QuickCourses.Api.Controllers
                 userId = User.GetId();
             }
                 
-            var result = await progressRepository.GetAllByUserAsync(userId);
+            var progressDatas = await progressRepository.GetAllByUserAsync(userId);
+            var result = progressDatas.Select(x => x.ToApiModel()).ToList();
             return Ok(result);
         }
 
@@ -73,39 +75,44 @@ namespace QuickCourses.Api.Controllers
             courseProgress.Id = await progressRepository.InsertAsync(courseProgress);
             courseProgress.SetUpLinks();
 
+            var result = courseProgress.ToApiModel();
+
             var uri = Request.GetUri();
-            return Created($"{uri}/{courseProgress.CourceId}", courseProgress);
+            return Created($"{uri}/{courseProgress.CourceId}", result);
         }
 
         [HttpGet("{progressId}")]
         public async Task<IActionResult> GetCourseProgress(string progressId)
         {
-            var result = await progressRepository.GetAsync(progressId);
+            var progressData = await progressRepository.GetAsync(progressId);
 
-            if (result == null)
+            if (progressData == null)
             {
                 return NotFound($"Invalid progressId = {progressId}");
             }
 
-            var userId = result.UserId;
+            var userId = progressData.UserId;
 
             if (!IdIsValid(userId))
             {
                 return Forbid($"The user has no rights or the id = {userId} is invalid");
             }
-            
+
+            var result = progressData.ToApiModel();
             return Ok(result);
         }
 
         [HttpGet("{progressId}/lessons/{lessonId:int}")]
         public async Task<IActionResult> GetLessonProgressById(string progressId, int lessonId)
         {
-            var result = await GetLessonProgress(progressId, lessonId);
+            var lessonProgressData = await GetLessonProgress(progressId, lessonId);
 
-            if (result == null)
+            if (lessonProgressData == null)
             {
                 return NotFound($"Invalid combination of progressId = {progressId}, lessonId = {lessonId}");
             }
+
+            var result = lessonProgressData.ToApiModel();
 
             return Ok(result);
         }
@@ -134,10 +141,12 @@ namespace QuickCourses.Api.Controllers
                 return NotFound($"Invalid combination of progressId = {progressId}, lessonId = {lessonId}");
             }
 
-            if (!lesson.StepProgresses.TryGetValue(stepId, out var result))
+            if (!lesson.StepProgresses.TryGetValue(stepId, out var stepProgressData))
             {
                 return NotFound($"Invalid combination of stepId = {stepId}");
             }
+
+            var result = stepProgressData.ToApiModel();
 
             return Ok(result);
         }
@@ -178,16 +187,17 @@ namespace QuickCourses.Api.Controllers
                 .StepProgresses[stepId]
                 .QuestionStates[answer.QuestionId];
 
-            var result = questionState.Update(question, answer.SelectedAnswers);
+            var questionStateData = questionState.GetUpdated(question, answer.SelectedAnswers);
 
-            if (question.TotalAttemptsCount < result.CurrentAttemptsCount)
+            if (question.TotalAttemptsCount < questionStateData.CurrentAttemptsCount)
             {
                 return InvalidOperation("No available attempts");
             }
 
-            courseProgress.Update(lessonId, stepId, answer.QuestionId, result);
+            courseProgress.Update(lessonId, stepId, answer.QuestionId, questionStateData);
             await progressRepository.ReplaceAsync(courseProgress.Id, courseProgress);
 
+            var result = questionStateData.ToApiModel();
             return Ok(result);
         }
 

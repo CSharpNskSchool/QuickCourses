@@ -8,15 +8,15 @@ namespace QuickCourses.Api.Data.Models.Extensions
     public static class ProgressExtension
     {
         public static CourseProgressData Update(
-            this CourseProgressData courseProgressData,
+            this CourseProgressData progressData,
             int lessonId,
             int stepId,
             int questionId,
             QuestionStateData questionStateData)
         {
-            if (courseProgressData == null)
+            if (progressData == null)
             {
-                throw new ArgumentNullException(nameof(courseProgressData));
+                throw new ArgumentNullException(nameof(progressData));
             }
 
             if (questionStateData == null)
@@ -24,19 +24,21 @@ namespace QuickCourses.Api.Data.Models.Extensions
                 throw new ArgumentNullException(nameof(questionStateData));
             }
 
-            var lessonProgress = courseProgressData.LessonProgresses[lessonId];
+            var lessonProgress = progressData.LessonProgresses[lessonId];
             var stepProgress = lessonProgress.StepProgresses[stepId];
             var questionStates = stepProgress.QuestionStates;
 
-            courseProgressData.StatisticsData.PassedQuestionsCount += GetDelta(questionStates[questionId], questionStateData);
-            
+            progressData.StatisticsData.PassedQuestionsCount += GetDelta(questionStates[questionId], questionStateData);
+            progressData.StatisticsData.Passed = progressData.StatisticsData.PassedQuestionsCount ==
+                                                 progressData.StatisticsData.TotalQuestionsCount; 
+
             questionStates[questionId] = questionStateData;
 
             stepProgress.Passed = stepProgress.QuestionStates.TrueForAll(x => x.Passed);
             lessonProgress.Passed = lessonProgress.StepProgresses.TrueForAll(x => x.Passed);
-            courseProgressData.Passed = courseProgressData.LessonProgresses.TrueForAll(x => x.Passed);
+            progressData.Passed = progressData.LessonProgresses.TrueForAll(x => x.Passed);
 
-            return courseProgressData;
+            return progressData;
         }
         
         public static CourseProgressData SetUpLinks(this CourseProgressData courseProgressData)

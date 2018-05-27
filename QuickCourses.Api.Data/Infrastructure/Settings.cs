@@ -2,6 +2,10 @@
 {
     public class Settings
     {
+        public Settings()
+        {
+        }
+
         public Settings(string connectionString, string database, string collectionName)
         {
             ConnectionString = connectionString;
@@ -9,8 +13,8 @@
             CollectionName = collectionName;
         }
         
-        public string ConnectionString { get; }
-        public string Database { get; }
-        public string CollectionName { get; }
+        public string ConnectionString { get; set; }
+        public string Database { get; set; }
+        public string CollectionName { get; set; }
     }
 }
