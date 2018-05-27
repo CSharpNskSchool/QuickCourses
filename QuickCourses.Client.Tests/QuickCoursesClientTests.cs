@@ -96,7 +96,7 @@ namespace QuickCourses.Client.Tests
         }
 
         [Fact]
-        public void User_RegisterAndGiveMakeAnswer_Easy()
+        public void User_RegisterAndGiveMakeAnswer()
         {
             var user = new RegistrationInfo
             {
@@ -123,6 +123,31 @@ namespace QuickCourses.Client.Tests
                 }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, result);
+        }
+
+        [Fact]
+        public async void PostInvalidAnswer()
+        {
+            var user = new RegistrationInfo {
+                Login = "PostInvalidAnswer"
+            };
+
+            client.RegisterAsync(user).Wait();
+
+            var userTicket = client.GetTicketAsync(ticket, user.Login).Result;
+
+            var progress = client.StartCourseAsync(userTicket, firstCourse.Id).Result;
+
+            var result = client.SendAnswerAsync(
+                userTicket,
+                progress.Id,
+                lessonId: 0,
+                stepId: 0,
+                answer: new Answer {
+                    QuestionId = 0
+                });
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await result);
         }
 
         [Fact]

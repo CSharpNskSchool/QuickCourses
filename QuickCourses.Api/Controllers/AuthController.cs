@@ -120,7 +120,7 @@ namespace QuickCourses.Api.Controllers
             return new JwtSecurityToken(
                 configuration["JasonWebToken:Issuer"],
                 configuration["JasonWebToken:Issuer"],
-                claims: claims,
+                claims,
                 notBefore: minutes == 0 ? null : new DateTime?(notBefore),
                 expires: notBefore.AddMinutes(minutes),
                 signingCredentials: credentials);

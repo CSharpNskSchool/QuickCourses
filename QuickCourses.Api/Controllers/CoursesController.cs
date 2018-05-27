@@ -126,11 +126,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> PostCourse([FromBody]Course course)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var courseData = course.ToDataModel();
             var id = await courseRepository.InsertAsync(courseData);
 
@@ -143,11 +138,6 @@ namespace QuickCourses.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(string courseId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var successfullyDeleted = await courseRepository.DeleteAsync(courseId);
 
             return successfullyDeleted ? NoContent() : NotFound($"Invalid course id = {courseId}");
@@ -156,11 +146,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPatch("{id}/description")]
         public async Task<IActionResult> PatchDescription(string courseId, [FromBody]Description description)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var course = await courseRepository.GetAsync(courseId);
 
             if (course == null)
@@ -178,11 +163,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPost("{courseId}/lessons")]
         public async Task<IActionResult> PostLesson(string courseId, [FromBody]Lesson lesson)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var course = await courseRepository.GetAsync(courseId);
 
             if (course == null)
@@ -199,11 +179,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPatch("{courseId}/lessons/{lessonId:int}")]
         public async Task<IActionResult> PatchLesson(string courseId, int lessonId, [FromBody]Lesson lesson)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var course = await courseRepository.GetAsync(courseId);
 
             if (course == null)
@@ -239,11 +214,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPost("{courseId}/lessons/{lessonId:int}/steps")]
         public async Task<IActionResult> PostStep(string courseId, int lessonId, [FromBody]LessonStep lessonStep)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var lesson = await GetLesson(courseId, lessonId);
 
             if (lesson == null)
@@ -259,11 +229,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPatch("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> PatchStep(string courseId, int lessonId, int stepId, [FromBody]LessonStep lessonStep)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var lesson = await GetLesson(courseId, lessonId);
 
             if (lesson == null)
@@ -284,11 +249,6 @@ namespace QuickCourses.Api.Controllers
         [HttpDelete("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> DeleteStep(string courseId, int lessonId, int stepId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-
             var lesson = await GetLesson(courseId, lessonId);
 
             if (lesson == null)

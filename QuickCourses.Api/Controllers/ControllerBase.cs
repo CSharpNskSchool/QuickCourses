@@ -52,7 +52,7 @@ namespace QuickCourses.Api.Controllers
 
         public IActionResult Created()
         {
-            return StatusCode(StatusCodes.Status201Created)
+            return StatusCode(StatusCodes.Status201Created);
         }
     }
 }

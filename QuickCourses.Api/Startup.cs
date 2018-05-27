@@ -8,6 +8,7 @@ using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Data.Repositories;
 using QuickCourses.Api.Extensions;
+using QuickCourses.Api.Filters;
 
 namespace QuickCourses.Api
 {
@@ -48,8 +49,14 @@ namespace QuickCourses.Api
         {
             services
                 .AddSingleton(x => Configuration)
-                .AddJasonWebTokenAuth(Configuration)
-                .AddMvc();
+                .AddJasonWebTokenAuth(Configuration);
+            
+            services
+                .AddMvc(options =>
+                    {
+                        options.Filters.Add(typeof(ValidateModelAttribute));
+                    }
+                );
             
             services
                 .AddSingleton<IRepository<CourseData>>(new CourseRepository(CourseRepositorySettings))

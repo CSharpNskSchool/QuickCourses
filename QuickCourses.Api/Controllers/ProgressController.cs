@@ -133,10 +133,8 @@ namespace QuickCourses.Api.Controllers
             {
                 return Forbid($"The user with id = {userId} has no rights");
             }
-
-            courseProgress.LessonProgresses.TryGetValue(lessonId, out var lesson);
-
-            if (lesson == null)
+            
+            if (!courseProgress.LessonProgresses.TryGetValue(lessonId, out var lesson))
             {
                 return NotFound($"Invalid combination of progressId = {progressId}, lessonId = {lessonId}");
             }
@@ -154,11 +152,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPost("{progressId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> PostAnswer(string progressId, int lessonId, int stepId, [FromBody]Answer answer)
         {
-            if (answer == null)
-            {
-                return BadRequest("answer is null");
-            }
-            
             var courseProgress = await progressRepository.GetAsync(progressId);
 
             if (courseProgress == null)
@@ -175,7 +168,7 @@ namespace QuickCourses.Api.Controllers
             
             var course = await courseRepository.GetAsync(courseProgress.CourceId);
 
-            var question = course.GetQuestion(lessonId, stepId, answer.QuestionId);
+            var question = course.GetQuestion(lessonId, stepId, answer.QuestionId.Value);
 
             if (question == null)
             {
@@ -185,7 +178,7 @@ namespace QuickCourses.Api.Controllers
             var questionState = courseProgress
                 .LessonProgresses[lessonId]
                 .StepProgresses[stepId]
-                .QuestionStates[answer.QuestionId];
+                .QuestionStates[answer.QuestionId.Value];
 
             var questionStateData = questionState.GetUpdated(question, answer.SelectedAnswers);
 
@@ -194,7 +187,7 @@ namespace QuickCourses.Api.Controllers
                 return InvalidOperation("No available attempts");
             }
 
-            courseProgress.Update(lessonId, stepId, answer.QuestionId, questionStateData);
+            courseProgress.Update(lessonId, stepId, answer.QuestionId.Value, questionStateData);
             await progressRepository.ReplaceAsync(courseProgress.Id, courseProgress);
 
             var result = questionStateData.ToApiModel();
@@ -209,12 +202,8 @@ namespace QuickCourses.Api.Controllers
                 return null;
             }
 
-            if (course.LessonProgresses.Count < lessonId)
-            {
-                return null;
-            }
-
-            return course.LessonProgresses[lessonId];
+            course.LessonProgresses.TryGetValue(lessonId, out var result);
+            return result;
         }
         
         private bool IdIsValid(string id)
