@@ -19,13 +19,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.TestHelper", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.CourseUploader", "QuickCourses.CourseUploader\QuickCourses.CourseUploader.csproj", "{6964902B-9CAC-497F-A700-C76A3B4A0351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Api.Models", "QuickCourses.Api.Models\QuickCourses.Api.Models.csproj", "{526B4001-7985-4B0D-90FA-F84FF1576A86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Models", "QuickCourses.Api.Models\QuickCourses.Api.Models.csproj", "{526B4001-7985-4B0D-90FA-F84FF1576A86}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Data.Models", "QuickCourses.Api.Data.Models\QuickCourses.Api.Data.Models.csproj", "{EF2F85F8-0001-4A4E-90EF-746EE2E3165D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Data.Models.Extensions", "QuickCourses.Api.Data.Models.Extensions\QuickCourses.Api.Data.Models.Extensions.csproj", "{6E6435C1-00A0-42F0-BE2B-73D9195496EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Api.Extensions", "QuickCourses.Api.Extensions\QuickCourses.Api.Extensions.csproj", "{EEF7A3FD-FEE3-4F35-88CF-AC7EC1D77144}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Extensions", "QuickCourses.Api.Extensions\QuickCourses.Api.Extensions.csproj", "{EEF7A3FD-FEE3-4F35-88CF-AC7EC1D77144}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.TelegramBot", "QuickCourses.TelegramBot\QuickCourses.TelegramBot.csproj", "{EB9CA345-836B-4BC8-9166-06F14BFD654D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.TelegramBot.Data", "QuickCourses.TelegramBot.Data\QuickCourses.TelegramBot.Data.csproj", "{6051B42E-B3C2-41A4-A7F3-6B81021FCF59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.TelegramBot.Models", "QuickCourses.TelegramBot.Models\QuickCourses.TelegramBot.Models.csproj", "{C223517F-FE38-4527-AC11-386708B7B9E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +87,18 @@ Global
 		{EEF7A3FD-FEE3-4F35-88CF-AC7EC1D77144}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF7A3FD-FEE3-4F35-88CF-AC7EC1D77144}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF7A3FD-FEE3-4F35-88CF-AC7EC1D77144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB9CA345-836B-4BC8-9166-06F14BFD654D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB9CA345-836B-4BC8-9166-06F14BFD654D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB9CA345-836B-4BC8-9166-06F14BFD654D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB9CA345-836B-4BC8-9166-06F14BFD654D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6051B42E-B3C2-41A4-A7F3-6B81021FCF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6051B42E-B3C2-41A4-A7F3-6B81021FCF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6051B42E-B3C2-41A4-A7F3-6B81021FCF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6051B42E-B3C2-41A4-A7F3-6B81021FCF59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C223517F-FE38-4527-AC11-386708B7B9E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C223517F-FE38-4527-AC11-386708B7B9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C223517F-FE38-4527-AC11-386708B7B9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C223517F-FE38-4527-AC11-386708B7B9E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
