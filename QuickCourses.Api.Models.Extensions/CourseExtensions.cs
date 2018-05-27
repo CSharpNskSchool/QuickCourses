@@ -14,7 +14,9 @@ namespace QuickCourses.Api.Models.Extensions
                 DescriptionData = course.Description.ToDataModel(),
                 Lessons = course.Lessons
                     .Select(lesson => lesson.ToDataModel())
-                    .ToList()
+                    .ToList(),
+                Category = course.Category,
+                Version = course.Version
             };
 
             return result;

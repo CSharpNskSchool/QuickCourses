@@ -49,23 +49,6 @@ namespace QuickCourses.Api.Tests
         }
 
         [Test]
-        public void PostInvalidUserTest()
-        {
-            var usersController = new UsersController(null);
-            var invalidUser = new RegistrationInfo();
-
-            var response = usersController.PostUser(invalidUser).Result;
-
-            var extectedResult = new Error
-            {
-                Code = Error.ErrorCode.BadArgument,
-                Message = "Invalid user object"
-            };
-
-            Utilits.CheckResponseValue<BadRequestObjectResult, Error>(response, extectedResult);
-        }
-
-        [Test]
         public void PostExistingUserTest()
         {
             var repo = new Mock<IUserRepository>();

@@ -94,7 +94,7 @@ namespace QuickCourses.Api.Data.Models.Extensions
             {
                 Description = courseData.DescriptionData.ToApiModel(),
                 Id = courseData.Id,
-                AuthorId = courseData.AuthorId,
+                Category = courseData.Category,
                 Version = courseData.Version,
                 Lessons = courseData.Lessons.Select(x => x.ToApiModel()).ToList()
             };
@@ -177,6 +177,11 @@ namespace QuickCourses.Api.Data.Models.Extensions
             }
 
             return courseData;
+        }
+
+        public static bool IsAuthor(this CourseData courseData, string userId)
+        {
+            return courseData.AuthorId == userId;
         }
 
         private static int QuestionsCount(CourseData courseData)

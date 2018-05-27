@@ -134,7 +134,11 @@ namespace QuickCourses.Api.Tests
 
             mockCourseProgressRepo
                 .Setup(courseProgressRepo => courseProgressRepo.InsertAsync(It.IsAny<CourseProgressData>()))
-                .Returns(Task.FromResult($"{userId}{courseData.Id}"));
+                .Returns(Task.CompletedTask);
+
+            mockCourseProgressRepo
+                .Setup(courseProgressRepo => courseProgressRepo.GenerateNewId(userId, courseData.Id))
+                .Returns($"{userId}{courseData.Id}");
 
             mockCourseProgressRepo.Setup(repo => repo.GetAsync(userId, courseData.Id))
                 .Returns(Task.FromResult(courseProgressData));
@@ -145,7 +149,7 @@ namespace QuickCourses.Api.Tests
             mockCourseProgressRepo.Setup(repo => repo.GetAllByUserAsync(userId))
                 .Returns(Task.FromResult(new List<CourseProgressData> {courseProgressData}));
 
-            var mockCourseRepo = new Mock<IRepository<CourseData>>();
+            var mockCourseRepo = new Mock<ICourseRepository>();
             mockCourseRepo
                 .Setup(courseRepo => courseRepo.GetAsync(courseData.Id))
                 .Returns(Task.FromResult(courseData));

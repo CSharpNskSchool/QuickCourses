@@ -57,6 +57,11 @@ namespace QuickCourses.Api.Data.Repositories
             return ContainsAsync($"{userId}{courseId}");
         }
 
+        public string GenerateNewId(string userId, string courseId)
+        {
+            return $"{userId}{courseId}";
+        }
+
         public override async Task<List<CourseProgressData>> GetAllAsync()
         {
             var result = await base.GetAllAsync();
@@ -74,19 +79,6 @@ namespace QuickCourses.Api.Data.Repositories
             var result = await base.GetAsync(id);
             result?.SetUpLinks();
             return result;
-        }
-
-        public override async Task<string> InsertAsync(CourseProgressData value)
-        {
-            if (value == null)
-            {
-                throw new System.ArgumentNullException(nameof(value));
-            }
-
-            var id = $"{value.UserId}{value.CourceId}";
-            value.Id = id;
-            await DbContext.Collection.InsertOneAsync(value);
-            return id;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Models.Extensions;
 using QuickCourses.Api.Data.Models.Primitives;
+using QuickCourses.Api.Exceptions;
 using QuickCourses.Api.Extensions;
 using QuickCourses.Api.Models.Extensions;
 using QuickCourses.Api.Models.Primitives;
@@ -18,9 +18,9 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class CoursesController : ControllerBase
     {
-        private readonly IRepository<CourseData> courseRepository;
+        private readonly ICourseRepository courseRepository;
 
-        public CoursesController(IRepository<CourseData> courseRepository)
+        public CoursesController(ICourseRepository courseRepository)
         {
             this.courseRepository = courseRepository;
         }
@@ -33,59 +33,38 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCourse(string id)
+        [HttpGet("{courseId}")]
+        public async Task<IActionResult> GetCourse(string courseId)
         {
-            var course = await courseRepository.GetAsync(id);
-
-            if (course == null)
-            {
-                return NotFound($"Invalid course id = {id}");
-            }
-
+            var course = await GetCourseData(courseId);
             var result = course.ToApiModel();
-
             return Ok(result);
         }
         
-        [HttpGet("{id}/description")]
-        public async Task<IActionResult> GetDescription(string id)
+        [HttpGet("{courseId}/description")]
+        public async Task<IActionResult> GetDescription(string courseId)
         {
-            var course = await courseRepository.GetAsync(id);
-
-            if (course == null)
-            {
-                return NotFound($"Invalid course id = {id}");
-            }
-
+            var course = await GetCourseData(courseId);
             var result = course.DescriptionData.ToApiModel();
             return Ok(result);
         }
 
-        [HttpGet("{id:int}/lessons")]
-        public async Task<IActionResult> GetAllLessons(string id)
+        [HttpGet("{courseId}/lessons")]
+        public async Task<IActionResult> GetAllLessons(string courseId)
         {
-            var course = await courseRepository.GetAsync(id);
+            var course = await GetCourseData(courseId);
 
-            if (course == null)
-            {
-                return NotFound($"Invalid course id = {id}");
-            }
+            var result = course.Lessons
+                .Select(lesson => lesson.ToApiModel())
+                .ToList();
 
-            var result = course.Lessons.Select(lesson => lesson.ToApiModel()).ToList();
             return Ok(result);
         }
 
         [HttpGet("{courseId}/lessons/{lessonId:int}")]
         public async Task<IActionResult> GetLessonById(string courseId, int lessonId)
         {
-            var lesson = await GetLesson(courseId, lessonId);
-
-            if(lesson == null)
-            {
-                return NotFound($"Invalid combination course id = {courseId}, level id = {lessonId}");
-            }
-
+            var lesson = await GetLessonData(courseId, lessonId);
             var result = lesson.ToApiModel();
             return Ok(result);
         }
@@ -93,13 +72,7 @@ namespace QuickCourses.Api.Controllers
         [HttpGet("{courseId}/lessons/{lessonId:int}/steps")]
         public async Task<IActionResult> GetAllSteps(string courseId, int lessonId)
         {
-            var level = await GetLesson(courseId, lessonId);
-
-            if (level == null)
-            {
-                return NotFound($"Invalid combination course id = {courseId}, level id = {lessonId}");
-            }
-
+            var level = await GetLessonData(courseId, lessonId);
             var result = level.Steps.Select(step => step.ToApiModel()).ToList();
             return Ok(result);
         }
@@ -107,13 +80,7 @@ namespace QuickCourses.Api.Controllers
         [HttpGet("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> GetStepById(string courseId, int lessonId, int stepId)
         {
-            var level = await GetLesson(courseId, lessonId);
-
-            if (level == null)
-            {
-                return NotFound($"Invalid combination course id = {courseId}, level id = {lessonId}");
-            }
-
+            var level = await GetLessonData(courseId, lessonId);
             if (!level.Steps.TryGetValue(stepId, out var step))
             {
                 return NotFound($"Invalid step id = {stepId}");
@@ -123,52 +90,57 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Author")]
         [HttpPost]
         public async Task<IActionResult> PostCourse([FromBody]Course course)
         {
             var courseData = course.ToDataModel();
-            var id = await courseRepository.InsertAsync(courseData);
 
-            course.Id = id;
+            var authorId = User.GetId();
+
+            courseData.AuthorId = authorId;
+            courseData.Id = courseRepository.GenerateNewId(authorId);
+
+            await courseRepository.InsertAsync(courseData);
+
+            course.Id = courseData.Id;
 
             var uri = Request.GetUri();
-            return Created($"{uri}/{id}", course);
+            return Created($"{uri}/{course.Id}", course);
         }
 
+        [Authorize(Roles = "Author")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(string courseId)
         {
+            if (!IsUserAuthor(courseId))
+            {
+                return UserIsNotAuthor();
+            }
+
             var successfullyDeleted = await courseRepository.DeleteAsync(courseId);
 
             return successfullyDeleted ? NoContent() : NotFound($"Invalid course id = {courseId}");
         }
 
+        [Authorize(Roles = "Author")]
         [HttpPatch("{id}/description")]
         public async Task<IActionResult> PatchDescription(string courseId, [FromBody]Description description)
         {
-            var course = await courseRepository.GetAsync(courseId);
+            var courseData = await GetCourseData(courseId);
 
-            if (course == null)
-            {
-                return NotFound($"Ivalid course id = {courseId}");
-            }
+            courseData.DescriptionData = description.ToDataModel();
 
-            course.DescriptionData = description.ToDataModel();
-
-            await courseRepository.ReplaceAsync(course.Id, course);
+            await courseRepository.ReplaceAsync(courseData.Id, courseData);
 
             return NoContent();
         }
 
+        [Authorize(Roles = "Author")]
         [HttpPost("{courseId}/lessons")]
         public async Task<IActionResult> PostLesson(string courseId, [FromBody]Lesson lesson)
         {
-            var course = await courseRepository.GetAsync(courseId);
-
-            if (course == null)
-            {
-                return NotFound($"Invalid course id = {courseId}");
-            }
+            var course = await GetCourseData(courseId);
 
             course.AddLesson(lesson.ToDataModel());
             await courseRepository.ReplaceAsync(courseId, course);
@@ -176,6 +148,7 @@ namespace QuickCourses.Api.Controllers
             return Created();
         }
 
+        [Authorize(Roles = "Author")]
         [HttpPatch("{courseId}/lessons/{lessonId:int}")]
         public async Task<IActionResult> PatchLesson(string courseId, int lessonId, [FromBody]Lesson lesson)
         {
@@ -191,15 +164,11 @@ namespace QuickCourses.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Author")]
         [HttpDelete("{courseId}/lessons/{lessonId:int}")]
         public async Task<IActionResult> DeleteLesson(string courseId, int lessonId)
         {
-            var course = await courseRepository.GetAsync(courseId);
-
-            if (course == null)
-            {
-                return NotFound($"Invalid course id = {courseId}");
-            }
+            var course = await GetCourseData(courseId);
 
             if (!course.ContainsLesson(lessonId))
             {
@@ -211,10 +180,11 @@ namespace QuickCourses.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Author")]
         [HttpPost("{courseId}/lessons/{lessonId:int}/steps")]
         public async Task<IActionResult> PostStep(string courseId, int lessonId, [FromBody]LessonStep lessonStep)
         {
-            var lesson = await GetLesson(courseId, lessonId);
+            var lesson = await GetLessonData(courseId, lessonId);
 
             if (lesson == null)
             {
@@ -226,10 +196,11 @@ namespace QuickCourses.Api.Controllers
             return Created();
         }
 
+        [Authorize(Roles = "Author")]
         [HttpPatch("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> PatchStep(string courseId, int lessonId, int stepId, [FromBody]LessonStep lessonStep)
         {
-            var lesson = await GetLesson(courseId, lessonId);
+            var lesson = await GetLessonData(courseId, lessonId);
 
             if (lesson == null)
             {
@@ -246,10 +217,15 @@ namespace QuickCourses.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Author")]
         [HttpDelete("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> DeleteStep(string courseId, int lessonId, int stepId)
         {
-            var lesson = await GetLesson(courseId, lessonId);
+            var course = await GetCourseData(courseId);
+
+
+
+            var lesson = await GetLessonData(courseId, lessonId);
 
             if (lesson == null)
             {
@@ -266,16 +242,38 @@ namespace QuickCourses.Api.Controllers
             return NoContent();
         }
 
-        private async Task<LessonData> GetLesson(string courseId, int lessonId)
+        private bool IsUserAuthor(string courseId)
+        {
+            var userId = User.GetId();
+            return courseId.StartsWith(userId);
+        }
+
+        private IActionResult UserIsNotAuthor()
+        {
+            return Forbid($"User with id = {User.GetId()} isn't author of course");
+        }
+
+        private async Task<CourseData> GetCourseData(string courseId)
         {
             var course = await courseRepository.GetAsync(courseId);
 
             if (course == null)
             {
-                return null;
+                throw new NotFoundException($"Invalid course id = {courseId}");
             }
 
-            course.Lessons.TryGetValue(lessonId, out var result);
+            return course;
+        }
+
+        private async Task<LessonData> GetLessonData(string courseId, int lessonId)
+        {
+            var course = await GetCourseData(courseId);
+
+            if (!course.Lessons.TryGetValue(lessonId, out var result))
+            {
+                throw new NotFoundException($"Invalid lesson id = {lessonId}");
+            }
+
             return result;
         }
     }

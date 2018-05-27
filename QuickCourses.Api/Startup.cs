@@ -55,11 +55,12 @@ namespace QuickCourses.Api
                 .AddMvc(options =>
                     {
                         options.Filters.Add(typeof(ValidateModelAttribute));
+                        options.Filters.Add(typeof(ExceptionFilterAttribute));
                     }
                 );
             
             services
-                .AddSingleton<IRepository<CourseData>>(new CourseRepository(CourseRepositorySettings))
+                .AddSingleton<ICourseRepository>(new CourseRepository(CourseRepositorySettings))
                 .AddSingleton<IProgressRepository>(new ProgressRepository(ProgressRepositorySettings))
                 .AddSingleton<IUserRepository>(new UserRepository(UserRepositorySettings));
         }

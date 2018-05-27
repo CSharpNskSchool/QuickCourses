@@ -6,8 +6,8 @@ namespace QuickCourses.Api.Models.Primitives
     public class Course
     {
         public string Id { get; set; }
-        public string AuthorId { get; set; }
         public int Version { get; set; }
+        public string Category { get; set; }
         [Required]
         public Description Description { get; set; }
         [Required]

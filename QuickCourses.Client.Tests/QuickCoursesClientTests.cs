@@ -132,11 +132,11 @@ namespace QuickCourses.Client.Tests
                 Login = "PostInvalidAnswer"
             };
 
-            client.RegisterAsync(user).Wait();
+            await client.RegisterAsync(user);
 
-            var userTicket = client.GetTicketAsync(ticket, user.Login).Result;
+            var userTicket = await client.GetTicketAsync(ticket, user.Login);
 
-            var progress = client.StartCourseAsync(userTicket, firstCourse.Id).Result;
+            var progress = await client.StartCourseAsync(userTicket, firstCourse.Id);
 
             var result = client.SendAnswerAsync(
                 userTicket,
