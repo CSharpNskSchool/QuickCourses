@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Data.Model
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Extensions", "QuickCourses.Api.Extensions\QuickCourses.Api.Extensions.csproj", "{EEF7A3FD-FEE3-4F35-88CF-AC7EC1D77144}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.Api.Models.Extensions", "QuickCourses.Api.Models.Extensions\QuickCourses.Api.Models.Extensions.csproj", "{42C74D08-0D79-4D2D-9C59-4966F82189EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCourses.Api.Models.Extensions", "QuickCourses.Api.Models.Extensions\QuickCourses.Api.Models.Extensions.csproj", "{42C74D08-0D79-4D2D-9C59-4966F82189EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCourses.CourseEditor", "QuickCourses.CourseEditor\QuickCourses.CourseEditor.csproj", "{E7573A77-8B41-4BF2-B2D3-CB5DECF3A80E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{42C74D08-0D79-4D2D-9C59-4966F82189EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42C74D08-0D79-4D2D-9C59-4966F82189EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42C74D08-0D79-4D2D-9C59-4966F82189EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7573A77-8B41-4BF2-B2D3-CB5DECF3A80E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7573A77-8B41-4BF2-B2D3-CB5DECF3A80E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7573A77-8B41-4BF2-B2D3-CB5DECF3A80E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7573A77-8B41-4BF2-B2D3-CB5DECF3A80E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
