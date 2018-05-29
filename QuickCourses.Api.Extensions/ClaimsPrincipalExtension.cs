@@ -15,5 +15,17 @@ namespace QuickCourses.Api.Extensions
 
             return result;
         }
+
+        public static bool IsAuthor(this ClaimsPrincipal user, string courseId)
+        {
+            var userId = user.GetId();
+
+            if (userId == null)
+            {
+                throw new ArgumentException("User hasn't id");
+            }
+
+            return courseId.StartsWith(userId);
+        }
     }
 }

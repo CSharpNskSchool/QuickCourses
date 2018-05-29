@@ -1,4 +1,4 @@
-﻿namespace QuickCourses.Client
+﻿namespace QuickCourses.Client.Infrastructure
 {
     public enum ApiVersion
     {

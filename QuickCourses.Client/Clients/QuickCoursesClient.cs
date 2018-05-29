@@ -1,37 +1,22 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Net.Http;
-using System.Text;
-using System;
-using Newtonsoft.Json;
-using System.Net;
 using System.Runtime.CompilerServices;
-using System.Web;
+using System.Threading.Tasks;
 using QuickCourses.Api.Models.Authentication;
-using QuickCourses.Api.Models.Errors;
 using QuickCourses.Api.Models.Interaction;
 using QuickCourses.Api.Models.Primitives;
 using QuickCourses.Api.Models.Progress;
+using QuickCourses.Client.Infrastructure;
+using QuickCourses.Client.Interfaces;
 
 [assembly: InternalsVisibleTo("QuickCourses.Client.Tests")]
-namespace QuickCourses.Client
+namespace QuickCourses.Client.Clients
 {
-    public class QuickCoursesClient : IQuickCoursesClient
+    public class QuickCoursesClient : ClientBase, IQuickCoursesClient
     {
-        private readonly HttpClient client;
-        private readonly string apiUrl;
-        private readonly string version;
-        
-        public QuickCoursesClient(ApiVersion apiVersion, string apiUrl, HttpClient client = null)
+        public QuickCoursesClient(ApiVersion apiVersion, string apiUrl, HttpClient client = null) 
+            : base(apiVersion, apiUrl, client)
         {
-            this.version = Enum.GetName(typeof(ApiVersion), apiVersion);
-            this.apiUrl = apiUrl ?? throw new ArgumentNullException(nameof(apiUrl));
-            this.client = client ?? new HttpClient();
-        }
-
-        public void Dispose()
-        {
-            client.Dispose();
         }
 
         public Task<Ticket> GetTicketAsync(Ticket ticket, string login)
@@ -191,111 +176,6 @@ namespace QuickCourses.Client
                 HttpMethod.Get,
                 path: $"users/{login}/id",
                 ticket: ticket);
-        }
-
-        private Task InvokeApiMethod(
-            HttpMethod httpMethod,
-            string path,
-            Ticket ticket = null,
-            object content = null,
-            Dictionary<string, string> headers = null)
-        {
-            return MakeRequest(httpMethod, path, ticket, content, headers);
-        }
-
-        private async Task<T> InvokeApiMethod<T>(
-            HttpMethod httpMethod,
-            string path, 
-            Ticket ticket = null,
-            object content = null,
-            Dictionary<string, string> headers = null,
-            Dictionary<string, string> queryParameters = null)
-        {
-            var response = await MakeRequest(httpMethod, path, ticket, content, headers, queryParameters);
-
-            var serializedObject = await response.Content.ReadAsStringAsync();
-
-            return JsonConvert.DeserializeObject<T>(serializedObject);
-        }
-
-        private async Task<HttpResponseMessage> MakeRequest(
-            HttpMethod httpMethod,
-            string path,
-            Ticket ticket = null,
-            object content = null,
-            Dictionary<string, string> headers = null,
-            Dictionary<string, string> queryParameters = null)
-        {
-            var uriBuilder = new UriBuilder($"{apiUrl}/api/{version}/{path}");
-
-            if (queryParameters != null)
-            {
-                var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-                foreach (var parameter in queryParameters)
-                {
-                    query[parameter.Key] = parameter.Value;
-                }
-
-                uriBuilder.Query = query.ToString();
-            }
-            
-            var request = new HttpRequestMessage(httpMethod, uriBuilder.Uri);
-
-            if (ticket != null)
-            {
-                if (!ticket.IsValid())
-                {
-                    throw new InvalidOperationException("Ticket is old");
-                }
-
-                request.Headers.Add("Authorization", "Bearer " + ticket.Source);
-            }
-
-            if (content != null)
-            {
-                var serializedContent = JsonConvert.SerializeObject(content);
-                request.Content = new StringContent(serializedContent, Encoding.UTF8, "application/json");
-            }
-
-            if (headers != null)
-            {
-                foreach (var header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-            }
-            
-            var response = await client.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                HandleError(response);
-            }
-
-            return response;
-        }
-
-        private void HandleError(HttpResponseMessage response)
-        {
-            var serializedObject = response.Content.ReadAsStringAsync().Result;
-            var error = JsonConvert.DeserializeObject<Error>(serializedObject);
-
-            if (error == null)
-            {
-                throw new Exception(Enum.GetName(typeof(HttpStatusCode), response.StatusCode));
-            }
-
-            switch (error.Code)
-            {
-                case Error.ErrorCode.BadArgument:
-                    throw new ArgumentException(error.Message);
-                case Error.ErrorCode.InvalidOperation:
-                    throw new InvalidOperationException(error.Message);
-                case Error.ErrorCode.NotFound:
-                    throw new KeyNotFoundException(error.Message);
-                default:
-                    throw new Exception(error.Message);
-            }
         }
     }
 }

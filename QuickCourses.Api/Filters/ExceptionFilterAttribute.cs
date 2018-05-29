@@ -41,7 +41,6 @@ namespace QuickCourses.Api.Filters
                 context.Result = CreateResult(StatusCodes.Status500InternalServerError, error);
             }
 
-
             context.ExceptionHandled = true;
         }
 

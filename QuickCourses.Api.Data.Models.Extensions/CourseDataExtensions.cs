@@ -112,7 +112,7 @@ namespace QuickCourses.Api.Data.Models.Extensions
             return courseData.Lessons.Count < lessonId;
         }
 
-        public static CourseData AddLesson(this CourseData courseData, LessonData lessonData)
+        public static CourseData AddLesson(this CourseData courseData, LessonData lessonData, out int lessonId)
         {
             if (courseData == null)
             {
@@ -125,7 +125,8 @@ namespace QuickCourses.Api.Data.Models.Extensions
             }
 
             lessonData.CourseId = courseData.Id;
-            lessonData.Id = courseData.Lessons.Count;
+            lessonId = courseData.Lessons.Count;;
+            lessonData.Id = lessonId;
 
             courseData.Lessons.Add(lessonData);
 
@@ -182,6 +183,12 @@ namespace QuickCourses.Api.Data.Models.Extensions
         public static bool IsAuthor(this CourseData courseData, string userId)
         {
             return courseData.AuthorId == userId;
+        }
+
+        public static CourseData NextVersion(this CourseData courseData)
+        {
+            courseData.Version++;
+            return courseData;
         }
 
         private static int QuestionsCount(CourseData courseData)

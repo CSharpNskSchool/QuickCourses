@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QuickCourses.Api.Models.Extensions\QuickCourses.Api.Models.Extensions.csproj" />
     <ProjectReference Include="..\QuickCourses.Api.Models\QuickCourses.Api.Models.csproj" />
   </ItemGroup>
 

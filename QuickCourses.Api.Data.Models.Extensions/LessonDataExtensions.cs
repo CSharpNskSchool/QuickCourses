@@ -20,9 +20,11 @@ namespace QuickCourses.Api.Data.Models.Extensions
             return result;
         }
 
-        public static LessonData AddLessonStepData(this LessonData lessonData, LessonStepData lessonStepData)
+        public static LessonData AddLessonStepData(this LessonData lessonData, LessonStepData lessonStepData, out int stepId)
         {
-            SetUpLinks(lessonData, lessonStepData, lessonData.Steps.Count);
+            stepId = lessonData.Steps.Count;
+
+            SetUpLinks(lessonData, lessonStepData, stepId);
 
             lessonData.Steps.Add(lessonStepData);
 

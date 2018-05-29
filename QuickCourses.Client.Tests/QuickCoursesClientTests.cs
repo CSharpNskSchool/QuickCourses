@@ -8,6 +8,8 @@ using QuickCourses.Api.Models.Authentication;
 using QuickCourses.Api.Models.Interaction;
 using QuickCourses.Api.Models.Primitives;
 using QuickCourses.Api.Models.Progress;
+using QuickCourses.Client.Clients;
+using QuickCourses.Client.Infrastructure;
 using QuickCourses.TestHelper;
 
 namespace QuickCourses.Client.Tests
