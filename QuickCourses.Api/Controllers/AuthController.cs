@@ -30,6 +30,7 @@ namespace QuickCourses.Api.Controllers
         
         [HttpPost]
         [AllowAnonymous]
+        [Produces(typeof(Ticket))]
         public async Task<IActionResult> Authentication([FromBody]AuthData authData)
         {
             if (authData == null)
@@ -60,6 +61,7 @@ namespace QuickCourses.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Client")]
+        [Produces(typeof(Ticket))]
         public async Task<IActionResult> Authentication([FromHeader(Name = "Login")]string login)
         {
             if (login == null)

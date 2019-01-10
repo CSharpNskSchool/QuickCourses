@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,7 @@ namespace QuickCourses.Api.Controllers
         }
         
         [HttpGet]
+        [Produces(typeof(IList<Course>))]
         public async Task<IActionResult> GetAllCourses()
         {
             var courses = await courseRepository.GetAllAsync();
@@ -31,6 +33,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Produces(typeof(Course))]
         public async Task<IActionResult> GetCourse(string id)
         {
             var course = await courseRepository.GetAsync(id);
@@ -46,6 +49,7 @@ namespace QuickCourses.Api.Controllers
         }
         
         [HttpGet("{id}/description")]
+        [Produces(typeof(Description))]
         public async Task<IActionResult> GetDescription(string id)
         {
             var course = await courseRepository.GetAsync(id);
@@ -60,6 +64,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{id:int}/lessons")]
+        [Produces(typeof(IList<Lesson>))]
         public async Task<IActionResult> GetAllLessons(string id)
         {
             var course = await courseRepository.GetAsync(id);
@@ -74,6 +79,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{courseId}/lessons/{lessonId:int}")]
+        [Produces(typeof(Lesson))]
         public async Task<IActionResult> GetLessonById(string courseId, int lessonId)
         {
             var lesson = await GetLesson(courseId, lessonId);
@@ -88,6 +94,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{courseId}/lessons/{lessonId:int}/steps")]
+        [Produces(typeof(IList<LessonStep>))]
         public async Task<IActionResult> GetAllSteps(string courseId, int lessonId)
         {
             var level = await GetLesson(courseId, lessonId);
@@ -127,7 +134,7 @@ namespace QuickCourses.Api.Controllers
             var result = step.ToApiModel();
             return Ok(result);
         }
-
+        feature/add-swagger
         private async Task<LessonData> GetLesson(string courseId, int lessonId)
         {
             var course = await courseRepository.GetAsync(courseId);

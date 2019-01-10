@@ -10,7 +10,6 @@ namespace QuickCourses.Api.Controllers
 {
     [AllowAnonymous]
     [Route("api/v1/users")]
-    [Produces("application/json")]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository userRepository;
@@ -53,6 +52,7 @@ namespace QuickCourses.Api.Controllers
 
         [HttpGet("{login}/id")]
         [Authorize(Roles = "Client")]
+        [Produces(typeof(string))]
         public async Task<IActionResult> GetId(string login)
         {
             var user = await userRepository.GetByLoginAsync(login);

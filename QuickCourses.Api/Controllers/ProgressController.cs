@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,6 @@ namespace QuickCourses.Api.Controllers
 {
     [Authorize]
     [Route("api/v1/progress")]
-    [Produces("application/json")]
     public class ProgressController : ControllerBase
     {
         private readonly IRepository<CourseData> courseRepository;
@@ -28,6 +28,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(IList<CourseProgressData>))]
         public async Task<IActionResult> GetAllCoursesProgresses([FromQuery]string userId)
         {
             if (!User.IsInRole("Client") || string.IsNullOrEmpty(userId))
@@ -40,6 +41,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpPost]
+        [Produces(typeof(CourseProgressData))]
         public async Task<IActionResult> StartCourse([FromBody]CourseStartOptions startOptions, [FromQuery]string userId)
         {
             if (startOptions == null)
@@ -78,6 +80,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{progressId}")]
+        [Produces(typeof(CourseProgressData))]
         public async Task<IActionResult> GetCourseProgress(string progressId)
         {
             var result = await progressRepository.GetAsync(progressId);
@@ -98,6 +101,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{progressId}/lessons/{lessonId:int}")]
+        [Produces(typeof(LessonProgressData))]
         public async Task<IActionResult> GetLessonProgressById(string progressId, int lessonId)
         {
             var result = await GetLessonProgress(progressId, lessonId);
@@ -111,6 +115,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpGet("{progressId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        [Produces(typeof(LessonStepData))]
         public async Task<IActionResult> GetLessonStep(string progressId, int lessonId, int stepId)
         {
             var courseProgress = await progressRepository.GetAsync(progressId);
@@ -143,6 +148,7 @@ namespace QuickCourses.Api.Controllers
         }
 
         [HttpPost("{progressId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        [Produces(typeof(QuestionData))]
         public async Task<IActionResult> PostAnswer(string progressId, int lessonId, int stepId, [FromBody]Answer answer)
         {
             if (answer == null)
