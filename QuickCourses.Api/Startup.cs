@@ -8,6 +8,7 @@ using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Data.Repositories;
 using QuickCourses.Api.Extensions;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace QuickCourses.Api
 {
@@ -50,7 +51,13 @@ namespace QuickCourses.Api
                 .AddSingleton(x => Configuration)
                 .AddJasonWebTokenAuth(Configuration)
                 .AddMvc();
-            
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
+
             services
                 .AddSingleton<IRepository<CourseData>>(new CourseRepository(CourseRepositorySettings))
                 .AddSingleton<IProgressRepository>(new ProgressRepository(ProgressRepositorySettings))
@@ -59,8 +66,17 @@ namespace QuickCourses.Api
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
             app
-              .UseAuthentication()
               .UseMvc();
 
             if (env.IsDevelopment())

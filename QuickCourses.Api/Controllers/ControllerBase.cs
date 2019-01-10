@@ -6,7 +6,7 @@ namespace QuickCourses.Api.Controllers
 {
     public class ControllerBase : Controller
     {
-        public IActionResult NotFound(string message)
+        protected IActionResult NotFound(string message)
         {
             var error = new Error
             {
@@ -17,7 +17,7 @@ namespace QuickCourses.Api.Controllers
             return NotFound(error);
         }
 
-        public IActionResult BadRequest(string message)
+        protected IActionResult BadRequest(string message)
         {
             var error = new Error
             {
@@ -28,7 +28,7 @@ namespace QuickCourses.Api.Controllers
             return BadRequest(error);
         }
 
-        public IActionResult InvalidOperation(string message)
+        protected IActionResult InvalidOperation(string message)
         {
             var error = new Error
             {
@@ -39,7 +39,7 @@ namespace QuickCourses.Api.Controllers
             return BadRequest(error);
         }
 
-        public IActionResult Forbid(string message)
+        protected IActionResult Forbid(string message)
         {
             var error = new Error
             {
