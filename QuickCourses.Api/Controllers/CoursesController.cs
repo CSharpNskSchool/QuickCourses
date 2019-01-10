@@ -6,6 +6,7 @@ using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Models.Extensions;
 using QuickCourses.Api.Data.Models.Primitives;
 using QuickCourses.Api.Extensions;
+using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Controllers
 {
@@ -100,7 +101,15 @@ namespace QuickCourses.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="lessonId"></param>
+        /// <param name="stepId"></param>
+        /// <returns>LessonStep</returns>
         [HttpGet("{courseId}/lessons/{lessonId:int}/steps/{stepId:int}")]
+        [Produces(typeof(LessonStep))]
         public async Task<IActionResult> GetStepById(string courseId, int lessonId, int stepId)
         {
             var level = await GetLesson(courseId, lessonId);
