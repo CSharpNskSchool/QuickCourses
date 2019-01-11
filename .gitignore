@@ -47,3 +47,5 @@ QuickCourses.Api.Extensions/bin
 /QuickCourses.Model/obj
 /QuickCourses.CourseEditor
 /packages
+/QuickCourses.CourseUploader/bin
+/QuickCourses.TestHelper/bin
