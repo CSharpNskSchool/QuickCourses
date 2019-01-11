@@ -45,3 +45,5 @@ QuickCourses.Api.Extensions/obj
 QuickCourses.Api.Extensions/bin
 /QuickCourses.Model/bin
 /QuickCourses.Model/obj
+/QuickCourses.CourseUploader/bin/Release/netcoreapp2.0
+/QuickCourses.TestHelper/bin/Release/netcoreapp2.0
