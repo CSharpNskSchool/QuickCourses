@@ -4,7 +4,7 @@ using QuickCourses.Api.Models.Progress;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
-    public static class LessonProgressExtensions
+    public static class LessonProgressDataExtensions
     {
         public static LessonProgress ToApiModel(this LessonProgressData lessonProgressData)
         {
@@ -15,8 +15,8 @@ namespace QuickCourses.Api.Data.Models.Extensions
                 LessonId = lessonProgressData.LessonId,
                 Passed = lessonProgressData.Passed,
                 StepProgresses = lessonProgressData.StepProgresses
-                                                        .Select(progress => progress.ToApiModel())
-                                                        .ToList()
+                    .Select(progress => progress.ToApiModel())
+                    .ToList()
             };
 
             return result;

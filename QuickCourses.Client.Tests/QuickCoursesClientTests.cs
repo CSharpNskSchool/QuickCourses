@@ -8,6 +8,8 @@ using QuickCourses.Api.Models.Authentication;
 using QuickCourses.Api.Models.Interaction;
 using QuickCourses.Api.Models.Primitives;
 using QuickCourses.Api.Models.Progress;
+using QuickCourses.Client.Clients;
+using QuickCourses.Client.Infrastructure;
 using QuickCourses.TestHelper;
 
 namespace QuickCourses.Client.Tests
@@ -96,7 +98,7 @@ namespace QuickCourses.Client.Tests
         }
 
         [Fact]
-        public void User_RegisterAndGiveMakeAnswer_Easy()
+        public void User_RegisterAndGiveMakeAnswer()
         {
             var user = new RegistrationInfo
             {
@@ -123,6 +125,31 @@ namespace QuickCourses.Client.Tests
                 }).Result;
 
             AssertQuestionStateInProgrees_Like(userTicket, result);
+        }
+
+        [Fact]
+        public async void PostInvalidAnswer()
+        {
+            var user = new RegistrationInfo {
+                Login = "PostInvalidAnswer"
+            };
+
+            await client.RegisterAsync(user);
+
+            var userTicket = await client.GetTicketAsync(ticket, user.Login);
+
+            var progress = await client.StartCourseAsync(userTicket, firstCourse.Id);
+
+            var result = client.SendAnswerAsync(
+                userTicket,
+                progress.Id,
+                lessonId: 0,
+                stepId: 0,
+                answer: new Answer {
+                    QuestionId = 0
+                });
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await result);
         }
 
         [Fact]

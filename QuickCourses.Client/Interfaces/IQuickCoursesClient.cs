@@ -6,9 +6,8 @@ using QuickCourses.Api.Models.Interaction;
 using QuickCourses.Api.Models.Primitives;
 using QuickCourses.Api.Models.Progress;
 
-namespace QuickCourses.Client
+namespace QuickCourses.Client.Interfaces
 {
-    //Возможно стоит переписать опираясь на SOL[I]D --> ISP
     public interface IQuickCoursesClient : IDisposable
     {
         Task<Ticket> GetTicketAsync(Ticket ticket, string login);
@@ -44,5 +43,6 @@ namespace QuickCourses.Client
         Task<IEnumerable<CourseProgress>> GetProgressAsync(Ticket ticket, string userId);
         
         Task<string> GetIdByLoginAsync(Ticket ticket, string login);
+
     }
 }

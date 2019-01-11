@@ -7,7 +7,8 @@
             BadArgument,
             NotFound,
             InvalidOperation,
-            Forbidden
+            Forbidden,
+            Internal
         }
 
         public ErrorCode Code;

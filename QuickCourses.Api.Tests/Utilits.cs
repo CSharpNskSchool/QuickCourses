@@ -16,7 +16,7 @@ namespace QuickCourses.Api.Tests
         public static void CheckResponseValue<TResponse, TValue>(IActionResult response, TValue expectedValue)
             where TResponse : ObjectResult
         {
-            Assert.IsInstanceOf(typeof(TResponse), response);
+            Assert.IsInstanceOf<TResponse>(response);
 
             var value = ((TResponse)response).Value;
 

@@ -9,7 +9,6 @@ namespace QuickCourses.TestHelper
         {
             return new CourseData
             {
-                Id = "88a0eed0-6980-4264-8ae4-08c22e701fd7", //some GUID
                 DescriptionData = new DescriptionData { Name = "Test Course", Overview = "Course to test Api" },
                 Lessons = new List<LessonData>
                 {

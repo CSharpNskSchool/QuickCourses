@@ -5,7 +5,7 @@ using QuickCourses.Api.Models.Progress;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
-    public static class ProgressExtension
+    public static class ProgressDataExtension
     {
         public static CourseProgressData Update(
             this CourseProgressData progressData,

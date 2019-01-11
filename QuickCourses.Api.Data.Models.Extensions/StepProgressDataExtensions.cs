@@ -4,7 +4,7 @@ using QuickCourses.Api.Models.Progress;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
-    public static class StepProgressExtensions
+    public static class StepProgressDataExtensions
     {
         public static StepProgress ToApiModel(this StepProgressData stepProgressData)
         {

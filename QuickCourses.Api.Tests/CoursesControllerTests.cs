@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -8,7 +9,7 @@ using QuickCourses.Api.Controllers;
 using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Models.Extensions;
 using QuickCourses.Api.Data.Models.Primitives;
-using QuickCourses.Api.Models.Errors;
+using QuickCourses.Api.Exceptions;
 using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Tests
@@ -56,11 +57,8 @@ namespace QuickCourses.Api.Tests
         public void GetCourseWithInvalidIdTest()
         {
             var invalidId = ObjectId.GenerateNewId().ToString();
-            var response = controller.GetCourse(invalidId).Result;
 
-            var expectedResult = new Error {Code = Error.ErrorCode.NotFound, Message = $"Invalid course id = {invalidId}"};
-
-            Utilits.CheckResponseValue<NotFoundObjectResult, Error>(response, expectedResult);
+            Assert.ThrowsAsync<NotFoundException>(() => controller.GetCourse(invalidId));
         }
 
         [Test]
@@ -105,7 +103,7 @@ namespace QuickCourses.Api.Tests
 
         private CoursesController CreateCourseController()
         {
-            var mockRepo = new Mock<IRepository<CourseData>>();
+            var mockRepo = new Mock<ICourseRepository>();
             mockRepo
                 .Setup(repo => repo.GetAllAsync())
                 .Returns(Task.FromResult(new List<CourseData> {courseData}));

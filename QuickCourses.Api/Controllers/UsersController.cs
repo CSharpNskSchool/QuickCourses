@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuickCourses.Api.Data.DataInterfaces;
+using QuickCourses.Api.Data.Models.Authentication;
 using QuickCourses.Api.Models.Authentication;
 
 namespace QuickCourses.Api.Controllers
@@ -23,20 +23,16 @@ namespace QuickCourses.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody]RegistrationInfo registrationInfo)
         { 
-            var login = registrationInfo?.Login;
-
-            if (string.IsNullOrEmpty(login))
-            {
-                return BadRequest("Invalid user object");
-            }
+            var login = registrationInfo.Login;
 
             if (await userRepository.ContainsByLoginAsync(login))
             {
                 return InvalidOperation($"User with login {login} already exists");
             }
 
-            var userData = new Data.Models.Authentication.UserData
+            var userData = new UserData
             {
+                Id = userRepository.GenerateNewId(),
                 Born = registrationInfo.Born,
                 Email = registrationInfo.Email,
                 Login = registrationInfo.Login,
@@ -48,7 +44,7 @@ namespace QuickCourses.Api.Controllers
 
             await userRepository.InsertAsync(userData);
 
-            return StatusCode(StatusCodes.Status201Created);
+            return Created();
         }
 
         [HttpGet("{login}/id")]

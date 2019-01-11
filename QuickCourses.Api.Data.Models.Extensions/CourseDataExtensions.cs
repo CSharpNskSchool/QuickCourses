@@ -8,7 +8,7 @@ using QuickCourses.Api.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Models.Extensions
 {
-    public static class CourseExtensions
+    public static class CourseDataExtensions
     {
         public static CourseProgressData CreateProgress(this CourseData courseData, string userId)
         {
@@ -85,14 +85,110 @@ namespace QuickCourses.Api.Data.Models.Extensions
 
         public static Course ToApiModel(this CourseData courseData)
         {
+            if (courseData == null)
+            {
+                throw new ArgumentNullException(nameof(courseData));
+            }
+
             var result = new Course 
             {
                 Description = courseData.DescriptionData.ToApiModel(),
                 Id = courseData.Id,
+                Category = courseData.Category,
+                Version = courseData.Version,
                 Lessons = courseData.Lessons.Select(x => x.ToApiModel()).ToList()
             };
 
             return result;
+        }
+
+        public static bool ContainsLesson(this CourseData courseData, int lessonId)
+        {
+            if (courseData == null)
+            {
+                throw new ArgumentNullException(nameof(courseData));
+            }
+
+            return courseData.Lessons.Count < lessonId;
+        }
+
+        public static CourseData AddLesson(this CourseData courseData, LessonData lessonData, out int lessonId)
+        {
+            if (courseData == null)
+            {
+                throw new ArgumentNullException(nameof(courseData));
+            }
+
+            if (lessonData == null)
+            {
+                throw new ArgumentNullException(nameof(lessonData));
+            }
+
+            lessonData.CourseId = courseData.Id;
+            lessonId = courseData.Lessons.Count;;
+            lessonData.Id = lessonId;
+
+            courseData.Lessons.Add(lessonData);
+
+            return courseData;
+        }
+
+        public static CourseData ReplaceLesson(this CourseData courseData, int lessonId, LessonData lesson)
+        {
+            if (courseData == null)
+            {
+                throw new ArgumentNullException(nameof(courseData));
+            }
+
+            if (lesson == null)
+            {
+                throw new ArgumentNullException(nameof(lesson));
+            }
+
+            if (courseData.Lessons.Count <= lessonId)
+            {
+                throw new ArgumentException($"Course doesn't contains lesson with id {lessonId}");
+            }
+
+            lesson.CourseId = courseData.Id;
+            lesson.Id = lessonId;
+
+            courseData.Lessons[lessonId] = lesson;
+
+            return courseData;
+        }
+
+        public static CourseData RemoveLesson(this CourseData courseData, int lessonId)
+        {
+            if (courseData == null)
+            {
+                throw new ArgumentNullException(nameof(courseData));
+            }
+
+            if (courseData.Lessons.Count <= lessonId)
+            {
+                throw new ArgumentException($"Course doesn't contains lesson with id {lessonId}");
+            }
+
+            courseData.Lessons.RemoveAt(lessonId);
+
+            for (var i = lessonId; i < courseData.Lessons.Count; i++)
+            {
+                courseData.Lessons[i].Id = i;
+            }
+
+            return courseData;
+        }
+
+        public static bool IsAuthor(this CourseData courseData, string userId)
+        {
+            return courseData.AuthorId == userId;
+        }
+
+        public static CourseData NextVersion(this CourseData courseData)
+        {
+            courseData.Version++;
+            return courseData;
         }
 
         private static int QuestionsCount(CourseData courseData)

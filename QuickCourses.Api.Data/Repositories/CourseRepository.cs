@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using QuickCourses.Api.Data.DataInterfaces;
 using QuickCourses.Api.Data.Infrastructure;
 using QuickCourses.Api.Data.Models.Extensions;
 using QuickCourses.Api.Data.Models.Primitives;
 
 namespace QuickCourses.Api.Data.Repositories
 {
-    public class CourseRepository : RepositoryBase<CourseData>
+    public class CourseRepository : RepositoryBase<CourseData>, ICourseRepository
     {
         public CourseRepository(Settings settings)
             : base(settings)
@@ -25,6 +26,12 @@ namespace QuickCourses.Api.Data.Repositories
             var result = await base.GetAsync(id);
             result?.SetUpLinks();
             return result;
+        }
+
+        public string GenerateNewId(string authorId)
+        {
+            var id = GenerateNewId();
+            return $"{authorId}{id}";
         }
     }
 }

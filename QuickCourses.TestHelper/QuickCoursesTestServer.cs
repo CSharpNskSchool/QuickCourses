@@ -12,14 +12,14 @@ namespace QuickCourses.TestHelper
     public class QuickCoursesTestServer : IDisposable
     {
         private readonly TestServer server;
-        private readonly IRepository<CourseData> courseeRepository;
+        private readonly IRepository<CourseData> coursesRepository;
         private readonly IUserRepository userRepository;
         private readonly IProgressRepository progressRepository;
 
         public QuickCoursesTestServer()
         {
             server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
-            courseeRepository = (IRepository<CourseData>)server.Host.Services.GetService(typeof(IRepository<CourseData>));
+            coursesRepository = (ICourseRepository)server.Host.Services.GetService(typeof(ICourseRepository));
             userRepository = (IUserRepository)server.Host.Services.GetService(typeof(IUserRepository));
             progressRepository = (IProgressRepository)server.Host.Services.GetService(typeof(IProgressRepository));
         }
@@ -35,7 +35,8 @@ namespace QuickCourses.TestHelper
         {
             foreach(var course in coursesData)
             {
-                courseeRepository.InsertAsync(course).Wait();
+                course.Id = coursesRepository.GenerateNewId();
+                coursesRepository.InsertAsync(course).Wait();
             }
         }
 
@@ -43,6 +44,7 @@ namespace QuickCourses.TestHelper
         {
             foreach(var user in usersData)
             {
+                user.Id = userRepository.GenerateNewId();
                 userRepository.InsertAsync(user).Wait();
             }
         }
@@ -54,9 +56,9 @@ namespace QuickCourses.TestHelper
                 userRepository.DeleteAsync(user.Id).Wait();
             }
 
-            foreach(var course in courseeRepository.GetAllAsync().Result)
+            foreach(var course in coursesRepository.GetAllAsync().Result)
             {
-                courseeRepository.DeleteAsync(course.Id).Wait();
+                coursesRepository.DeleteAsync(course.Id).Wait();
             }
 
             foreach (var progress in progressRepository.GetAllAsync().Result)

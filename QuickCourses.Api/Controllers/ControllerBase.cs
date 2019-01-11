@@ -49,5 +49,10 @@ namespace QuickCourses.Api.Controllers
 
             return StatusCode(StatusCodes.Status403Forbidden, error);
         }
+
+        public IActionResult Created()
+        {
+            return StatusCode(StatusCodes.Status201Created);
+        }
     }
 }

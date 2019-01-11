@@ -17,12 +17,12 @@ namespace QuickCourses.Api.Controllers
     [Produces("application/json")]
     public class ProgressController : ControllerBase
     {
-        private readonly IRepository<CourseData> courseRepository;
+        private readonly ICourseRepository courseRepository;
         private readonly IProgressRepository progressRepository;
 
         public ProgressController(
-            IProgressRepository progressRepository, 
-            IRepository<CourseData> courseRepository)
+            IProgressRepository progressRepository,
+            ICourseRepository courseRepository)
         {
             this.progressRepository = progressRepository;
             this.courseRepository = courseRepository;
@@ -44,17 +44,12 @@ namespace QuickCourses.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> StartCourse([FromBody]CourseStartOptions startOptions, [FromQuery]string userId)
         {
-            if (startOptions == null)
-            {
-                return BadRequest("CourseStartOptions is null");
-            }
-
             if (!User.IsInRole("Client") || string.IsNullOrEmpty(userId))
             {
                 userId = User.GetId();
             }
             
-            if (!IdIsValid(userId))
+            if (!HasRights(userId))
             {
                 return Forbid($"The user has no rights or the id = {userId} is invalid");
             }
@@ -71,8 +66,10 @@ namespace QuickCourses.Api.Controllers
                 return BadRequest($"User id = {userId} hasn't course with id = {startOptions.CourseId}");
             }
 
+            
             var courseProgress = course.CreateProgress(userId);
-            courseProgress.Id = await progressRepository.InsertAsync(courseProgress);
+            courseProgress.Id = progressRepository.GenerateNewId(userId, course.Id);
+            await progressRepository.InsertAsync(courseProgress);
             courseProgress.SetUpLinks();
 
             var result = courseProgress.ToApiModel();
@@ -93,7 +90,7 @@ namespace QuickCourses.Api.Controllers
 
             var userId = progressData.UserId;
 
-            if (!IdIsValid(userId))
+            if (!HasRights(userId))
             {
                 return Forbid($"The user has no rights or the id = {userId} is invalid");
             }
@@ -129,14 +126,12 @@ namespace QuickCourses.Api.Controllers
             
             var userId = courseProgress.UserId;
 
-            if (!IdIsValid(userId))
+            if (!HasRights(userId))
             {
                 return Forbid($"The user with id = {userId} has no rights");
             }
-
-            courseProgress.LessonProgresses.TryGetValue(lessonId, out var lesson);
-
-            if (lesson == null)
+            
+            if (!courseProgress.LessonProgresses.TryGetValue(lessonId, out var lesson))
             {
                 return NotFound($"Invalid combination of progressId = {progressId}, lessonId = {lessonId}");
             }
@@ -154,11 +149,6 @@ namespace QuickCourses.Api.Controllers
         [HttpPost("{progressId}/lessons/{lessonId:int}/steps/{stepId:int}")]
         public async Task<IActionResult> PostAnswer(string progressId, int lessonId, int stepId, [FromBody]Answer answer)
         {
-            if (answer == null)
-            {
-                return BadRequest("answer is null");
-            }
-            
             var courseProgress = await progressRepository.GetAsync(progressId);
 
             if (courseProgress == null)
@@ -168,14 +158,14 @@ namespace QuickCourses.Api.Controllers
             
             var userId = courseProgress.UserId;
 
-            if (!IdIsValid(userId))
+            if (!HasRights(userId))
             {
                 return Forbid($"The user with id = {userId} has no rights");
             }
             
             var course = await courseRepository.GetAsync(courseProgress.CourceId);
 
-            var question = course.GetQuestion(lessonId, stepId, answer.QuestionId);
+            var question = course.GetQuestion(lessonId, stepId, answer.QuestionId.Value);
 
             if (question == null)
             {
@@ -185,7 +175,7 @@ namespace QuickCourses.Api.Controllers
             var questionState = courseProgress
                 .LessonProgresses[lessonId]
                 .StepProgresses[stepId]
-                .QuestionStates[answer.QuestionId];
+                .QuestionStates[answer.QuestionId.Value];
 
             var questionStateData = questionState.GetUpdated(question, answer.SelectedAnswers);
 
@@ -194,7 +184,7 @@ namespace QuickCourses.Api.Controllers
                 return InvalidOperation("No available attempts");
             }
 
-            courseProgress.Update(lessonId, stepId, answer.QuestionId, questionStateData);
+            courseProgress.Update(lessonId, stepId, answer.QuestionId.Value, questionStateData);
             await progressRepository.ReplaceAsync(courseProgress.Id, courseProgress);
 
             var result = questionStateData.ToApiModel();
@@ -209,15 +199,11 @@ namespace QuickCourses.Api.Controllers
                 return null;
             }
 
-            if (course.LessonProgresses.Count < lessonId)
-            {
-                return null;
-            }
-
-            return course.LessonProgresses[lessonId];
+            course.LessonProgresses.TryGetValue(lessonId, out var result);
+            return result;
         }
         
-        private bool IdIsValid(string id)
+        private bool HasRights(string id)
         {
             if (User.IsInRole("Client"))
             {

@@ -67,17 +67,14 @@ namespace QuickCourses.Api.Data.Repositories
             await DbContext.Collection.ReplaceOneAsync(value => value.Id == id, newValue);
         }
 
-        public virtual async Task<string> InsertAsync(TValue value)
+        public virtual async Task InsertAsync(TValue value)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            var id = ObjectId.GenerateNewId().ToString();
-            value.Id = id;
             await DbContext.Collection.InsertOneAsync(value);
-            return id;
         }
 
         public virtual async Task<bool> DeleteAsync(string id)
@@ -89,6 +86,11 @@ namespace QuickCourses.Api.Data.Repositories
 
             var result = await DbContext.Collection.DeleteOneAsync(value => value.Id == id);
             return result.DeletedCount == 1;
+        }
+
+        public string GenerateNewId()
+        {
+            return ObjectId.GenerateNewId().ToString();
         }
     }
 }

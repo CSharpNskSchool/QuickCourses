@@ -9,7 +9,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using QuickCourses.Api.Data.Models.Authentication;
+using QuickCourses.Api.Exceptions;
 using QuickCourses.Api.Models.Authentication;
+using InvalidOperationException = System.InvalidOperationException;
 
 namespace QuickCourses.Api.Controllers
 {
@@ -116,11 +118,11 @@ namespace QuickCourses.Api.Controllers
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var notBefore = DateTime.UtcNow;
-
+            
             return new JwtSecurityToken(
                 configuration["JasonWebToken:Issuer"],
                 configuration["JasonWebToken:Issuer"],
-                claims: claims,
+                claims,
                 notBefore: minutes == 0 ? null : new DateTime?(notBefore),
                 expires: notBefore.AddMinutes(minutes),
                 signingCredentials: credentials);

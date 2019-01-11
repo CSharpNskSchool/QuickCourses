@@ -9,5 +9,6 @@ namespace QuickCourses.Api.Data.DataInterfaces
         Task<List<CourseProgressData>> GetAllByUserAsync(string userId);
         Task<CourseProgressData> GetAsync(string userId, string courseId);
         Task<bool> ContainsAsync(string userId, string courseId);
+        string GenerateNewId(string userId, string courseId);
     }
 }
