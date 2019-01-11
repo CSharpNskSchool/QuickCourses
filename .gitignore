@@ -28,7 +28,8 @@ QuickCourses.Api.Data.Tests/bin
 /QuickCourses.TelegramBot.Data/obj/Release/netcoreapp2.0
 /QuickCourses.TelegramBot/Properties
 /QuickCourses.TelegramBot.Data/obj
-/QuickCourses.TelegramBot.Models
+QuickCourses.TelegramBot.Models/obj
+QuickCourses.TelegramBot.Models/bin
 /QuickCourses.TestHelper/bin/Debug/netcoreapp2.0
 /QuickCourses.TestHelper/obj
 /QuickCourses.TestHost/bin/Debug/netcoreapp2.0
